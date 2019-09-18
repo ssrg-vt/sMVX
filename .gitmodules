@@ -1,0 +1,3 @@
+[submodule "src/pin-2.12"]
+	path = src/pin-2.12
+	url = https://github.com/xjtuwxg/pintools.git
