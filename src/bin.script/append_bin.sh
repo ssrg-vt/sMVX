@@ -8,4 +8,4 @@ fi
 PATCH=$1
 BIN=$2
 
-objcopy --add-section .mvx=$PATCH --set-section-flags .mvx=load,code $BIN $BIN.mvx
+objcopy --add-section .mvx.text=$PATCH --set-section-flags .mvx.text=load,code $BIN $BIN.mvx
