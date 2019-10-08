@@ -5,10 +5,23 @@
 
 char cmd[128];
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+void print_maps(int pid)
+{
+	sprintf(cmd, "cat /proc/%d/maps", pid);
+}
+#pragma GCC pop_options
+
+void __attribute__((optimize("O0"))) print_hello(int pid)
+{
+	printf("Hello world! pid %d\n", pid);
+}
+
 int main()
 {
-	sprintf(cmd, "cat /proc/%d/maps", getpid());
-	printf("Hello world! pid %d\n", getpid());
+	print_maps(getpid());
+	print_hello(getpid());
 //	system(cmd);
 
 	while(1) usleep(5000);
