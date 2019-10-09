@@ -1,0 +1,2 @@
+TARGET DIRECTORY:
+This directory contains targets which mvx_patcher will instrument with function hooks using dyninst library.

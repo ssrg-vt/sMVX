@@ -1,0 +1,939 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+APITypes	lib/h/BPatch.h	/^    BPatch_typeCollection        *APITypes; \/\/API\/User defined types$/;"	m	class:BPatch
+AstNodePtr	lib/h/BPatch_snippet.h	/^typedef boost::shared_ptr<AstNode> AstNodePtr;$/;"	t
+BPATCH_DLL_EXPORT	lib/h/BPatch_dll.h	44;"	d
+BPATCH_DLL_EXPORT	lib/h/BPatch_dll.h	58;"	d
+BPATCH_DLL_EXPORT	lib/h/BPatch_dll.h	63;"	d
+BPATCH_DLL_EXPORT	lib/h/BPatch_dll.h	72;"	d
+BPATCH_DLL_IMPORT	lib/h/BPatch_dll.h	65;"	d
+BPATCH_REMOTE_DEBUG_END	lib/h/BPatch.h	/^    BPATCH_REMOTE_DEBUG_END$/;"	e	enum:__anon23
+BPATCH_REMOTE_DEBUG_WTX	lib/h/BPatch.h	/^    BPATCH_REMOTE_DEBUG_WTX,$/;"	e	enum:__anon23
+BPatch	lib/h/BPatch.h	/^class BPATCH_DLL_EXPORT BPatch {$/;"	c
+BPatchAsyncThreadEventCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchAsyncThreadEventCallback)(BPatch_process *proc, BPatch_thread *thr);$/;"	t
+BPatchCodeDiscoveryCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchCodeDiscoveryCallback)$/;"	t
+BPatchCodeOverwriteBeginCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchCodeOverwriteBeginCallback)$/;"	t
+BPatchCodeOverwriteEndCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchCodeOverwriteEndCallback)$/;"	t
+BPatchDynLibraryCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchDynLibraryCallback)(BPatch_thread *proc,$/;"	t
+BPatchDynamicCallSiteCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchDynamicCallSiteCallback)(BPatch_point *at_point,$/;"	t
+BPatchErrorCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchErrorCallback)(BPatchErrorLevel severity,$/;"	t
+BPatchErrorLevel	lib/h/BPatch_callbacks.h	/^} BPatchErrorLevel;$/;"	t	typeref:enum:__anon19
+BPatchExecCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchExecCallback)(BPatch_thread *proc);$/;"	t
+BPatchExitCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchExitCallback)(BPatch_thread *proc,$/;"	t
+BPatchFatal	lib/h/BPatch_callbacks.h	/^    BPatchFatal, BPatchSerious, BPatchWarning, BPatchInfo$/;"	e	enum:__anon19
+BPatchForkCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchForkCallback)(BPatch_thread *parent, $/;"	t
+BPatchFunctionNameSieve	lib/h/BPatch_image.h	/^typedef bool (*BPatchFunctionNameSieve)(const char *test,void *data);$/;"	t
+BPatchInfo	lib/h/BPatch_callbacks.h	/^    BPatchFatal, BPatchSerious, BPatchWarning, BPatchInfo$/;"	e	enum:__anon19
+BPatchOneTimeCodeCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchOneTimeCodeCallback)(BPatch_thread *proc,$/;"	t
+BPatchSerious	lib/h/BPatch_callbacks.h	/^    BPatchFatal, BPatchSerious, BPatchWarning, BPatchInfo$/;"	e	enum:__anon19
+BPatchSignalCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchSignalCallback)(BPatch_thread *proc, int sigNum);$/;"	t
+BPatchSignalHandlerCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchSignalHandlerCallback)(BPatch_point *at_point, $/;"	t
+BPatchSnippetHandle	lib/h/BPatch_addressSpace.h	/^class BPATCH_DLL_EXPORT BPatchSnippetHandle {$/;"	c
+BPatchStopThreadCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchStopThreadCallback)(BPatch_point *at_point, $/;"	t
+BPatchSymAggType	lib/h/BPatch_type.h	/^	      BPatchSymTypeName, BPatchSymAggType, BPatchSymTypeTag}symDescr_t;$/;"	e	enum:__anon9
+BPatchSymFuncParam	lib/h/BPatch_type.h	/^	      BPatchSymLocalFunc, BPatchSymGlobalFunc, BPatchSymFuncParam,$/;"	e	enum:__anon9
+BPatchSymGlobalFunc	lib/h/BPatch_type.h	/^	      BPatchSymLocalFunc, BPatchSymGlobalFunc, BPatchSymFuncParam,$/;"	e	enum:__anon9
+BPatchSymGlobalVar	lib/h/BPatch_type.h	/^typedef enum {BPatchSymLocalVar,  BPatchSymGlobalVar, BPatchSymRegisterVar,$/;"	e	enum:__anon9
+BPatchSymLocalFunc	lib/h/BPatch_type.h	/^	      BPatchSymLocalFunc, BPatchSymGlobalFunc, BPatchSymFuncParam,$/;"	e	enum:__anon9
+BPatchSymLocalVar	lib/h/BPatch_type.h	/^typedef enum {BPatchSymLocalVar,  BPatchSymGlobalVar, BPatchSymRegisterVar,$/;"	e	enum:__anon9
+BPatchSymRegisterVar	lib/h/BPatch_type.h	/^typedef enum {BPatchSymLocalVar,  BPatchSymGlobalVar, BPatchSymRegisterVar,$/;"	e	enum:__anon9
+BPatchSymStaticGlobal	lib/h/BPatch_type.h	/^	      BPatchSymStaticLocalVar, BPatchSymStaticGlobal,$/;"	e	enum:__anon9
+BPatchSymStaticLocalVar	lib/h/BPatch_type.h	/^	      BPatchSymStaticLocalVar, BPatchSymStaticGlobal,$/;"	e	enum:__anon9
+BPatchSymTypeName	lib/h/BPatch_type.h	/^	      BPatchSymTypeName, BPatchSymAggType, BPatchSymTypeTag}symDescr_t;$/;"	e	enum:__anon9
+BPatchSymTypeRange	lib/h/BPatch_type.h	/^	      BPatchSymTypeRange,$/;"	e	enum:__anon10
+BPatchSymTypeTag	lib/h/BPatch_type.h	/^	      BPatchSymTypeName, BPatchSymAggType, BPatchSymTypeTag}symDescr_t;$/;"	e	enum:__anon9
+BPatchUserEventCallback	lib/h/BPatch_callbacks.h	/^typedef void (*BPatchUserEventCallback)(BPatch_process *proc, void *buf, $/;"	t
+BPatchWarning	lib/h/BPatch_callbacks.h	/^    BPatchFatal, BPatchSerious, BPatchWarning, BPatchInfo$/;"	e	enum:__anon19
+BPatch_Address	lib/h/BPatch.h	/^typedef void *BPatch_Address;$/;"	t
+BPatch_LpModel	lib/h/BPatch_image.h	/^typedef enum BPatch_LpModel {$/;"	g
+BPatch_Set	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set() {};$/;"	f	class:BPatch_Set
+BPatch_Set	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set(const BPatch_Set<Key,Compare>& rhs){$/;"	f	class:BPatch_Set
+BPatch_Set	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set(int_t s) : int_set(s) {};$/;"	f	class:BPatch_Set
+BPatch_Set	lib/h/BPatch_Set.h	/^class BPATCH_DLL_EXPORT BPatch_Set {$/;"	c
+BPatch_Vector	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>::BPatch_Vector() : reserved(0), len(0), data(NULL) {}$/;"	f	class:BPatch_Vector
+BPatch_Vector	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>::BPatch_Vector(const BPatch_Vector<T> &src)$/;"	f	class:BPatch_Vector
+BPatch_Vector	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>::BPatch_Vector(int n) : reserved(0), len(0), data(NULL)$/;"	f	class:BPatch_Vector
+BPatch_Vector	lib/h/BPatch_Vector.h	/^class BPATCH_DLL_EXPORT BPatch_Vector {$/;"	c
+BPatch_Vector	lib/h/BPatch_Vector.h	43;"	d
+BPatch_actualAddressExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_actualAddressExpr : public BPatch_snippet$/;"	c
+BPatch_addr	lib/h/BPatch_snippet.h	104;"	d
+BPatch_addrSpec_NP	lib/h/BPatch_memoryAccess_NP.h	/^class BPATCH_DLL_EXPORT BPatch_addrSpec_NP$/;"	c
+BPatch_address	lib/h/BPatch_snippet.h	/^    BPatch_address,$/;"	e	enum:__anon16
+BPatch_addressSpace	lib/h/BPatch_addressSpace.h	/^class BPATCH_DLL_EXPORT BPatch_addressSpace {$/;"	c
+BPatch_allLocations	lib/h/BPatch_point.h	76;"	d
+BPatch_and	lib/h/BPatch_snippet.h	/^    BPatch_and,$/;"	e	enum:__anon14
+BPatch_arbitrary	lib/h/BPatch_point.h	78;"	d
+BPatch_arithExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_arithExpr: public BPatch_snippet {$/;"	c
+BPatch_array	lib/h/BPatch_type.h	100;"	d
+BPatch_assembly	lib/h/BPatch_sourceObj.h	/^    BPatch_assembly, $/;"	e	enum:BPatch_language
+BPatch_assign	lib/h/BPatch_snippet.h	/^    BPatch_assign,$/;"	e	enum:__anon15
+BPatch_asyncEventType	lib/h/BPatch_process.h	/^} BPatch_asyncEventType;$/;"	t	typeref:enum:__anon1
+BPatch_basicBlock	lib/h/BPatch_basicBlock.h	/^class BPATCH_DLL_EXPORT BPatch_basicBlock {$/;"	c
+BPatch_basicBlockLoop	lib/h/BPatch_basicBlockLoop.h	/^class BPATCH_DLL_EXPORT BPatch_basicBlockLoop : $/;"	c
+BPatch_binOp	lib/h/BPatch_snippet.h	/^} BPatch_binOp;$/;"	t	typeref:enum:__anon15
+BPatch_binaryEdit	lib/h/BPatch_binaryEdit.h	/^class BPATCH_DLL_EXPORT BPatch_binaryEdit : public BPatch_addressSpace {$/;"	c
+BPatch_bit_and	lib/h/BPatch_snippet.h	/^    BPatch_bit_and,		\/\/ not supported yet$/;"	e	enum:__anon15
+BPatch_bit_compl	lib/h/BPatch_snippet.h	/^    BPatch_bit_compl		\/\/ not supported yet$/;"	e	enum:__anon16
+BPatch_bit_or	lib/h/BPatch_snippet.h	/^    BPatch_bit_or,		\/\/ not supported yet$/;"	e	enum:__anon15
+BPatch_bit_xor	lib/h/BPatch_snippet.h	/^    BPatch_bit_xor,		\/\/ not supported yet$/;"	e	enum:__anon15
+BPatch_boolExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_boolExpr : public BPatch_snippet {$/;"	c
+BPatch_branchInstruction	lib/h/BPatch_instruction.h	/^    BPatch_branchInstruction(internal_instruction *insn,$/;"	f	class:BPatch_branchInstruction
+BPatch_branchInstruction	lib/h/BPatch_instruction.h	/^class BPATCH_DLL_EXPORT BPatch_branchInstruction : public BPatch_instruction{$/;"	c
+BPatch_breakPointExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_breakPointExpr : public BPatch_snippet {$/;"	c
+BPatch_bytesAccessedExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_bytesAccessedExpr : public BPatch_snippet$/;"	c
+BPatch_c	lib/h/BPatch_sourceObj.h	/^    BPatch_c, $/;"	e	enum:BPatch_language
+BPatch_cPlusPlus	lib/h/BPatch_sourceObj.h	/^    BPatch_cPlusPlus, $/;"	e	enum:BPatch_language
+BPatch_callAfter	lib/h/BPatch_enums.h	/^    BPatch_callAfter,$/;"	e	enum:__anon4
+BPatch_callBefore	lib/h/BPatch_enums.h	/^    BPatch_callBefore,$/;"	e	enum:__anon4
+BPatch_callUnset	lib/h/BPatch_enums.h	/^    BPatch_callUnset$/;"	e	enum:__anon4
+BPatch_callWhen	lib/h/BPatch_enums.h	/^} BPatch_callWhen;$/;"	t	typeref:enum:__anon4
+BPatch_catchupInfo	lib/h/BPatch_process.h	/^} BPatch_catchupInfo;$/;"	t	typeref:struct:__anon2
+BPatch_cblock	lib/h/BPatch_type.h	/^  BPatch_cblock() {}$/;"	f	class:BPatch_cblock
+BPatch_cblock	lib/h/BPatch_type.h	/^class BPATCH_DLL_EXPORT BPatch_cblock {$/;"	c
+BPatch_constExpr	lib/h/BPatch_snippet.h	/^    BPatch_constExpr() : BPatch_snippet() {};$/;"	f	class:BPatch_constExpr
+BPatch_constExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_constExpr : public BPatch_snippet {$/;"	c
+BPatch_countSpec_NP	lib/h/BPatch_memoryAccess_NP.h	/^typedef BPatch_addrSpec_NP BPatch_countSpec_NP;$/;"	t
+BPatch_dataArray	lib/h/BPatch_type.h	/^	      BPatch_dataArray, $/;"	e	enum:__anon10
+BPatch_dataBuilt_inType	lib/h/BPatch_type.h	70;"	d
+BPatch_dataClass	lib/h/BPatch_type.h	/^} BPatch_dataClass;$/;"	t	typeref:enum:__anon10
+BPatch_dataCommon	lib/h/BPatch_type.h	/^	      BPatch_dataCommon,$/;"	e	enum:__anon10
+BPatch_dataEnumerated	lib/h/BPatch_type.h	/^	      BPatch_dataEnumerated,$/;"	e	enum:__anon10
+BPatch_dataFunction	lib/h/BPatch_type.h	/^	      BPatch_dataFunction,$/;"	e	enum:__anon10
+BPatch_dataMethod	lib/h/BPatch_type.h	/^	      BPatch_dataMethod,$/;"	e	enum:__anon10
+BPatch_dataNullType	lib/h/BPatch_type.h	/^              BPatch_dataNullType$/;"	e	enum:__anon10
+BPatch_dataPointer	lib/h/BPatch_type.h	/^	      BPatch_dataPointer, $/;"	e	enum:__anon10
+BPatch_dataPrimitive	lib/h/BPatch_type.h	/^	      BPatch_dataPrimitive,$/;"	e	enum:__anon10
+BPatch_dataReferance	lib/h/BPatch_type.h	/^	      BPatch_dataReferance, $/;"	e	enum:__anon10
+BPatch_dataReference	lib/h/BPatch_type.h	/^	      BPatch_dataReference,$/;"	e	enum:__anon10
+BPatch_dataScalar	lib/h/BPatch_type.h	/^typedef enum {BPatch_dataScalar, $/;"	e	enum:__anon10
+BPatch_dataStructure	lib/h/BPatch_type.h	/^	      BPatch_dataStructure, $/;"	e	enum:__anon10
+BPatch_dataTypeAttrib	lib/h/BPatch_type.h	/^	      BPatch_dataTypeAttrib,$/;"	e	enum:__anon10
+BPatch_dataTypeClass	lib/h/BPatch_type.h	/^	      BPatch_dataTypeClass,$/;"	e	enum:__anon10
+BPatch_dataTypeDefine	lib/h/BPatch_type.h	/^	      BPatch_dataTypeDefine,$/;"	e	enum:__anon10
+BPatch_dataTypeNumber	lib/h/BPatch_type.h	/^	      BPatch_dataTypeNumber,$/;"	e	enum:__anon10
+BPatch_dataUnion	lib/h/BPatch_type.h	/^	      BPatch_dataUnion, $/;"	e	enum:__anon10
+BPatch_dataUnknownType	lib/h/BPatch_type.h	/^	      BPatch_dataUnknownType,$/;"	e	enum:__anon10
+BPatch_defensiveMode	lib/h/BPatch_enums.h	/^    BPatch_defensiveMode$/;"	e	enum:__anon6
+BPatch_dependenceGraphEdge	lib/h/BPatch_dependenceGraphEdge.h	/^class BPATCH_DLL_EXPORT BPatch_dependenceGraphEdge: public BPatch_eventLock {$/;"	c
+BPatch_dependenceGraphNode	lib/h/BPatch_dependenceGraphNode.h	/^class BPATCH_DLL_EXPORT BPatch_dependenceGraphNode: public BPatch_eventLock {$/;"	c
+BPatch_deref	lib/h/BPatch_snippet.h	/^    BPatch_deref,$/;"	e	enum:__anon16
+BPatch_divide	lib/h/BPatch_snippet.h	/^    BPatch_divide,$/;"	e	enum:__anon15
+BPatch_dynLibraryEvent	lib/h/BPatch_process.h	/^  BPatch_dynLibraryEvent,$/;"	e	enum:__anon1
+BPatch_dynamic	lib/h/BPatch_module.h	321;"	d
+BPatch_dynamicCallEvent	lib/h/BPatch_process.h	/^  BPatch_dynamicCallEvent,$/;"	e	enum:__anon1
+BPatch_dynamicTargetExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_dynamicTargetExpr : public BPatch_snippet$/;"	c
+BPatch_edge	lib/h/BPatch_edge.h	/^class BPATCH_DLL_EXPORT BPatch_edge {$/;"	c
+BPatch_edgeType	lib/h/BPatch_edge.h	/^} BPatch_edgeType;$/;"	t	typeref:enum:__anon18
+BPatch_effectiveAddressExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_effectiveAddressExpr : public BPatch_snippet$/;"	c
+BPatch_entry	lib/h/BPatch_point.h	72;"	d
+BPatch_enumerated	lib/h/BPatch_type.h	96;"	d
+BPatch_eq	lib/h/BPatch_snippet.h	/^    BPatch_eq,$/;"	e	enum:__anon14
+BPatch_errorEvent	lib/h/BPatch_process.h	/^  BPatch_errorEvent,$/;"	e	enum:__anon1
+BPatch_execEvent	lib/h/BPatch_process.h	/^  BPatch_execEvent,$/;"	e	enum:__anon1
+BPatch_exit	lib/h/BPatch_point.h	73;"	d
+BPatch_exitEvent	lib/h/BPatch_process.h	/^  BPatch_exitEvent,$/;"	e	enum:__anon1
+BPatch_exitType	lib/h/BPatch_callbacks.h	/^} BPatch_exitType;$/;"	t	typeref:enum:__anon20
+BPatch_exploratoryMode	lib/h/BPatch_enums.h	/^    BPatch_exploratoryMode,$/;"	e	enum:__anon6
+BPatch_f90_demangled_stabstr	lib/h/BPatch_sourceObj.h	/^    BPatch_f90_demangled_stabstr, $/;"	e	enum:BPatch_language
+BPatch_field	lib/h/BPatch_type.h	/^class BPATCH_DLL_EXPORT BPatch_field {$/;"	c
+BPatch_fieldref	lib/h/BPatch_snippet.h	/^    BPatch_fieldref,$/;"	e	enum:__anon15
+BPatch_firstSnippet	lib/h/BPatch_enums.h	/^    BPatch_firstSnippet,$/;"	e	enum:__anon3
+BPatch_flowGraph	lib/h/BPatch_flowGraph.h	/^class BPATCH_DLL_EXPORT BPatch_flowGraph : $/;"	c
+BPatch_fortran	lib/h/BPatch_sourceObj.h	/^    BPatch_fortran, $/;"	e	enum:BPatch_language
+BPatch_fortran77	lib/h/BPatch_sourceObj.h	/^    BPatch_fortran77, $/;"	e	enum:BPatch_language
+BPatch_fortran90	lib/h/BPatch_sourceObj.h	/^    BPatch_fortran90,$/;"	e	enum:BPatch_language
+BPatch_fortran95	lib/h/BPatch_sourceObj.h	/^    BPatch_fortran95,$/;"	e	enum:BPatch_language
+BPatch_frame	lib/h/BPatch_frame.h	/^class BPATCH_DLL_EXPORT BPatch_frame {$/;"	c
+BPatch_frameNormal	lib/h/BPatch_frame.h	/^    BPatch_frameNormal,$/;"	e	enum:__anon7
+BPatch_frameSignal	lib/h/BPatch_frame.h	/^    BPatch_frameSignal,$/;"	e	enum:__anon7
+BPatch_frameTrampoline	lib/h/BPatch_frame.h	/^    BPatch_frameTrampoline$/;"	e	enum:__anon7
+BPatch_frameType	lib/h/BPatch_frame.h	/^} BPatch_frameType;$/;"	t	typeref:enum:__anon7
+BPatch_funcCallExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_funcCallExpr : public BPatch_snippet {$/;"	c
+BPatch_funcMap	lib/h/BPatch_module.h	/^       BPatch_function*> BPatch_funcMap;$/;"	t	class:BPatch_module
+BPatch_function	lib/h/BPatch_function.h	/^class BPATCH_DLL_EXPORT BPatch_function : $/;"	c
+BPatch_ge	lib/h/BPatch_snippet.h	/^    BPatch_ge,$/;"	e	enum:__anon14
+BPatch_gt	lib/h/BPatch_snippet.h	/^    BPatch_gt,$/;"	e	enum:__anon14
+BPatch_heuristicMode	lib/h/BPatch_enums.h	/^    BPatch_heuristicMode,$/;"	e	enum:__anon6
+BPatch_hpf	lib/h/BPatch_sourceObj.h	/^    BPatch_hpf, $/;"	e	enum:BPatch_language
+BPatch_hybridMode	lib/h/BPatch_enums.h	/^} BPatch_hybridMode;$/;"	t	typeref:enum:__anon6
+BPatch_ifExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_ifExpr : public BPatch_snippet {$/;"	c
+BPatch_ifMachineConditionExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_ifMachineConditionExpr : public BPatch_snippet {$/;"	c
+BPatch_image	lib/h/BPatch_image.h	/^class BPATCH_DLL_EXPORT BPatch_image: public BPatch_sourceObj {$/;"	c
+BPatch_instpMap	lib/h/BPatch_module.h	/^       BPatch_point*> BPatch_instpMap;$/;"	t	class:BPatch_module
+BPatch_instruction	lib/h/BPatch_instruction.h	/^class BPATCH_DLL_EXPORT BPatch_instruction {$/;"	c
+BPatch_internalShutDownEvent	lib/h/BPatch_process.h	/^  BPatch_internalShutDownEvent,$/;"	e	enum:__anon1
+BPatch_interpAsReturnAddr	lib/h/BPatch_snippet.h	/^    BPatch_interpAsReturnAddr,$/;"	e	enum:__anon17
+BPatch_interpAsTarget	lib/h/BPatch_snippet.h	/^    BPatch_interpAsTarget,$/;"	e	enum:__anon17
+BPatch_java	lib/h/BPatch_sourceObj.h	/^    BPatch_java, $/;"	e	enum:BPatch_language
+BPatch_language	lib/h/BPatch_sourceObj.h	/^typedef enum BPatch_language {$/;"	g
+BPatch_language	lib/h/BPatch_sourceObj.h	/^} BPatch_language;$/;"	t	typeref:enum:BPatch_language
+BPatch_language_unknown	lib/h/BPatch_sourceObj.h	/^    BPatch_language_unknown $/;"	e	enum:BPatch_language
+BPatch_lastSnippet	lib/h/BPatch_enums.h	/^    BPatch_lastSnippet$/;"	e	enum:__anon3
+BPatch_le	lib/h/BPatch_snippet.h	/^    BPatch_le,$/;"	e	enum:__anon14
+BPatch_left_shift	lib/h/BPatch_snippet.h	/^    BPatch_left_shift,		\/\/ not supported yet$/;"	e	enum:__anon15
+BPatch_locAllLocations	lib/h/BPatch_enums.h	/^    BPatch_locAllLocations,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locBasicBlockEntry	lib/h/BPatch_enums.h	/^    BPatch_locBasicBlockEntry,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locBasicBlockExit	lib/h/BPatch_enums.h	/^    BPatch_locBasicBlockExit,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locBasicBlockLoopEntry	lib/h/BPatch_point.h	81;"	d
+BPatch_locBasicBlockLoopExit	lib/h/BPatch_point.h	82;"	d
+BPatch_locEntry	lib/h/BPatch_enums.h	/^    BPatch_locEntry,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locExit	lib/h/BPatch_enums.h	/^    BPatch_locExit,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locInstruction	lib/h/BPatch_enums.h	/^    BPatch_locInstruction,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locLongJump	lib/h/BPatch_enums.h	/^    BPatch_locLongJump,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locLoopEndIter	lib/h/BPatch_enums.h	/^    BPatch_locLoopEndIter,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locLoopEntry	lib/h/BPatch_enums.h	/^    BPatch_locLoopEntry,	$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locLoopExit	lib/h/BPatch_enums.h	/^    BPatch_locLoopExit,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locLoopStartIter	lib/h/BPatch_enums.h	/^    BPatch_locLoopStartIter,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSourceBlockEntry	lib/h/BPatch_enums.h	/^    BPatch_locSourceBlockEntry,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSourceBlockExit	lib/h/BPatch_enums.h	/^    BPatch_locSourceBlockExit,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSourceLoop	lib/h/BPatch_enums.h	/^    BPatch_locSourceLoop,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSourceLoopEntry	lib/h/BPatch_enums.h	/^    BPatch_locSourceLoopEntry,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSourceLoopExit	lib/h/BPatch_enums.h	/^    BPatch_locSourceLoopExit,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locStatement	lib/h/BPatch_enums.h	/^    BPatch_locStatement		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locSubroutine	lib/h/BPatch_enums.h	/^    BPatch_locSubroutine,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locUnknownLocation	lib/h/BPatch_enums.h	/^    BPatch_locUnknownLocation,$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locVarInitEnd	lib/h/BPatch_enums.h	/^    BPatch_locVarInitEnd,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_locVarInitStart	lib/h/BPatch_enums.h	/^    BPatch_locVarInitStart,		\/\/ not yet used$/;"	e	enum:eBPatch_procedureLocation
+BPatch_localVar	lib/h/BPatch_type.h	/^    BPatch_localVar() {}$/;"	f	class:BPatch_localVar
+BPatch_localVar	lib/h/BPatch_type.h	/^class BPATCH_DLL_EXPORT BPatch_localVar{$/;"	c
+BPatch_longJump	lib/h/BPatch_point.h	75;"	d
+BPatch_loop	lib/h/BPatch_flowGraph.h	/^typedef BPatch_basicBlockLoop BPatch_loop;$/;"	t
+BPatch_loopTreeNode	lib/h/BPatch_loopTreeNode.h	/^class BPATCH_DLL_EXPORT BPatch_loopTreeNode {$/;"	c
+BPatch_lt	lib/h/BPatch_snippet.h	/^    BPatch_lt,$/;"	e	enum:__anon14
+BPatch_memoryAccess	lib/h/BPatch_memoryAccess_NP.h	/^class BPATCH_DLL_EXPORT BPatch_memoryAccess : public BPatch_instruction$/;"	c
+BPatch_minus	lib/h/BPatch_snippet.h	/^    BPatch_minus,$/;"	e	enum:__anon15
+BPatch_mixed	lib/h/BPatch_sourceObj.h	/^    BPatch_mixed, $/;"	e	enum:BPatch_language
+BPatch_mod	lib/h/BPatch_snippet.h	/^    BPatch_mod,$/;"	e	enum:__anon15
+BPatch_module	lib/h/BPatch_module.h	/^class BPATCH_DLL_EXPORT BPatch_module: public BPatch_sourceObj{$/;"	c
+BPatch_ne	lib/h/BPatch_snippet.h	/^    BPatch_ne,$/;"	e	enum:__anon14
+BPatch_negate	lib/h/BPatch_snippet.h	/^    BPatch_negate,$/;"	e	enum:__anon16
+BPatch_newConnectionEvent	lib/h/BPatch_process.h	/^  BPatch_newConnectionEvent,$/;"	e	enum:__anon1
+BPatch_noInterp	lib/h/BPatch_snippet.h	/^    BPatch_noInterp,$/;"	e	enum:__anon17
+BPatch_nonShared	lib/h/BPatch_module.h	318;"	d
+BPatch_normalMode	lib/h/BPatch_enums.h	/^    BPatch_normalMode,$/;"	e	enum:__anon6
+BPatch_nullEvent	lib/h/BPatch_process.h	/^  BPatch_nullEvent,$/;"	e	enum:__anon1
+BPatch_nullExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_nullExpr : public BPatch_snippet {$/;"	c
+BPatch_object	lib/h/BPatch_object.h	/^class BPATCH_DLL_EXPORT BPatch_object {$/;"	c
+BPatch_oneTimeCodeEvent	lib/h/BPatch_process.h	/^  BPatch_oneTimeCodeEvent$/;"	e	enum:__anon1
+BPatch_opCode	lib/h/BPatch_enums.h	/^typedef enum BPatch_opCode {$/;"	g
+BPatch_opCode	lib/h/BPatch_enums.h	/^} BPatch_opCode;$/;"	t	typeref:enum:BPatch_opCode
+BPatch_opLoad	lib/h/BPatch_enums.h	/^  BPatch_opLoad,$/;"	e	enum:BPatch_opCode
+BPatch_opPrefetch	lib/h/BPatch_enums.h	/^  BPatch_opPrefetch$/;"	e	enum:BPatch_opCode
+BPatch_opStore	lib/h/BPatch_enums.h	/^  BPatch_opStore,$/;"	e	enum:BPatch_opCode
+BPatch_optimized	lib/h/BPatch_type.h	/^	      BPatch_optimized=9,BPatch_visUnknown}BPatch_visibility;$/;"	e	enum:__anon11
+BPatch_or	lib/h/BPatch_snippet.h	/^    BPatch_or$/;"	e	enum:__anon14
+BPatch_originalAddressExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_originalAddressExpr : public BPatch_snippet$/;"	c
+BPatch_parRegion	lib/h/BPatch_parRegion.h	/^class BPATCH_DLL_EXPORT BPatch_parRegion {$/;"	c
+BPatch_paramExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_paramExpr : public BPatch_snippet {$/;"	c
+BPatch_ploc	lib/h/BPatch_enums.h	/^} BPatch_ploc;$/;"	t	typeref:enum:__anon5
+BPatch_ploc_call	lib/h/BPatch_enums.h	/^    BPatch_ploc_call,$/;"	e	enum:__anon5
+BPatch_ploc_entry	lib/h/BPatch_enums.h	/^    BPatch_ploc_entry$/;"	e	enum:__anon5
+BPatch_ploc_guess	lib/h/BPatch_enums.h	/^    BPatch_ploc_guess,$/;"	e	enum:__anon5
+BPatch_plus	lib/h/BPatch_snippet.h	/^    BPatch_plus,$/;"	e	enum:__anon15
+BPatch_point	lib/h/BPatch_point.h	/^class BPATCH_DLL_EXPORT BPatch_point {$/;"	c
+BPatch_pointer	lib/h/BPatch_type.h	101;"	d
+BPatch_postForkEvent	lib/h/BPatch_process.h	/^  BPatch_postForkEvent,$/;"	e	enum:__anon1
+BPatch_preForkEvent	lib/h/BPatch_process.h	/^  BPatch_preForkEvent,$/;"	e	enum:__anon1
+BPatch_private	lib/h/BPatch_type.h	/^typedef enum {BPatch_private, BPatch_protected, BPatch_public,$/;"	e	enum:__anon11
+BPatch_procedureLocation	lib/h/BPatch_enums.h	/^} BPatch_procedureLocation;$/;"	t	typeref:enum:eBPatch_procedureLocation
+BPatch_process	lib/h/BPatch_process.h	/^class BPATCH_DLL_EXPORT BPatch_process : public BPatch_addressSpace {$/;"	c
+BPatch_protected	lib/h/BPatch_type.h	/^typedef enum {BPatch_private, BPatch_protected, BPatch_public,$/;"	e	enum:__anon11
+BPatch_public	lib/h/BPatch_type.h	/^typedef enum {BPatch_private, BPatch_protected, BPatch_public,$/;"	e	enum:__anon11
+BPatch_ref	lib/h/BPatch_snippet.h	/^    BPatch_ref,$/;"	e	enum:__anon15
+BPatch_reference	lib/h/BPatch_type.h	102;"	d
+BPatch_regExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_regExpr : public BPatch_snippet {$/;"	c
+BPatch_register	lib/h/BPatch_instruction.h	/^    BPatch_register(std::string n,$/;"	f	class:BPatch_register
+BPatch_register	lib/h/BPatch_instruction.h	/^class BPATCH_DLL_EXPORT BPatch_register {$/;"	c
+BPatch_registerExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_registerExpr : public BPatch_snippet {$/;"	c
+BPatch_relOp	lib/h/BPatch_snippet.h	/^} BPatch_relOp;$/;"	t	typeref:enum:__anon14
+BPatch_remoteHost	lib/h/BPatch.h	/^} BPatch_remoteHost;$/;"	t	typeref:struct:__anon25
+BPatch_remoteWtxInfo	lib/h/BPatch.h	/^} BPatch_remoteWtxInfo;$/;"	t	typeref:struct:__anon24
+BPatch_remote_t	lib/h/BPatch.h	/^} BPatch_remote_t;$/;"	t	typeref:enum:__anon23
+BPatch_retAddrExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_retAddrExpr : public BPatch_snippet {$/;"	c
+BPatch_retExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_retExpr : public BPatch_snippet {$/;"	c
+BPatch_right_shift	lib/h/BPatch_snippet.h	/^    BPatch_right_shift		\/\/ not supported yet$/;"	e	enum:__anon15
+BPatch_scalar	lib/h/BPatch_type.h	95;"	d
+BPatch_scrambleRegistersExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_scrambleRegistersExpr : public BPatch_snippet$/;"	c
+BPatch_seq	lib/h/BPatch_snippet.h	/^    BPatch_seq,$/;"	e	enum:__anon15
+BPatch_sequence	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_sequence : public BPatch_snippet {$/;"	c
+BPatch_shadowExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_shadowExpr : public BPatch_snippet {$/;"	c
+BPatch_sharedPrivate	lib/h/BPatch_module.h	317;"	d
+BPatch_sharedPublic	lib/h/BPatch_module.h	316;"	d
+BPatch_signalEvent	lib/h/BPatch_process.h	/^  BPatch_signalEvent,$/;"	e	enum:__anon1
+BPatch_snippet	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_snippet {$/;"	c
+BPatch_snippetOrder	lib/h/BPatch_enums.h	/^} BPatch_snippetOrder;$/;"	t	typeref:enum:__anon3
+BPatch_sourceBlock	lib/h/BPatch_sourceBlock.h	/^class BPATCH_DLL_EXPORT BPatch_sourceBlock {$/;"	c
+BPatch_sourceFunction	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceFunction,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceLoop	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceLoop,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceModule	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceModule,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceObj	lib/h/BPatch_sourceObj.h	/^class BPATCH_DLL_EXPORT BPatch_sourceObj {$/;"	c
+BPatch_sourceOuterLoop	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceOuterLoop,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceProgram	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceProgram,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceStatement	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceStatement$/;"	e	enum:BPatch_sourceType
+BPatch_sourceType	lib/h/BPatch_sourceObj.h	/^typedef enum BPatch_sourceType {$/;"	g
+BPatch_sourceType	lib/h/BPatch_sourceObj.h	/^} BPatch_sourceType;$/;"	t	typeref:enum:BPatch_sourceType
+BPatch_sourceTypeBlock	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceTypeBlock,$/;"	e	enum:BPatch_sourceType
+BPatch_sourceUnknown	lib/h/BPatch_sourceObj.h	/^    BPatch_sourceUnknown,$/;"	e	enum:BPatch_sourceType
+BPatch_stInterpret	lib/h/BPatch_snippet.h	/^} BPatch_stInterpret;$/;"	t	typeref:enum:__anon17
+BPatch_statement	lib/h/BPatch_statement.h	/^class BPATCH_DLL_EXPORT BPatch_statement$/;"	c
+BPatch_static	lib/h/BPatch_module.h	320;"	d
+BPatch_stats	lib/h/BPatch.h	/^} BPatch_stats;$/;"	t	typeref:struct:__anon22
+BPatch_stopThreadExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_stopThreadExpr : public BPatch_snippet {$/;"	c
+BPatch_storageAddr	lib/h/BPatch_type.h	/^    BPatch_storageAddr,$/;"	e	enum:__anon12
+BPatch_storageAddrRef	lib/h/BPatch_type.h	/^    BPatch_storageAddrRef,$/;"	e	enum:__anon12
+BPatch_storageClass	lib/h/BPatch_type.h	/^} BPatch_storageClass;$/;"	t	typeref:enum:__anon12
+BPatch_storageFrameOffset	lib/h/BPatch_type.h	/^    BPatch_storageFrameOffset$/;"	e	enum:__anon12
+BPatch_storageReg	lib/h/BPatch_type.h	/^    BPatch_storageReg,$/;"	e	enum:__anon12
+BPatch_storageRegOffset	lib/h/BPatch_type.h	/^    BPatch_storageRegOffset,$/;"	e	enum:__anon12
+BPatch_storageRegRef	lib/h/BPatch_type.h	/^    BPatch_storageRegRef,$/;"	e	enum:__anon12
+BPatch_structure	lib/h/BPatch_type.h	98;"	d
+BPatch_subroutine	lib/h/BPatch_point.h	74;"	d
+BPatch_thread	lib/h/BPatch_thread.h	/^class BPATCH_DLL_EXPORT BPatch_thread {$/;"	c
+BPatch_threadCreateEvent	lib/h/BPatch_process.h	/^  BPatch_threadCreateEvent,$/;"	e	enum:__anon1
+BPatch_threadDestroyEvent	lib/h/BPatch_process.h	/^  BPatch_threadDestroyEvent,$/;"	e	enum:__anon1
+BPatch_threadIndexExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_threadIndexExpr : public BPatch_snippet {$/;"	c
+BPatch_tidExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_tidExpr : public BPatch_snippet {$/;"	c
+BPatch_times	lib/h/BPatch_snippet.h	/^    BPatch_times,$/;"	e	enum:__anon15
+BPatch_type	lib/h/BPatch_type.h	/^class BPATCH_DLL_EXPORT BPatch_type{$/;"	c
+BPatch_typeAttrib	lib/h/BPatch_type.h	103;"	d
+BPatch_typeClass	lib/h/BPatch_type.h	97;"	d
+BPatch_typeDefine	lib/h/BPatch_type.h	105;"	d
+BPatch_unOp	lib/h/BPatch_snippet.h	/^} BPatch_unOp;$/;"	t	typeref:enum:__anon16
+BPatch_union	lib/h/BPatch_type.h	99;"	d
+BPatch_unknownLanguage	lib/h/BPatch_sourceObj.h	42;"	d
+BPatch_unknownType	lib/h/BPatch_type.h	104;"	d
+BPatch_userEvent	lib/h/BPatch_process.h	/^  BPatch_userEvent,$/;"	e	enum:__anon1
+BPatch_varMap	lib/h/BPatch_module.h	/^    typedef std::map<int_variable*, BPatch_variableExpr*> BPatch_varMap;$/;"	t	class:BPatch_module
+BPatch_variableExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_variableExpr : public BPatch_snippet $/;"	c
+BPatch_visUnknown	lib/h/BPatch_type.h	/^	      BPatch_optimized=9,BPatch_visUnknown}BPatch_visibility;$/;"	e	enum:__anon11
+BPatch_visibility	lib/h/BPatch_type.h	/^	      BPatch_optimized=9,BPatch_visUnknown}BPatch_visibility;$/;"	t	typeref:enum:__anon11
+BPatch_whileExpr	lib/h/BPatch_snippet.h	/^class BPATCH_DLL_EXPORT BPatch_whileExpr : public BPatch_snippet {$/;"	c
+BPatch_xor	lib/h/BPatch_snippet.h	/^    BPatch_xor,$/;"	e	enum:__anon15
+CANARY	lib/h/StackMod.h	/^            CANARY,$/;"	e	enum:StackMod::MType
+CC	Makefile	/^CC          := gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS      := $(OPT_LEVEL) -c -I$(INC)$/;"	m
+CLEANUP	lib/h/StackMod.h	/^            CLEANUP$/;"	e	enum:StackMod::MOrder
+CODE	lib/h/BPatch_object.h	/^          CODE,$/;"	e	enum:BPatch_object::Region::__anon21
+Canary	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT Canary : public StackMod$/;"	c
+CondJumpNottaken	lib/h/BPatch_edge.h	/^    CondJumpTaken, CondJumpNottaken, UncondJump, NonJump $/;"	e	enum:__anon18
+CondJumpTaken	lib/h/BPatch_edge.h	/^    CondJumpTaken, CondJumpNottaken, UncondJump, NonJump $/;"	e	enum:__anon18
+DATA	lib/h/BPatch_object.h	/^          DATA } type_t;$/;"	e	enum:BPatch_object::Region::__anon21
+DO_INLINE_F	lib/h/BPatch_Set.h	56;"	d
+DO_INLINE_P	lib/h/BPatch_Set.h	52;"	d
+DYNINST_5_1	lib/h/BPatch.h	59;"	d
+DYNINST_5_2	lib/h/BPatch.h	60;"	d
+DYNINST_6_0	lib/h/BPatch.h	61;"	d
+DYNINST_6_1	lib/h/BPatch.h	62;"	d
+DYNINST_7_0	lib/h/BPatch.h	63;"	d
+DYNINST_8_0	lib/h/BPatch.h	64;"	d
+DYNINST_8_1	lib/h/BPatch.h	65;"	d
+DYNINST_8_1_1	lib/h/BPatch.h	66;"	d
+DYNINST_8_1_2	lib/h/BPatch.h	67;"	d
+DYNINST_8_2	lib/h/BPatch.h	68;"	d
+DYNINST_9_0	lib/h/BPatch.h	69;"	d
+DYNINST_9_1	lib/h/BPatch.h	70;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_dependenceGraphEdge.h	41;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_dependenceGraphEdge.h	43;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_dependenceGraphNode.h	42;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_dependenceGraphNode.h	44;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_instruction.h	45;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_instruction.h	47;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_type.h	219;"	d
+DYNINST_CLASS_NAME	lib/h/BPatch_type.h	221;"	d
+DYNINST_MAJOR	lib/h/BPatch.h	72;"	d
+DYNINST_MINOR	lib/h/BPatch.h	73;"	d
+DYNINST_SUBMINOR	lib/h/BPatch.h	74;"	d
+DynAddrSpacePtr	lib/h/BPatch_addressSpace.h	/^    typedef boost::shared_ptr<DynAddrSpace> DynAddrSpacePtr;$/;"	t	namespace:Dyninst::PatchAPI
+Dyninst	lib/h/BPatch_addressSpace.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_basicBlock.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_basicBlockLoop.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_edge.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_flowGraph.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_function.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_image.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_loopTreeNode.h	/^namespace Dyninst{$/;"	n
+Dyninst	lib/h/BPatch_module.h	/^namespace Dyninst { $/;"	n
+Dyninst	lib/h/BPatch_object.h	/^namespace Dyninst { $/;"	n
+Dyninst	lib/h/BPatch_point.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_snippet.h	/^namespace Dyninst {$/;"	n
+Dyninst	lib/h/BPatch_type.h	/^namespace Dyninst { $/;"	n
+E_OUT_OF_BOUNDS	lib/h/BPatch_object.h	/^    static const Dyninst::Address E_OUT_OF_BOUNDS;$/;"	m	class:BPatch_object
+ExitedNormally	lib/h/BPatch_callbacks.h	/^   ExitedNormally,$/;"	e	enum:__anon20
+ExitedViaSignal	lib/h/BPatch_callbacks.h	/^   ExitedViaSignal$/;"	e	enum:__anon20
+FDneedsPolling_	lib/h/BPatch.h	/^   bool FDneedsPolling_;$/;"	m	class:BPatch
+IA32AMDprefetch	lib/h/BPatch_memoryAccess_NP.h	56;"	d
+IA32AMDprefetchw	lib/h/BPatch_memoryAccess_NP.h	57;"	d
+IA32_ECMPS	lib/h/BPatch_memoryAccess_NP.h	49;"	d
+IA32_EMULATE	lib/h/BPatch_memoryAccess_NP.h	46;"	d
+IA32_ESCAS	lib/h/BPatch_memoryAccess_NP.h	47;"	d
+IA32_NECMPS	lib/h/BPatch_memoryAccess_NP.h	50;"	d
+IA32_NESCAS	lib/h/BPatch_memoryAccess_NP.h	48;"	d
+IA32prefetchNTA	lib/h/BPatch_memoryAccess_NP.h	52;"	d
+IA32prefetchT0	lib/h/BPatch_memoryAccess_NP.h	53;"	d
+IA32prefetchT1	lib/h/BPatch_memoryAccess_NP.h	54;"	d
+IA32prefetchT2	lib/h/BPatch_memoryAccess_NP.h	55;"	d
+ID	lib/h/BPatch_type.h	/^  int           ID;                \/* unique ID of type *\/$/;"	m	class:BPatch_type
+INC	Makefile	/^INC         := lib\/h$/;"	m
+INSERT	lib/h/StackMod.h	/^            INSERT,$/;"	e	enum:StackMod::MType
+Insert	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT Insert : public StackMod$/;"	c
+InstancePtr	lib/h/BPatch_addressSpace.h	/^    typedef boost::shared_ptr<Instance> InstancePtr;$/;"	t	namespace:Dyninst::PatchAPI
+InstancePtr	lib/h/BPatch_point.h	/^      typedef boost::shared_ptr<Instance> InstancePtr;$/;"	t	namespace:Dyninst::PatchAPI
+InternalCodeOverwriteCallback	lib/h/BPatch_callbacks.h	/^typedef void (*InternalCodeOverwriteCallback)$/;"	t
+InternalSignalHandlerCallback	lib/h/BPatch_callbacks.h	/^typedef void (*InternalSignalHandlerCallback)$/;"	t
+LD	Makefile	/^LD          := \/usr\/bin\/ld$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS     := -lstdc++ -lelf -ldw -lboost_system -ldyninstAPI$/;"	m
+LIB	Makefile	/^LIB         := lib\/libdyninstAPI.so.10.1.0$/;"	m
+LP32	lib/h/BPatch_image.h	/^  LP32,      \/* 32 bit image *\/$/;"	e	enum:BPatch_LpModel
+LP64	lib/h/BPatch_image.h	/^  LP64,      \/* 64 bit image *\/$/;"	e	enum:BPatch_LpModel
+MOVE	lib/h/StackMod.h	/^            MOVE,$/;"	e	enum:StackMod::MType
+MOrder	lib/h/StackMod.h	/^        enum MOrder$/;"	g	class:StackMod
+MType	lib/h/StackMod.h	/^        enum MType$/;"	g	class:StackMod
+ModMap	lib/h/BPatch_image.h	/^  typedef std::map<mapped_module *,  BPatch_module *> ModMap;$/;"	t	class:BPatch_image
+Move	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT Move : public StackMod$/;"	c
+NEW	lib/h/StackMod.h	/^            NEW,$/;"	e	enum:StackMod::MOrder
+NoExit	lib/h/BPatch_callbacks.h	/^   NoExit,$/;"	e	enum:__anon20
+NonJump	lib/h/BPatch_edge.h	/^    CondJumpTaken, CondJumpNottaken, UncondJump, NonJump $/;"	e	enum:__anon18
+OBJ	Makefile	/^OBJ         := $(SRC:.cpp=.o)$/;"	m
+OMP_ANY	lib/h/BPatch_parRegion.h	/^  OMP_BARRIER, OMP_ATOMIC, OMP_FLUSH, OMP_ORDERED, OMP_ANY$/;"	e	enum:__anon13
+OMP_ATOMIC	lib/h/BPatch_parRegion.h	/^  OMP_BARRIER, OMP_ATOMIC, OMP_FLUSH, OMP_ORDERED, OMP_ANY$/;"	e	enum:__anon13
+OMP_BARRIER	lib/h/BPatch_parRegion.h	/^  OMP_BARRIER, OMP_ATOMIC, OMP_FLUSH, OMP_ORDERED, OMP_ANY$/;"	e	enum:__anon13
+OMP_CRITICAL	lib/h/BPatch_parRegion.h	/^  OMP_PAR_DO, OMP_PAR_SECTIONS, OMP_MASTER, OMP_CRITICAL,$/;"	e	enum:__anon13
+OMP_DO_FOR	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OMP_DO_FOR_LOOP_BODY	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OMP_FLUSH	lib/h/BPatch_parRegion.h	/^  OMP_BARRIER, OMP_ATOMIC, OMP_FLUSH, OMP_ORDERED, OMP_ANY$/;"	e	enum:__anon13
+OMP_MASTER	lib/h/BPatch_parRegion.h	/^  OMP_PAR_DO, OMP_PAR_SECTIONS, OMP_MASTER, OMP_CRITICAL,$/;"	e	enum:__anon13
+OMP_NONE	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OMP_ORDERED	lib/h/BPatch_parRegion.h	/^  OMP_BARRIER, OMP_ATOMIC, OMP_FLUSH, OMP_ORDERED, OMP_ANY$/;"	e	enum:__anon13
+OMP_PARALLEL	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OMP_PAR_DO	lib/h/BPatch_parRegion.h	/^  OMP_PAR_DO, OMP_PAR_SECTIONS, OMP_MASTER, OMP_CRITICAL,$/;"	e	enum:__anon13
+OMP_PAR_SECTIONS	lib/h/BPatch_parRegion.h	/^  OMP_PAR_DO, OMP_PAR_SECTIONS, OMP_MASTER, OMP_CRITICAL,$/;"	e	enum:__anon13
+OMP_SECTIONS	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OMP_SINGLE	lib/h/BPatch_parRegion.h	/^  OMP_NONE, OMP_PARALLEL, OMP_DO_FOR,OMP_DO_FOR_LOOP_BODY, OMP_SECTIONS, OMP_SINGLE, $/;"	e	enum:__anon13
+OPT_LEVEL	Makefile	/^OPT_LEVEL   := -O0$/;"	m
+ObjMap	lib/h/BPatch_image.h	/^  typedef std::map<mapped_object *,  BPatch_object *> ObjMap;$/;"	t	class:BPatch_image
+OneTimeCodeInfo	lib/h/BPatch_process.h	/^ OneTimeCodeInfo(bool _synchronous, void *_userData, BPatchOneTimeCodeCallback _cb, unsigned _thrID) :$/;"	f	class:OneTimeCodeInfo
+OneTimeCodeInfo	lib/h/BPatch_process.h	/^class OneTimeCodeInfo {$/;"	c
+POWER_XER2531	lib/h/BPatch_memoryAccess_NP.h	44;"	d
+ParseAPI	lib/h/BPatch_basicBlock.h	/^  namespace ParseAPI {$/;"	n	namespace:Dyninst
+ParseAPI	lib/h/BPatch_edge.h	/^   namespace ParseAPI {$/;"	n	namespace:Dyninst
+ParseAPI	lib/h/BPatch_function.h	/^  namespace ParseAPI {$/;"	n	namespace:Dyninst
+ParseAPI	lib/h/BPatch_object.h	/^   namespace ParseAPI { $/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_addressSpace.h	/^  namespace PatchAPI { $/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_basicBlock.h	/^  namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_basicBlockLoop.h	/^namespace PatchAPI{$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_edge.h	/^   namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_flowGraph.h	/^    namespace PatchAPI{$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_function.h	/^  namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_image.h	/^  namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_loopTreeNode.h	/^namespace PatchAPI{$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_module.h	/^   namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_object.h	/^   namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_point.h	/^   namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchAPI	lib/h/BPatch_snippet.h	/^   namespace PatchAPI {$/;"	n	namespace:Dyninst
+PatchMgrPtr	lib/h/BPatch_addressSpace.h	/^    typedef boost::shared_ptr<PatchMgr> PatchMgrPtr;$/;"	t	namespace:Dyninst::PatchAPI
+PatchMgrPtr	lib/h/BPatch_image.h	/^    typedef boost::shared_ptr<PatchMgr> PatchMgrPtr;$/;"	t	namespace:Dyninst::PatchAPI
+RANDOMIZE	lib/h/StackMod.h	/^            RANDOMIZE$/;"	e	enum:StackMod::MType
+REMOVE	lib/h/StackMod.h	/^            REMOVE,$/;"	e	enum:StackMod::MType
+Randomize	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT Randomize : public StackMod$/;"	c
+Region	lib/h/BPatch_object.h	/^    Region() : base(0), size(0), type(UNKNOWN) {};$/;"	f	struct:BPatch_object::Region
+Region	lib/h/BPatch_object.h	/^    Region(Dyninst::Address b, unsigned long s, type_t t) : base(b), size(s), type(t) {};$/;"	f	struct:BPatch_object::Region
+Region	lib/h/BPatch_object.h	/^    struct Region {$/;"	s	class:BPatch_object
+Remove	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT Remove : public StackMod$/;"	c
+SRC	Makefile	/^SRC         := $(wildcard *.cpp)$/;"	m
+STACKMOD_ASSERT	lib/h/StackMod.h	45;"	d
+STATIC_EDITOR	lib/h/BPatch_addressSpace.h	/^  TRADITIONAL_PROCESS, STATIC_EDITOR$/;"	e	enum:__anon8
+SnippetPtr	lib/h/BPatch_snippet.h	/^      typedef boost::shared_ptr<Snippet> SnippetPtr;$/;"	t	namespace:Dyninst::PatchAPI
+StackMod	lib/h/StackMod.h	/^        StackMod() {}$/;"	f	class:StackMod
+StackMod	lib/h/StackMod.h	/^class BPATCH_DLL_EXPORT StackMod$/;"	c
+Statement	lib/h/BPatch_module.h	/^    struct Statement {$/;"	s	class:BPatch_module
+Statement	lib/h/BPatch_module.h	/^    } Statement;$/;"	m	class:BPatch_module	typeref:struct:BPatch_module::Statement
+SymtabAPI	lib/h/BPatch_addressSpace.h	/^  namespace SymtabAPI {$/;"	n	namespace:Dyninst
+SymtabAPI	lib/h/BPatch_image.h	/^	namespace SymtabAPI {$/;"	n	namespace:Dyninst
+SymtabAPI	lib/h/BPatch_module.h	/^   namespace SymtabAPI {$/;"	n	namespace:Dyninst
+SymtabAPI	lib/h/BPatch_object.h	/^   namespace SymtabAPI {$/;"	n	namespace:Dyninst
+SymtabAPI	lib/h/BPatch_type.h	/^   namespace SymtabAPI {$/;"	n	namespace:Dyninst
+TRADITIONAL_PROCESS	lib/h/BPatch_addressSpace.h	/^  TRADITIONAL_PROCESS, STATIC_EDITOR$/;"	e	enum:__anon8
+UNKNOWN	lib/h/BPatch_object.h	/^          UNKNOWN,$/;"	e	enum:BPatch_object::Region::__anon21
+UNKNOWN_LP	lib/h/BPatch_image.h	/^  UNKNOWN_LP \/* cannot be determined *\/$/;"	e	enum:BPatch_LpModel
+USER_BPATCH_TYPE_ID	lib/h/BPatch_type.h	/^  static int USER_BPATCH_TYPE_ID;$/;"	m	class:BPatch_type
+UncondJump	lib/h/BPatch_edge.h	/^    CondJumpTaken, CondJumpNottaken, UncondJump, NonJump $/;"	e	enum:__anon18
+V_libdyninstAPI	lib/h/BPatch_dll.h	/^extern "C" BPATCH_DLL_EXPORT const char V_libdyninstAPI[];$/;"	v
+_BPATCH_ERROR_H_	lib/h/BPatch_callbacks.h	32;"	d
+_BPATCH_STATEMENT_H_	lib/h/BPatch_statement.h	32;"	d
+_BPatch_Set_h_	lib/h/BPatch_Set.h	32;"	d
+_BPatch_Vector_h_	lib/h/BPatch_Vector.h	34;"	d
+_BPatch_addressSpace_h_	lib/h/BPatch_addressSpace.h	32;"	d
+_BPatch_basicBlockLoop_h	lib/h/BPatch_basicBlockLoop.h	32;"	d
+_BPatch_basicBlock_h_	lib/h/BPatch_basicBlock.h	32;"	d
+_BPatch_binaryEdit_h_	lib/h/BPatch_binaryEdit.h	32;"	d
+_BPatch_dependenceGraphEdge_h_	lib/h/BPatch_dependenceGraphEdge.h	32;"	d
+_BPatch_dependenceGraphNode_h_	lib/h/BPatch_dependenceGraphNode.h	32;"	d
+_BPatch_dll_h_	lib/h/BPatch_dll.h	36;"	d
+_BPatch_edge_h_	lib/h/BPatch_edge.h	32;"	d
+_BPatch_enums_h_	lib/h/BPatch_enums.h	32;"	d
+_BPatch_flowGraph_h_	lib/h/BPatch_flowGraph.h	32;"	d
+_BPatch_frame_h_	lib/h/BPatch_frame.h	32;"	d
+_BPatch_function_h_	lib/h/BPatch_function.h	32;"	d
+_BPatch_h_	lib/h/BPatch.h	32;"	d
+_BPatch_image_h_	lib/h/BPatch_image.h	32;"	d
+_BPatch_instruction_h_	lib/h/BPatch_instruction.h	32;"	d
+_BPatch_loopTreeNode_h_	lib/h/BPatch_loopTreeNode.h	32;"	d
+_BPatch_module_h_	lib/h/BPatch_module.h	32;"	d
+_BPatch_object_h_	lib/h/BPatch_object.h	32;"	d
+_BPatch_parRegion_h_	lib/h/BPatch_parRegion.h	32;"	d
+_BPatch_point_h_	lib/h/BPatch_point.h	32;"	d
+_BPatch_process_h_	lib/h/BPatch_process.h	32;"	d
+_BPatch_snippet_h_	lib/h/BPatch_snippet.h	32;"	d
+_BPatch_sourceBlock_h_	lib/h/BPatch_sourceBlock.h	32;"	d
+_BPatch_sourceObj_h_	lib/h/BPatch_sourceObj.h	32;"	d
+_BPatch_thread_h_	lib/h/BPatch_thread.h	32;"	d
+_BPatch_type_h_	lib/h/BPatch_type.h	32;"	d
+_MemoryAccess_h_	lib/h/BPatch_memoryAccess_NP.h	34;"	d
+_StackMod_h_	lib/h/StackMod.h	32;"	d
+_destHigh	lib/h/StackMod.h	/^        int _destHigh;$/;"	m	class:Move
+_destLow	lib/h/StackMod.h	/^        int _destLow;$/;"	m	class:Move
+_failFunc	lib/h/StackMod.h	/^        BPatch_function* _failFunc;$/;"	m	class:Canary
+_high	lib/h/StackMod.h	/^        int _high;$/;"	m	class:Canary
+_high	lib/h/StackMod.h	/^        int _high;$/;"	m	class:Insert
+_high	lib/h/StackMod.h	/^        int _high;$/;"	m	class:Remove
+_isSeeded	lib/h/StackMod.h	/^        bool _isSeeded;$/;"	m	class:Randomize
+_loop_map	lib/h/BPatch_flowGraph.h	/^  std::map<Dyninst::PatchAPI::PatchLoop*, BPatch_basicBlockLoop*> _loop_map;  $/;"	m	class:BPatch_flowGraph
+_low	lib/h/StackMod.h	/^        int _low;$/;"	m	class:Canary
+_low	lib/h/StackMod.h	/^        int _low;$/;"	m	class:Insert
+_low	lib/h/StackMod.h	/^        int _low;$/;"	m	class:Remove
+_order	lib/h/StackMod.h	/^        MOrder _order;$/;"	m	class:StackMod
+_seed	lib/h/StackMod.h	/^        int _seed;$/;"	m	class:Randomize
+_srcHigh	lib/h/StackMod.h	/^        int _srcHigh;$/;"	m	class:Move
+_srcLanguage	lib/h/BPatch_sourceObj.h	/^      BPatch_language _srcLanguage;$/;"	m	class:BPatch_sourceObj
+_srcLow	lib/h/StackMod.h	/^        int _srcLow;$/;"	m	class:Move
+_srcType	lib/h/BPatch_sourceObj.h	/^      enum BPatch_sourceType _srcType;$/;"	m	class:BPatch_sourceObj	typeref:enum:BPatch_sourceObj::BPatch_sourceType
+_type	lib/h/StackMod.h	/^        MType _type;$/;"	m	class:StackMod
+accessType_t	mutator.cpp	/^} accessType_t;$/;"	t	typeref:enum:__anon26	file:
+addInstance	lib/h/BPatch_addressSpace.h	/^  void addInstance(Dyninst::PatchAPI::InstancePtr p) { instances_.push_back(p); }$/;"	f	class:BPatchSnippetHandle
+addSpace	lib/h/BPatch_flowGraph.h	/^  BPatch_addressSpace *addSpace;$/;"	m	class:BPatch_flowGraph
+addSpace	lib/h/BPatch_function.h	/^    BPatch_addressSpace *addSpace;$/;"	m	class:BPatch_function
+addSpace	lib/h/BPatch_image.h	/^  BPatch_addressSpace *addSpace;$/;"	m	class:BPatch_image
+addSpace	lib/h/BPatch_module.h	/^    BPatch_addressSpace *addSpace;$/;"	m	class:BPatch_module
+addSpace	lib/h/BPatch_point.h	/^    BPatch_addressSpace *addSpace;$/;"	m	class:BPatch_point
+addSpace_	lib/h/BPatch_addressSpace.h	/^  BPatch_addressSpace *addSpace_;$/;"	m	class:BPatchSnippetHandle
+addr	lib/h/BPatch_instruction.h	/^  long unsigned int addr;$/;"	m	class:BPatch_instruction
+address	lib/h/BPatch_snippet.h	/^    void		*address;$/;"	m	class:BPatch_variableExpr
+allBlocks	lib/h/BPatch_flowGraph.h	/^  std::set<BPatch_basicBlock*> allBlocks;$/;"	m	class:BPatch_flowGraph
+allSnippets	lib/h/BPatch_point.h	/^    BPatch_Vector<BPatchSnippetHandle *> allSnippets;$/;"	m	class:BPatch_point
+appAddSpace	lib/h/BPatch_snippet.h	/^    BPatch_addressSpace     *appAddSpace;$/;"	m	class:BPatch_variableExpr
+arange_iter	lib/h/BPatch_addressSpace.h	/^  typedef std::vector<std::pair<unsigned long, unsigned long> >::const_iterator arange_iter;$/;"	t	class:BPatch_addressSpace
+arange_iter	lib/h/BPatch_image.h	/^  typedef std::vector<std::pair<unsigned long, unsigned long> >::iterator arange_iter;$/;"	t	class:BPatch_image
+ast_wrapper	lib/h/BPatch_snippet.h	/^    AstNodePtr ast_wrapper;$/;"	m	class:BPatch_snippet
+asyncActive	lib/h/BPatch.h	/^    bool asyncActive;$/;"	m	class:BPatch
+attach	mutator.cpp	/^	attach,$/;"	e	enum:__anon26	file:
+autoRelocation_NP	lib/h/BPatch.h	/^    bool        autoRelocation_NP;$/;"	m	class:BPatch
+backEdges	lib/h/BPatch_basicBlockLoop.h	/^        std::set<BPatch_edge*> backEdges;$/;"	m	class:BPatch_basicBlockLoop
+backEdges	lib/h/BPatch_flowGraph.h	/^  std::set<BPatch_edge*> backEdges;$/;"	m	class:BPatch_flowGraph
+base	lib/h/BPatch_object.h	/^       Dyninst::Address base;$/;"	m	struct:BPatch_object::Region
+baseTrampDeletionOn	lib/h/BPatch.h	/^    bool	baseTrampDeletionOn;$/;"	m	class:BPatch
+basicBlocks	lib/h/BPatch_basicBlockLoop.h	/^        std::set<BPatch_basicBlock*> basicBlocks;$/;"	m	class:BPatch_basicBlockLoop
+begin	lib/h/BPatch_Set.h	/^   DO_INLINE_F const_iterator begin() const { return int_set.begin(); }$/;"	f	class:BPatch_Set
+begin	lib/h/BPatch_Set.h	/^   DO_INLINE_F iterator begin() { return int_set.begin(); }$/;"	f	class:BPatch_Set
+begin	lib/h/BPatch_module.h	/^        unsigned long begin;  \/\/ Beginning address for this statement$/;"	m	struct:BPatch_module::Statement
+block	lib/h/BPatch_basicBlock.h	/^  block_instance *block() const { return iblock; }$/;"	f	class:BPatch_basicBlock
+blockMap_	lib/h/BPatch_flowGraph.h	/^  std::map<const block_instance *, BPatch_basicBlock *> blockMap_;$/;"	m	class:BPatch_flowGraph
+boost	lib/h/BPatch_snippet.h	/^namespace boost {$/;"	n
+bpatch	lib/h/BPatch.h	/^    static BPatch		 *bpatch;$/;"	m	class:BPatch
+bpinst	lib/h/BPatch_dependenceGraphNode.h	/^  BPatch_instruction* bpinst;$/;"	m	class:BPatch_dependenceGraphNode
+builtInTypes	lib/h/BPatch.h	/^    BPatch_builtInTypeCollection *builtInTypes;$/;"	m	class:BPatch
+cBlk	lib/h/BPatch_type.h	/^  Dyninst::SymtabAPI::CBlock *cBlk;$/;"	m	class:BPatch_cblock
+callbackSignals	lib/h/BPatch.h	/^   std::set<long> callbackSignals;$/;"	m	class:BPatch
+callees	lib/h/BPatch_loopTreeNode.h	/^    BPatch_Vector<func_instance *> callees;$/;"	m	class:BPatch_loopTreeNode
+catchup_threads	lib/h/BPatch_addressSpace.h	/^  BPatch_Vector<BPatch_thread *> catchup_threads;$/;"	m	class:BPatchSnippetHandle
+cb	lib/h/BPatch_process.h	/^  BPatchOneTimeCodeCallback cb;$/;"	m	class:OneTimeCodeInfo
+cfg	lib/h/BPatch_function.h	/^    BPatch_flowGraph* cfg;$/;"	m	class:BPatch_function
+cfgCreated	lib/h/BPatch_function.h	/^    bool cfgCreated;$/;"	m	class:BPatch_function
+children	lib/h/BPatch_loopTreeNode.h	/^    BPatch_Vector<BPatch_loopTreeNode *> children;$/;"	m	class:BPatch_loopTreeNode
+clear	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::clear()$/;"	f	class:BPatch_Vector
+clearError	lib/h/BPatch.h	/^    void clearError() { lastError = 0; }$/;"	f	class:BPatch
+codeOverwriteCallback	lib/h/BPatch.h	/^   InternalCodeOverwriteCallback codeOverwriteCallback;$/;"	m	class:BPatch
+column	lib/h/BPatch_module.h	/^	int column;           \/\/ Column number of the statement$/;"	m	struct:BPatch_module::Statement
+comparison	lib/h/BPatch_Set.h	/^struct comparison {$/;"	s
+comparison	lib/h/BPatch_basicBlock.h	/^struct comparison <BPatch_basicBlock *> {$/;"	s
+completed	lib/h/BPatch_process.h	/^  bool completed;$/;"	m	class:OneTimeCodeInfo
+condition	lib/h/BPatch_instruction.h	/^  int *condition;    \/\/ -1 means no condition, all other values are machine specific$/;"	m	class:BPatch_instruction
+conditionCode_NP	lib/h/BPatch_instruction.h	/^  int  conditionCode_NP(int which = 0) const { return condition[which]; }$/;"	f	class:BPatch_instruction
+const_iterator	lib/h/BPatch_Set.h	/^   typedef typename int_t::const_iterator const_iterator;$/;"	t	class:BPatch_Set
+const_reverse_iterator	lib/h/BPatch_Set.h	/^   typedef typename int_t::const_reverse_iterator const_reverse_iterator;$/;"	t	class:BPatch_Set
+containedLoops	lib/h/BPatch_basicBlockLoop.h	/^        std::set<BPatch_basicBlockLoop*> containedLoops;$/;"	m	class:BPatch_basicBlockLoop
+contains	lib/h/BPatch_Set.h	/^   DO_INLINE_F bool contains(const Key &key) const { return int_set.find(key) != int_set.end(); }$/;"	f	class:BPatch_Set
+copy_from	lib/h/BPatch_Vector.h	/^inline void BPatch_Vector<T>::copy_from(const BPatch_Vector &src)$/;"	f	class:BPatch_Vector
+count	lib/h/BPatch_memoryAccess_NP.h	/^  BPatch_countSpec_NP *count;$/;"	m	class:BPatch_memoryAccess
+create	mutator.cpp	/^	create,$/;"	e	enum:__anon26	file:
+createAndInsertSnippet2	mutator.cpp	/^bool createAndInsertSnippet2(BPatch_addressSpace* app,$/;"	f
+createPlaceholder	lib/h/BPatch_type.h	/^  static BPatch_type *createPlaceholder(int _ID, const char *_name = NULL) $/;"	f	class:BPatch_type
+createdViaAttach	lib/h/BPatch_process.h	/^  bool createdViaAttach;$/;"	m	class:BPatch_process
+creation_error	lib/h/BPatch_binaryEdit.h	/^    bool creation_error;$/;"	m	class:BPatch_binaryEdit
+data	lib/h/BPatch_Vector.h	/^    T*		data;		\/\/ Points to the array of objects$/;"	m	class:BPatch_Vector
+debugParseOn	lib/h/BPatch.h	/^    bool	debugParseOn;$/;"	m	class:BPatch
+decrRefCount	lib/h/BPatch_type.h	/^  void decrRefCount() { assert(refCount > 0); if (!--refCount) delete this; }$/;"	f	class:BPatch_type
+defaultModule	lib/h/BPatch_image.h	/^  BPatch_module *defaultModule;$/;"	m	class:BPatch_image
+delayedParsing_	lib/h/BPatch.h	/^    bool delayedParsing_;$/;"	m	class:BPatch
+destHigh	lib/h/StackMod.h	/^        int destHigh() const { return _destHigh; }$/;"	f	class:Move
+destLow	lib/h/StackMod.h	/^        int destLow() const { return _destLow; }$/;"	f	class:Move
+detached	lib/h/BPatch_process.h	/^  bool detached;$/;"	m	class:BPatch_process
+dynLibraryCallback	lib/h/BPatch.h	/^   BPatchDynLibraryCallback dynLibraryCallback;$/;"	m	class:BPatch
+dynamicCallSiteCallback	lib/h/BPatch.h	/^   BPatchDynamicCallSiteCallback dynamicCallSiteCallback;$/;"	m	class:BPatch
+dynamic_point_monitor_func	lib/h/BPatch_point.h	/^    Dyninst::PatchAPI::InstancePtr dynamic_point_monitor_func;$/;"	m	class:BPatch_point
+dynthread_t	lib/h/BPatch_process.h	/^typedef Dyninst::THR_ID dynthread_t;$/;"	t
+dynthread_t	lib/h/BPatch_thread.h	/^typedef Dyninst::THR_ID dynthread_t;$/;"	t
+eBPatch_procedureLocation	lib/h/BPatch_enums.h	/^typedef enum eBPatch_procedureLocation {$/;"	g
+edge	lib/h/BPatch_edge.h	/^    edge_instance *edge;$/;"	m	class:BPatch_edge
+edge	lib/h/BPatch_point.h	/^    BPatch_edge *edge() const { return edge_; }$/;"	f	class:BPatch_point
+edgeMap_	lib/h/BPatch_flowGraph.h	/^  std::map<const edge_instance *, BPatch_edge *> edgeMap_;$/;"	m	class:BPatch_flowGraph
+edge_	lib/h/BPatch_point.h	/^    BPatch_edge *edge_;$/;"	m	class:BPatch_point
+elements	lib/h/BPatch_Set.h	/^   DO_INLINE_F Key* elements(Key *a) const { $/;"	f	class:BPatch_Set
+elements	lib/h/BPatch_Set.h	/^   DO_INLINE_F void elements(BPatch_Vector<Key> &v) {$/;"	f	class:BPatch_Set
+empty	lib/h/BPatch_Set.h	/^   DO_INLINE_F bool empty() const { return int_set.empty(); }$/;"	f	class:BPatch_Set
+end	lib/h/BPatch_Set.h	/^   DO_INLINE_F const_iterator end() const { return int_set.end(); }$/;"	f	class:BPatch_Set
+end	lib/h/BPatch_Set.h	/^   DO_INLINE_F iterator end() { return int_set.end(); }$/;"	f	class:BPatch_Set
+end	lib/h/BPatch_module.h	/^        unsigned long end;    \/\/ Ending address for this statement$/;"	m	struct:BPatch_module::Statement
+entries	lib/h/BPatch_basicBlockLoop.h	/^	std::set<BPatch_basicBlock*> entries;$/;"	m	class:BPatch_basicBlockLoop
+equals	lib/h/BPatch_instruction.h	/^  bool equals(const BPatch_instruction& rp) const$/;"	f	class:BPatch_instruction
+equals	lib/h/BPatch_instruction.h	/^  bool equals(const BPatch_instruction* mp) const { return mp ? equals(*mp) : false; }$/;"	f	class:BPatch_instruction
+erase	lib/h/BPatch_Set.h	/^   DO_INLINE_F void erase(const Key &k) { int_set.erase(k); }$/;"	f	class:BPatch_Set
+erase	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::erase(int n) $/;"	f	class:BPatch_Vector
+errorCallback	lib/h/BPatch.h	/^   BPatchErrorCallback errorCallback;$/;"	m	class:BPatch
+execCallback	lib/h/BPatch.h	/^   BPatchExecCallback execCallback;$/;"	m	class:BPatch
+exitCallback	lib/h/BPatch.h	/^   BPatchExitCallback exitCallback;$/;"	m	class:BPatch
+exitCode	lib/h/BPatch_process.h	/^  int exitCode;$/;"	m	class:BPatch_process
+exitSignal	lib/h/BPatch_process.h	/^  int exitSignal;$/;"	m	class:BPatch_process
+exitedNormally	lib/h/BPatch_process.h	/^  bool exitedNormally;$/;"	m	class:BPatch_process
+exitedViaSignal	lib/h/BPatch_process.h	/^  bool exitedViaSignal;$/;"	m	class:BPatch_process
+extract	lib/h/BPatch_Set.h	/^   DO_INLINE_F bool extract(Key&k) {$/;"	f	class:BPatch_Set
+failFunc	lib/h/StackMod.h	/^        BPatch_function* failFunc() const { return _failFunc; }$/;"	f	class:Canary
+fg	lib/h/BPatch_basicBlock.h	/^  BPatch_flowGraph *fg() const { return flowGraph; }$/;"	f	class:BPatch_basicBlock
+fg	lib/h/BPatch_edge.h	/^    BPatch_flowGraph *fg;$/;"	m	class:BPatch_edge
+fieldList	lib/h/BPatch_type.h	/^  BPatch_Vector<BPatch_field *> fieldList;$/;"	m	class:BPatch_cblock
+findPoint	mutator.cpp	/^std::vector<BPatch_point*>* findPoint(BPatch_addressSpace* app,$/;"	f
+finishInstrumenting	mutator.cpp	/^void finishInstrumenting(BPatch_addressSpace* app, const char* newName)$/;"	f
+fixupUnknowns	lib/h/BPatch_type.h	/^  void fixupUnknowns(BPatch_module *) { }$/;"	f	class:BPatch_type
+fld	lib/h/BPatch_type.h	/^  Dyninst::SymtabAPI::Field *fld;$/;"	m	class:BPatch_field
+flowGraph	lib/h/BPatch_basicBlock.h	/^  BPatch_flowGraph *flowGraph;$/;"	m	class:BPatch_basicBlock
+flowGraph	lib/h/BPatch_basicBlockLoop.h	/^        BPatch_flowGraph *flowGraph;$/;"	m	class:BPatch_basicBlockLoop
+forceRelocation_NP	lib/h/BPatch.h	/^    bool        forceRelocation_NP;$/;"	m	class:BPatch
+forceSaveFloatingPointsOn	lib/h/BPatch.h	/^    bool forceSaveFloatingPointsOn;$/;"	m	class:BPatch
+format	lib/h/StackMod.h	/^        virtual std::string format() const { return ""; }$/;"	f	class:StackMod
+fp	lib/h/BPatch_frame.h	/^    void *fp;$/;"	m	class:BPatch_frame
+full_func_parse	lib/h/BPatch_module.h	/^   bool full_func_parse;$/;"	m	class:BPatch_module
+full_var_parse	lib/h/BPatch_module.h	/^   bool full_var_parse;$/;"	m	class:BPatch_module
+func	lib/h/BPatch_function.h	/^    func_instance *func;$/;"	m	class:BPatch_function
+func	lib/h/BPatch_parRegion.h	/^  BPatch_function * func;$/;"	m	class:BPatch_parRegion
+func	lib/h/BPatch_point.h	/^    BPatch_function	*func;$/;"	m	class:BPatch_point
+funcParameters	lib/h/BPatch_function.h	/^    BPatch_localVarCollection * funcParameters;$/;"	m	class:BPatch_function
+func_	lib/h/BPatch_flowGraph.h	/^  BPatch_function *func_;$/;"	m	class:BPatch_flowGraph
+func_map	lib/h/BPatch_module.h	/^   BPatch_funcMap func_map;$/;"	m	class:BPatch_module
+functions	lib/h/BPatch_type.h	/^  BPatch_Vector<BPatch_function *> functions;$/;"	m	class:BPatch_cblock
+getAddSpace	lib/h/BPatch_flowGraph.h	/^  BPatch_addressSpace *getAddSpace() const { return addSpace; }$/;"	f	class:BPatch_flowGraph
+getAddSpace	lib/h/BPatch_function.h	/^    BPatch_addressSpace *getAddSpace() const { return addSpace; }$/;"	f	class:BPatch_function
+getAddressRange	lib/h/BPatch_sourceObj.h	/^      virtual bool getAddressRange(void*& \/*_startAddress*\/, void*& \/*_endAddress*\/) {return false;}$/;"	f	class:BPatch_sourceObj
+getCallback	lib/h/BPatch_process.h	/^  BPatchOneTimeCodeCallback getCallback() { return cb;}$/;"	f	class:OneTimeCodeInfo
+getContainingFunction	lib/h/BPatch_point.h	/^    BPatch_function *getContainingFunction() { return const_cast<BPatch_function*>(getFunction()); };$/;"	f	class:BPatch_point
+getDataClass	lib/h/BPatch_type.h	/^  BPatch_dataClass getDataClass() const { return type_; }$/;"	f	class:BPatch_type
+getExcPoints	lib/h/BPatch_sourceObj.h	/^      virtual void getExcPoints(BPatch_Vector<BPatch_point *> & \/*vect*\/) {return;}$/;"	f	class:BPatch_sourceObj
+getFunction	lib/h/BPatch_flowGraph.h	/^  BPatch_function *getFunction() const { return func_; }$/;"	f	class:BPatch_flowGraph
+getHybridAnalysis	lib/h/BPatch_process.h	/^  HybridAnalysis *getHybridAnalysis() { return hybridAnalysis_; }$/;"	f	class:BPatch_process
+getID	lib/h/BPatch_type.h	/^  int  getID() const { return ID;}$/;"	f	class:BPatch_type
+getIncPoints	lib/h/BPatch_sourceObj.h	/^      virtual void getIncPoints(BPatch_Vector<BPatch_point *> & \/*vect*\/) {return;}$/;"	f	class:BPatch_sourceObj
+getLanguage	lib/h/BPatch_sourceObj.h	/^      BPatch_language getLanguage() { return _srcLanguage; }$/;"	f	class:BPatch_sourceObj
+getLanguageStr	lib/h/BPatch_sourceObj.h	/^      const char *getLanguageStr() {return strLanguage(_srcLanguage);}$/;"	f	class:BPatch_sourceObj
+getLastError	lib/h/BPatch.h	/^    int getLastError() { return lastError; }$/;"	f	class:BPatch
+getLineNumbers	lib/h/BPatch_sourceObj.h	/^      virtual bool getLineNumbers(unsigned int & \/*_startLine*\/, unsigned int  & \/*_endLine*\/) {return false;}$/;"	f	class:BPatch_sourceObj
+getMnemonic	lib/h/BPatch_instruction.h	/^  char *getMnemonic() const { return NULL; }$/;"	f	class:BPatch_instruction
+getModule	lib/h/BPatch_flowGraph.h	/^  BPatch_module *getModule() const { return mod; }$/;"	f	class:BPatch_flowGraph
+getMutationsActive	lib/h/BPatch_binaryEdit.h	/^    bool getMutationsActive() {return true;}$/;"	f	class:BPatch_binaryEdit
+getMutationsActive	lib/h/BPatch_process.h	/^  bool getMutationsActive() {return mutationsActive;}$/;"	f	class:BPatch_process
+getNumberOfAccesses	lib/h/BPatch_instruction.h	/^  unsigned int getNumberOfAccesses() const { return nacc; }$/;"	f	class:BPatch_instruction
+getPoint	lib/h/BPatch_point.h	/^    instPoint *getPoint() const {return point;}$/;"	f	class:BPatch_point
+getPointAddress	lib/h/BPatch_point.h	/^    void *getPointAddress() { return getAddress(); }$/;"	f	class:BPatch_point
+getPointLine	lib/h/BPatch_point.h	/^    int getPointLine() { return -1; }$/;"	f	class:BPatch_point
+getReturnValue	lib/h/BPatch_process.h	/^  void *getReturnValue() { return returnValue; }$/;"	f	class:OneTimeCodeInfo
+getSharedLibName	lib/h/BPatch_module.h	/^    char *getSharedLibName(char *buffer, int length) { getFullName(buffer, length); return buffer;}$/;"	f	class:BPatch_module
+getSrcType	lib/h/BPatch_sourceObj.h	/^      BPatch_sourceType getSrcType() { return _srcType; }$/;"	f	class:BPatch_sourceObj
+getTarget	lib/h/BPatch_instruction.h	/^    void *getTarget() { return target_; }$/;"	f	class:BPatch_branchInstruction
+getTerminated	lib/h/BPatch_binaryEdit.h	/^    bool getTerminated() {return false;}$/;"	f	class:BPatch_binaryEdit
+getTerminated	lib/h/BPatch_process.h	/^  bool getTerminated() {return terminated;}$/;"	f	class:BPatch_process
+getThreadID	lib/h/BPatch_process.h	/^  unsigned getThreadID() { return thrID; }$/;"	f	class:OneTimeCodeInfo
+getUserData	lib/h/BPatch_process.h	/^  void *getUserData() { return userData; }$/;"	f	class:OneTimeCodeInfo
+hasALoad	lib/h/BPatch_instruction.h	/^  bool hasALoad() const { return nacc == 1 ? isLoad[0] : (isLoad[0] || isLoad[1]); }$/;"	f	class:BPatch_instruction
+hasAPrefetch_NP	lib/h/BPatch_instruction.h	/^  bool hasAPrefetch_NP() const { return preFcn[0] >= 0; }$/;"	f	class:BPatch_instruction
+hasAStore	lib/h/BPatch_instruction.h	/^  bool hasAStore() const { return nacc == 1 ? isStore[0] : (isStore[0] || isStore[1]); }$/;"	f	class:BPatch_instruction
+hierarchicalName	lib/h/BPatch_loopTreeNode.h	/^    char *hierarchicalName;$/;"	m	class:BPatch_loopTreeNode
+high	lib/h/StackMod.h	/^        int high() const { return _high; }$/;"	f	class:Canary
+high	lib/h/StackMod.h	/^        int high() const { return _high; }$/;"	f	class:Insert
+high	lib/h/StackMod.h	/^        int high() const { return _high; }$/;"	f	class:Remove
+host	lib/h/BPatch.h	/^    char *host;$/;"	m	struct:__anon24
+hybridAnalysis_	lib/h/BPatch_process.h	/^  HybridAnalysis *hybridAnalysis_;$/;"	m	class:BPatch_process
+iblock	lib/h/BPatch_basicBlock.h	/^  block_instance *iblock;$/;"	m	class:BPatch_basicBlock
+image	lib/h/BPatch_addressSpace.h	/^  BPatch_image *image;$/;"	m	class:BPatch_addressSpace
+img	lib/h/BPatch_module.h	/^    BPatch_image	 *img;$/;"	m	class:BPatch_module
+img	lib/h/BPatch_object.h	/^    BPatch_image        *img;$/;"	m	class:BPatch_object
+imm	lib/h/BPatch_memoryAccess_NP.h	/^  long imm;      \/\/ immediate$/;"	m	class:BPatch_addrSpec_NP
+immediateDominates	lib/h/BPatch_basicBlock.h	/^   std::set<BPatch_basicBlock*>* immediateDominates;$/;"	m	class:BPatch_basicBlock
+immediateDominator	lib/h/BPatch_basicBlock.h	/^  BPatch_basicBlock *immediateDominator;$/;"	m	class:BPatch_basicBlock
+immediatePostDominates	lib/h/BPatch_basicBlock.h	/^   std::set<BPatch_basicBlock*> *immediatePostDominates;$/;"	m	class:BPatch_basicBlock
+immediatePostDominator	lib/h/BPatch_basicBlock.h	/^   BPatch_basicBlock *immediatePostDominator;$/;"	m	class:BPatch_basicBlock
+inDestructor	lib/h/BPatch.h	/^   bool inDestructor;$/;"	m	class:BPatch
+incoming	lib/h/BPatch_dependenceGraphNode.h	/^  BPatch_Vector<BPatch_dependenceGraphEdge*>* incoming;$/;"	m	class:BPatch_dependenceGraphNode
+incomingEdges	lib/h/BPatch_basicBlock.h	/^   std::set<BPatch_edge*> incomingEdges;$/;"	m	class:BPatch_basicBlock
+incrRefCount	lib/h/BPatch_type.h	/^  void incrRefCount() { ++refCount; }$/;"	f	class:BPatch_type
+info	lib/h/BPatch.h	/^    BPatch_libInfo *info; $/;"	m	class:BPatch
+info	lib/h/BPatch.h	/^    void *info;$/;"	m	struct:__anon25
+init	lib/h/StackMod.h	/^        void init(int l, int h) {$/;"	f	class:Canary
+insert	lib/h/BPatch_Set.h	/^   DO_INLINE_F void insert(const Key &k) { int_set.insert(k); }$/;"	f	class:BPatch_Set
+insnGenerated	lib/h/BPatch.h	/^  unsigned int insnGenerated;$/;"	m	struct:__anon22
+insnPredicate	lib/h/BPatch_basicBlock.h	/^struct BPATCH_DLL_EXPORT insnPredicate : public std::unary_function<Dyninst::InstructionAPI::Instruction, bool>$/;"	s
+insn_	lib/h/BPatch_instruction.h	/^  internal_instruction *insn_;$/;"	m	class:BPatch_instruction
+instances_	lib/h/BPatch_addressSpace.h	/^  std::vector<Dyninst::PatchAPI::InstancePtr> instances_;$/;"	m	class:BPatchSnippetHandle
+instp_map	lib/h/BPatch_module.h	/^   BPatch_instpMap instp_map;$/;"	m	class:BPatch_module
+instrFrames	lib/h/BPatch.h	/^    bool instrFrames;$/;"	m	class:BPatch
+instructions	lib/h/BPatch_basicBlock.h	/^  BPatch_Vector<BPatch_instruction*> *instructions;$/;"	m	class:BPatch_basicBlock
+instructions	lib/h/BPatch_parRegion.h	/^  BPatch_Vector<BPatch_instruction*> *instructions;$/;"	m	class:BPatch_parRegion
+int_set	lib/h/BPatch_Set.h	/^   int_t int_set;$/;"	m	class:BPatch_Set
+int_t	lib/h/BPatch_Set.h	/^   typedef std::set<Key, Compare> int_t;$/;"	t	class:BPatch_Set
+inter	lib/h/BPatch_dependenceGraphNode.h	/^  BPatch_Vector<BPatch_dependenceGraphEdge*>* inter;$/;"	m	class:BPatch_dependenceGraphNode
+intvar	lib/h/BPatch_snippet.h	/^    int_variable *intvar;$/;"	m	class:BPatch_variableExpr
+isALoad	lib/h/BPatch_instruction.h	/^  bool isALoad(int which = 0) const { return isLoad[which]; }$/;"	f	class:BPatch_instruction
+isAPrefetch_NP	lib/h/BPatch_instruction.h	/^  bool isAPrefetch_NP(int which = 0) const { return preFcn[which] >= 0; }$/;"	f	class:BPatch_instruction
+isAStore	lib/h/BPatch_instruction.h	/^  bool isAStore(int which = 0) const { return isStore[which]; }$/;"	f	class:BPatch_instruction
+isCompleted	lib/h/BPatch_process.h	/^  bool isCompleted() const { return completed; }$/;"	f	class:OneTimeCodeInfo
+isConditional_NP	lib/h/BPatch_instruction.h	/^  bool isConditional_NP(int which = 0) const { return condition[which] >= 0; }$/;"	f	class:BPatch_instruction
+isDominatorInfoReady	lib/h/BPatch_flowGraph.h	/^  bool isDominatorInfoReady;$/;"	m	class:BPatch_flowGraph
+isEmpty	lib/h/BPatch_addressSpace.h	/^  bool isEmpty() $/;"	f	class:BPatchSnippetHandle
+isLoad	lib/h/BPatch_instruction.h	/^  bool *isLoad;$/;"	m	class:BPatch_instruction
+isLocal	lib/h/BPatch_snippet.h	/^    bool		isLocal;$/;"	m	class:BPatch_variableExpr
+isNonTemporal_NP	lib/h/BPatch_instruction.h	/^  bool isNonTemporal_NP(int which = 0) const { return nonTemporal[which]; }$/;"	f	class:BPatch_instruction
+isPostDominatorInfoReady	lib/h/BPatch_flowGraph.h	/^  bool isPostDominatorInfoReady;$/;"	m	class:BPatch_flowGraph
+isSeeded	lib/h/StackMod.h	/^        bool isSeeded() const { return _isSeeded; }$/;"	f	class:Randomize
+isSignalFrame	lib/h/BPatch_frame.h	/^    bool isSignalFrame;$/;"	m	class:BPatch_frame
+isSourceBlockInfoReady	lib/h/BPatch_flowGraph.h	/^  bool isSourceBlockInfoReady;$/;"	m	class:BPatch_flowGraph
+isStore	lib/h/BPatch_instruction.h	/^  bool *isStore;$/;"	m	class:BPatch_instruction
+isSynchronous	lib/h/BPatch_process.h	/^  bool isSynchronous() { return synchronous; }$/;"	f	class:OneTimeCodeInfo
+isSynthFrame	lib/h/BPatch_frame.h	/^    bool isSynthFrame;$/;"	m	class:BPatch_frame
+isTrampFrame	lib/h/BPatch_frame.h	/^    bool isTrampFrame;$/;"	m	class:BPatch_frame
+isValid_	lib/h/BPatch_flowGraph.h	/^  bool isValid_;$/;"	m	class:BPatch_flowGraph
+iterator	lib/h/BPatch_Set.h	/^   typedef typename int_t::iterator iterator;$/;"	t	class:BPatch_Set
+lVar	lib/h/BPatch_type.h	/^    Dyninst::SymtabAPI::localVar *lVar;$/;"	m	class:BPatch_localVar
+lastError	lib/h/BPatch.h	/^    int		lastError;$/;"	m	class:BPatch
+lastSignal	lib/h/BPatch_process.h	/^  int lastSignal;$/;"	m	class:BPatch_process
+len	lib/h/BPatch_Vector.h	/^    int		len;		\/\/ The current number of objects in the vector$/;"	m	class:BPatch_Vector
+less	lib/h/BPatch_basicBlock.h	/^   struct less<BPatch_basicBlock *> {$/;"	s	namespace:std
+line	lib/h/BPatch_module.h	/^        int line;             \/\/ Line number of the statement$/;"	m	struct:BPatch_module::Statement
+liveInit	lib/h/BPatch_function.h	/^    bool liveInit;$/;"	m	class:BPatch_function
+livenessAnalysisDepth_	lib/h/BPatch.h	/^    int livenessAnalysisDepth_;$/;"	m	class:BPatch
+livenessAnalysisOn_	lib/h/BPatch.h	/^    bool livenessAnalysisOn_;$/;"	m	class:BPatch
+llBinEdits	lib/h/BPatch_binaryEdit.h	/^    std::map<std::string, BinaryEdit *> llBinEdits;$/;"	m	class:BPatch_binaryEdit
+lladdSpace	lib/h/BPatch_function.h	/^    AddressSpace *lladdSpace;$/;"	m	class:BPatch_function
+lladdSpace	lib/h/BPatch_module.h	/^    AddressSpace *lladdSpace;$/;"	m	class:BPatch_module
+lladdSpace	lib/h/BPatch_point.h	/^    AddressSpace *lladdSpace;$/;"	m	class:BPatch_point
+lladdrSpace	lib/h/BPatch_snippet.h	/^    AddressSpace *lladdrSpace;$/;"	m	class:BPatch_variableExpr
+llpoint	lib/h/BPatch_point.h	/^    instPoint *llpoint() { return point; } $/;"	f	class:BPatch_point
+llproc	lib/h/BPatch_process.h	/^  PCProcess *llproc;$/;"	m	class:BPatch_process
+llthread	lib/h/BPatch_thread.h	/^    PCThread *llthread;$/;"	m	class:BPatch_thread
+loadedLibrary	lib/h/BPatch_binaryEdit.h	/^    std::map<std::string, BPatch_object*> loadedLibrary; $/;"	m	class:BPatch_binaryEdit
+localVariables	lib/h/BPatch_function.h	/^    BPatch_localVarCollection * localVariables;$/;"	m	class:BPatch_function
+local_vars	lib/h/BPatch_function.h	/^   std::map<BPatch_localVar *, BPatch_variableExpr *> local_vars;$/;"	m	class:BPatch_function
+loop	lib/h/BPatch_loopTreeNode.h	/^    BPatch_basicBlockLoop *loop;$/;"	m	class:BPatch_loopTreeNode
+loop	lib/h/BPatch_point.h	/^    BPatch_basicBlockLoop *loop;$/;"	m	class:BPatch_point
+loopRoot	lib/h/BPatch_flowGraph.h	/^  BPatch_loopTreeNode *loopRoot;$/;"	m	class:BPatch_flowGraph
+loops	lib/h/BPatch_flowGraph.h	/^  std::set<BPatch_basicBlockLoop*> *loops;$/;"	m	class:BPatch_flowGraph
+low	lib/h/StackMod.h	/^        int low() const { return _low; }$/;"	f	class:Canary
+low	lib/h/StackMod.h	/^        int low() const { return _low; }$/;"	f	class:Insert
+low	lib/h/StackMod.h	/^        int low() const { return _low; }$/;"	f	class:Remove
+lowlevel_block	lib/h/BPatch_basicBlock.h	/^  block_instance *lowlevel_block()  { return iblock; }$/;"	f	class:BPatch_basicBlock
+lowlevel_edit	lib/h/BPatch_binaryEdit.h	/^    BinaryEdit *lowlevel_edit() const { return origBinEdit; }$/;"	f	class:BPatch_binaryEdit
+lowlevel_func	lib/h/BPatch_function.h	/^    func_instance *lowlevel_func() const { return func; }$/;"	f	class:BPatch_function
+lowlevel_mod	lib/h/BPatch_module.h	/^    mapped_module* lowlevel_mod() { return mod; }$/;"	f	class:BPatch_module
+lowlevel_process	lib/h/BPatch_process.h	/^  PCProcess *lowlevel_process() const { return llproc; }$/;"	f	class:BPatch_process
+lowlevel_region	lib/h/BPatch_parRegion.h	/^  int_parRegion *lowlevel_region() const {return parReg;}$/;"	f	class:BPatch_parRegion
+madeExitCallback	lib/h/BPatch_thread.h	/^	bool madeExitCallback() { return madeExitCallback_; }$/;"	f	class:BPatch_thread
+madeExitCallback_	lib/h/BPatch_thread.h	/^	bool madeExitCallback_;$/;"	m	class:BPatch_thread
+main	mutator.cpp	/^int main() {$/;"	f
+maximum	lib/h/BPatch_Set.h	/^   DO_INLINE_F Key maximum() const {$/;"	f	class:BPatch_Set
+memacc	lib/h/BPatch_point.h	/^    BPatch_memoryAccess *memacc;$/;"	m	class:BPatch_point
+minimum	lib/h/BPatch_Set.h	/^   DO_INLINE_F Key minimum() const {$/;"	f	class:BPatch_Set
+mod	lib/h/BPatch_flowGraph.h	/^  BPatch_module *mod;$/;"	m	class:BPatch_flowGraph
+mod	lib/h/BPatch_function.h	/^    BPatch_module *mod;$/;"	m	class:BPatch_function
+mod	lib/h/BPatch_module.h	/^    mapped_module      	 *mod;$/;"	m	class:BPatch_module
+modlist	lib/h/BPatch_image.h	/^  std::vector<BPatch_module *> modlist;$/;"	m	class:BPatch_image
+modmap	lib/h/BPatch_image.h	/^  ModMap modmap;$/;"	m	class:BPatch_image
+mods	lib/h/BPatch_object.h	/^    std::vector<BPatch_module *> mods;$/;"	m	class:BPatch_object
+moduleTypes	lib/h/BPatch_module.h	/^    BPatch_typeCollection *moduleTypes;$/;"	m	class:BPatch_module
+module_	lib/h/BPatch_statement.h	/^    BPatch_module *module_;$/;"	m	class:BPatch_statement
+mutationsActive	lib/h/BPatch_process.h	/^  bool mutationsActive;$/;"	m	class:BPatch_process
+nacc	lib/h/BPatch_instruction.h	/^  unsigned int nacc;$/;"	m	class:BPatch_instruction
+name	lib/h/BPatch_snippet.h	/^    std::string		name;$/;"	m	class:BPatch_variableExpr
+name_	lib/h/BPatch_instruction.h	/^    std::string name_;$/;"	m	class:BPatch_register
+nmaxacc_NP	lib/h/BPatch_instruction.h	/^   static const unsigned int nmaxacc_NP;$/;"	m	class:BPatch_instruction
+nonTemporal	lib/h/BPatch_instruction.h	/^  bool *nonTemporal; \/\/ non-temporal (cache non-polluting) write on x86$/;"	m	class:BPatch_instruction
+none	lib/h/BPatch_memoryAccess_NP.h	/^  static BPatch_memoryAccess* const none;$/;"	m	class:BPatch_memoryAccess
+notificationFDInput_	lib/h/BPatch.h	/^   int notificationFDInput_;$/;"	m	class:BPatch
+notificationFDOutput_	lib/h/BPatch.h	/^   int notificationFDOutput_;$/;"	m	class:BPatch
+number_	lib/h/BPatch_instruction.h	/^    int number_;$/;"	m	class:BPatch_register
+obj	lib/h/BPatch_object.h	/^    mapped_object      	*obj;$/;"	m	class:BPatch_object
+objmap	lib/h/BPatch_image.h	/^  ObjMap objmap;$/;"	m	class:BPatch_image
+oneTimeCodeCallback	lib/h/BPatch.h	/^   BPatchOneTimeCodeCallback oneTimeCodeCallback;$/;"	m	class:BPatch
+open	mutator.cpp	/^	open$/;"	e	enum:__anon26	file:
+operator !=	lib/h/BPatch_Set.h	/^   DO_INLINE_F bool operator!= (const BPatch_Set<Key,Compare>&rhs) const {$/;"	f	class:BPatch_Set
+operator &	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare> operator& (const BPatch_Set<Key,Compare>&rhs) const {$/;"	f	class:BPatch_Set
+operator &=	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare>& operator&= (const BPatch_Set<Key,Compare>&rhs) {$/;"	f	class:BPatch_Set
+operator ()	lib/h/BPatch_Set.h	/^   bool operator() (const T&l, const T&r) const { return l < r; }$/;"	f	struct:comparison
+operator +=	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare>& operator+= (const Key &k) {$/;"	f	class:BPatch_Set
+operator +=	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>& BPatch_Vector<T>::operator+=(const BPatch_Vector<T> &src)$/;"	f	class:BPatch_Vector
+operator -	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare> operator- (const BPatch_Set<Key,Compare>&rhs) const {$/;"	f	class:BPatch_Set
+operator -=	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare>& operator-= (const BPatch_Set<Key,Compare>&rhs) {$/;"	f	class:BPatch_Set
+operator =	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare>& operator= (const BPatch_Set<Key,Compare>&rhs) {$/;"	f	class:BPatch_Set
+operator =	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>& BPatch_Vector<T>::operator=(const BPatch_Vector<T> &src)$/;"	f	class:BPatch_Vector
+operator ==	lib/h/BPatch_Set.h	/^   DO_INLINE_F bool operator== (const BPatch_Set<Key,Compare>&rhs) const { $/;"	f	class:BPatch_Set
+operator []	lib/h/BPatch_Vector.h	/^T& BPatch_Vector<T>::operator[](int n) const$/;"	f	class:BPatch_Vector
+operator |	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare> operator| (const BPatch_Set<Key,Compare>&rhs) const {$/;"	f	class:BPatch_Set
+operator |=	lib/h/BPatch_Set.h	/^   DO_INLINE_F BPatch_Set<Key,Compare>& operator|= (const BPatch_Set<Key,Compare> &rhs) {$/;"	f	class:BPatch_Set
+order	lib/h/StackMod.h	/^        MOrder order() const { return _order; }$/;"	f	class:StackMod
+origBinEdit	lib/h/BPatch_binaryEdit.h	/^    BinaryEdit *origBinEdit;$/;"	m	class:BPatch_binaryEdit
+outgoing	lib/h/BPatch_dependenceGraphNode.h	/^  BPatch_Vector<BPatch_dependenceGraphEdge*>* outgoing;$/;"	m	class:BPatch_dependenceGraphNode
+outgoingEdges	lib/h/BPatch_basicBlock.h	/^   std::set<BPatch_edge*> outgoingEdges;$/;"	m	class:BPatch_basicBlock
+overrideType	lib/h/BPatch_point.h	/^    void overrideType(BPatch_procedureLocation loc) { pointType = loc; }$/;"	f	class:BPatch_point
+parReg	lib/h/BPatch_parRegion.h	/^  int_parRegion * parReg;$/;"	m	class:BPatch_parRegion
+parRegType	lib/h/BPatch_parRegion.h	/^} parRegType;$/;"	t	typeref:enum:__anon13
+params	lib/h/BPatch_function.h	/^   BPatch_Vector<BPatch_localVar *> params;$/;"	m	class:BPatch_function
+parent	lib/h/BPatch_basicBlockLoop.h	/^	BPatch_basicBlockLoop* parent;$/;"	m	class:BPatch_basicBlockLoop
+parent	lib/h/BPatch_instruction.h	/^  BPatch_basicBlock *parent;$/;"	m	class:BPatch_instruction
+path	lib/h/BPatch_module.h	/^        std::string path;     \/\/ Path name of this statement's source file$/;"	m	struct:BPatch_module::Statement
+pc	lib/h/BPatch_frame.h	/^    void *pc;$/;"	m	class:BPatch_frame
+pendingInsertions	lib/h/BPatch_addressSpace.h	/^  BPatch_Vector<batchInsertionRecord *> *pendingInsertions;$/;"	m	class:BPatch_addressSpace
+point	lib/h/BPatch_edge.h	/^    BPatch_point *point;$/;"	m	class:BPatch_edge
+point	lib/h/BPatch_point.h	/^    instPoint	*point;$/;"	m	class:BPatch_point
+pointType	lib/h/BPatch_point.h	/^    BPatch_procedureLocation pointType;$/;"	m	class:BPatch_point
+point_	lib/h/BPatch_frame.h	/^    BPatch_point *point_;$/;"	m	class:BPatch_frame
+pointsUsed	lib/h/BPatch.h	/^  unsigned int pointsUsed;$/;"	m	struct:__anon22
+postForkCallback	lib/h/BPatch.h	/^   BPatchForkCallback postForkCallback;$/;"	m	class:BPatch
+postSnippets	lib/h/BPatch_point.h	/^    BPatch_Vector<BPatchSnippetHandle *> postSnippets;$/;"	m	class:BPatch_point
+preFcn	lib/h/BPatch_instruction.h	/^  int *preFcn;       \/\/ prefetch function (-1 = none)$/;"	m	class:BPatch_instruction
+preForkCallback	lib/h/BPatch.h	/^   BPatchForkCallback preForkCallback;$/;"	m	class:BPatch
+preSnippets	lib/h/BPatch_point.h	/^    BPatch_Vector<BPatchSnippetHandle *> preSnippets;$/;"	m	class:BPatch_point
+prefetchType_NP	lib/h/BPatch_instruction.h	/^  int  prefetchType_NP(int which = 0) const { return preFcn[which]; }$/;"	f	class:BPatch_instruction
+proc	lib/h/BPatch_thread.h	/^    BPatch_process *proc;$/;"	m	class:BPatch_thread
+processType	lib/h/BPatch_addressSpace.h	/^} processType;$/;"	t	typeref:enum:__anon8
+ptraceBytes	lib/h/BPatch.h	/^  unsigned int ptraceBytes;$/;"	m	struct:__anon22
+ptraceOps	lib/h/BPatch.h	/^  unsigned int ptraceOps;$/;"	m	struct:__anon22
+ptraceOtherOps	lib/h/BPatch.h	/^  unsigned int ptraceOtherOps;$/;"	m	struct:__anon22
+push_back	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::push_back(const T& x)$/;"	f	class:BPatch_Vector
+push_front	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::push_front(const T& x)$/;"	f	class:BPatch_Vector
+rbegin	lib/h/BPatch_Set.h	/^   DO_INLINE_F const_reverse_iterator rbegin() const { return int_set.rbegin(); }$/;"	f	class:BPatch_Set
+rbegin	lib/h/BPatch_Set.h	/^   DO_INLINE_F reverse_iterator rbegin() { return int_set.rbegin(); }$/;"	f	class:BPatch_Set
+refCount	lib/h/BPatch_type.h	/^  unsigned int refCount;$/;"	m	class:BPatch_type
+register_iter	lib/h/BPatch_addressSpace.h	/^  typedef std::vector<BPatch_register>::iterator register_iter;$/;"	t	class:BPatch_addressSpace
+registers_	lib/h/BPatch_addressSpace.h	/^  std::vector<BPatch_register> registers_;$/;"	m	class:BPatch_addressSpace
+regs	lib/h/BPatch_memoryAccess_NP.h	/^  int regs[2];  \/\/ registers: -1 means none, 0 is 1st, 1 is 2nd and so on$/;"	m	class:BPatch_addrSpec_NP
+remove	lib/h/BPatch_Set.h	/^   DO_INLINE_F void remove(const Key &k) { int_set.erase(k); }$/;"	f	class:BPatch_Set
+removeCFG	lib/h/BPatch_function.h	/^    void removeCFG() { cfg = NULL; }$/;"	f	class:BPatch_function
+removed_list	lib/h/BPatch_image.h	/^  BPatch_Vector<BPatch_module *> removed_list;$/;"	m	class:BPatch_image
+rend	lib/h/BPatch_Set.h	/^   DO_INLINE_F const_reverse_iterator rend() const { return int_set.rend(); }$/;"	f	class:BPatch_Set
+rend	lib/h/BPatch_Set.h	/^   DO_INLINE_F reverse_iterator rend() { return int_set.rend(); }$/;"	f	class:BPatch_Set
+reportedExit	lib/h/BPatch_process.h	/^  bool reportedExit;$/;"	m	class:BPatch_process
+reserve	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::reserve(int n)$/;"	f	class:BPatch_Vector
+reserved	lib/h/BPatch_Vector.h	/^    int		reserved;	\/\/ Number of objects for which space is reserved$/;"	m	class:BPatch_Vector
+resize	lib/h/BPatch_Vector.h	/^void BPatch_Vector<T>::resize(int sz)$/;"	f	class:BPatch_Vector
+retType	lib/h/BPatch_function.h	/^    BPatch_type *retType;$/;"	m	class:BPatch_function
+returnValue	lib/h/BPatch_process.h	/^  void *returnValue;$/;"	m	class:OneTimeCodeInfo
+reverse_iterator	lib/h/BPatch_Set.h	/^   typedef typename int_t::reverse_iterator reverse_iterator;$/;"	t	class:BPatch_Set
+rtLib	lib/h/BPatch_binaryEdit.h	/^    std::vector<BinaryEdit *> rtLib;$/;"	m	class:BPatch_binaryEdit
+saveFloatingPointsOn	lib/h/BPatch.h	/^    bool saveFloatingPointsOn;$/;"	m	class:BPatch
+scale	lib/h/BPatch_memoryAccess_NP.h	/^  unsigned int scale;$/;"	m	class:BPatch_addrSpec_NP
+scope	lib/h/BPatch_snippet.h	/^    BPatch_point	*scope;$/;"	m	class:BPatch_variableExpr
+secondaryPoint	lib/h/BPatch_point.h	/^    instPoint   *secondaryPoint;$/;"	m	class:BPatch_point
+seed	lib/h/StackMod.h	/^        int seed() const { return _seed; }$/;"	f	class:Randomize
+setCompleted	lib/h/BPatch_process.h	/^  void setCompleted(bool _completed) { completed = _completed; }$/;"	f	class:OneTimeCodeInfo
+setExitCode	lib/h/BPatch_process.h	/^  void setExitCode(int exitcode) { exitCode = exitcode; }$/;"	f	class:BPatch_process
+setExitSignal	lib/h/BPatch_process.h	/^  void setExitSignal(int exitsignal) { exitSignal = exitsignal; }$/;"	f	class:BPatch_process
+setLanguage	lib/h/BPatch_sourceObj.h	/^      void setLanguage(BPatch_language lang) { _srcLanguage = lang; }$/;"	f	class:BPatch_sourceObj
+setLastSignal	lib/h/BPatch_process.h	/^  void setLastSignal(int signal) { lastSignal = signal; }$/;"	f	class:BPatch_process
+setMadeExitCallback	lib/h/BPatch_thread.h	/^	void setMadeExitCallback() { madeExitCallback_ = true; }$/;"	f	class:BPatch_thread
+setModule	lib/h/BPatch_function.h	/^    void setModule(BPatch_module *module) { if (this->mod == NULL) this->mod = module;}$/;"	f	class:BPatch_function
+setReturnType	lib/h/BPatch_function.h	/^    void setReturnType(BPatch_type * _retType){retType = _retType;}$/;"	f	class:BPatch_function
+setReturnValue	lib/h/BPatch_process.h	/^  void setReturnValue(void *_returnValue) { returnValue = _returnValue; }$/;"	f	class:OneTimeCodeInfo
+setlowlevel_block	lib/h/BPatch_basicBlock.h	/^  void setlowlevel_block(block_instance *b)  { iblock = b; }$/;"	f	class:BPatch_basicBlock
+sh	lib/h/BPatch_process.h	/^  BPatchSnippetHandle *sh;$/;"	m	struct:__anon2
+sharedLibraryName	lib/h/BPatch_module.h	/^    char *sharedLibraryName(char *buffer, int length) { getFullName(buffer, length); return buffer;}$/;"	f	class:BPatch_module
+signalHandlerCallback	lib/h/BPatch.h	/^   InternalSignalHandlerCallback signalHandlerCallback;$/;"	m	class:BPatch
+size	lib/h/BPatch_Set.h	/^   DO_INLINE_F unsigned int size() const { return int_set.size(); }$/;"	f	class:BPatch_Set
+size	lib/h/BPatch_Vector.h	/^    unsigned int size() const { return len; }$/;"	f	class:BPatch_Vector
+size	lib/h/BPatch_object.h	/^       unsigned long size;$/;"	m	struct:BPatch_object::Region
+size	lib/h/BPatch_snippet.h	/^    int			size;$/;"	m	class:BPatch_variableExpr
+size	lib/h/BPatch_type.h	/^  int         size;$/;"	m	class:BPatch_field
+size	lib/h/StackMod.h	/^        int size() const { return _srcHigh - _srcLow; }$/;"	f	class:Move
+size	lib/h/StackMod.h	/^        unsigned int size() const { return _high - _low; }$/;"	f	class:Insert
+size	lib/h/StackMod.h	/^        unsigned int size() const { return _high - _low; }$/;"	f	class:Remove
+snip	lib/h/BPatch_process.h	/^  BPatch_snippet snip;$/;"	m	struct:__anon2
+source	lib/h/BPatch_dependenceGraphEdge.h	/^  BPatch_dependenceGraphNode* source;$/;"	m	class:BPatch_dependenceGraphEdge
+sourceBlocks	lib/h/BPatch_basicBlock.h	/^  BPatch_Vector<BPatch_sourceBlock*> *sourceBlocks;$/;"	m	class:BPatch_basicBlock
+sourceFile	lib/h/BPatch_sourceBlock.h	/^	const char* sourceFile;$/;"	m	class:BPatch_sourceBlock
+sourceLines	lib/h/BPatch_sourceBlock.h	/^        std::set<unsigned short> sourceLines;$/;"	m	class:BPatch_sourceBlock
+srcHigh	lib/h/StackMod.h	/^        int srcHigh() const { return _srcHigh; }$/;"	f	class:Move
+srcLow	lib/h/StackMod.h	/^        int srcLow() const { return _srcLow; }$/;"	f	class:Move
+stackmod_exception	lib/h/StackMod.h	/^    stackmod_exception(std::string what) : std::runtime_error(std::string("StackMod failure: ") + what) {}$/;"	f	struct:stackmod_exception
+stackmod_exception	lib/h/StackMod.h	/^struct stackmod_exception : public std::runtime_error {$/;"	s
+start	lib/h/BPatch_memoryAccess_NP.h	/^  BPatch_addrSpec_NP *start;$/;"	m	class:BPatch_memoryAccess
+startInstrumenting	mutator.cpp	/^BPatch_addressSpace* startInstrumenting(accessType_t accessType,$/;"	f
+statement	lib/h/BPatch_statement.h	/^	Dyninst::SymtabAPI::Statement::ConstPtr statement;$/;"	m	class:BPatch_statement
+statement_iter	lib/h/BPatch_addressSpace.h	/^  typedef BPatch_Vector<BPatch_statement>::const_iterator statement_iter;$/;"	t	class:BPatch_addressSpace
+statement_iter	lib/h/BPatch_image.h	/^  typedef BPatch_Vector<BPatch_statement>::iterator statement_iter;$/;"	t	class:BPatch_image
+stats	lib/h/BPatch.h	/^    BPatch_stats stats;$/;"	m	class:BPatch
+std	lib/h/BPatch_basicBlock.h	/^namespace std {$/;"	n
+stdTypes	lib/h/BPatch.h	/^    BPatch_typeCollection	 *stdTypes;$/;"	m	class:BPatch
+stopThreadCallbacks	lib/h/BPatch.h	/^   BPatch_Vector<BPatchStopThreadCallback> stopThreadCallbacks;$/;"	m	class:BPatch
+storageClass	lib/h/BPatch_type.h	/^    BPatch_storageClass storageClass;$/;"	m	class:BPatch_localVar
+strLanguage	lib/h/BPatch_sourceObj.h	/^    const char *strLanguage(BPatch_language l) {$/;"	f	class:BPatch_sourceObj
+symDescr_t	lib/h/BPatch_type.h	/^	      BPatchSymTypeName, BPatchSymAggType, BPatchSymTypeTag}symDescr_t;$/;"	t	typeref:enum:__anon9
+synchronous	lib/h/BPatch_process.h	/^  bool synchronous;$/;"	m	class:OneTimeCodeInfo
+systemPrelinkCommand	lib/h/BPatch.h	/^	char *systemPrelinkCommand;$/;"	m	class:BPatch
+target	lib/h/BPatch.h	/^    char *target;$/;"	m	struct:__anon24
+target	lib/h/BPatch_dependenceGraphEdge.h	/^  BPatch_dependenceGraphNode* target;$/;"	m	class:BPatch_dependenceGraphEdge
+target_	lib/h/BPatch_instruction.h	/^    void *target_;$/;"	m	class:BPatch_branchInstruction
+terminated	lib/h/BPatch_process.h	/^  bool terminated; $/;"	m	class:BPatch_process
+thrID	lib/h/BPatch_process.h	/^  unsigned thrID;$/;"	m	class:OneTimeCodeInfo
+thread	lib/h/BPatch_frame.h	/^    BPatch_thread *thread;$/;"	m	class:BPatch_frame
+thread	lib/h/BPatch_process.h	/^  BPatch_thread *thread;$/;"	m	struct:__anon2
+threadCreateCallback	lib/h/BPatch.h	/^   BPatchAsyncThreadEventCallback threadCreateCallback;$/;"	m	class:BPatch
+threadDestroyCallback	lib/h/BPatch.h	/^   BPatchAsyncThreadEventCallback threadDestroyCallback;$/;"	m	class:BPatch
+thread_iter	lib/h/BPatch_addressSpace.h	/^  typedef BPatch_Vector<BPatch_thread*>::iterator thread_iter;$/;"	t	class:BPatchSnippetHandle
+threads	lib/h/BPatch_process.h	/^  BPatch_Vector<BPatch_thread *> threads;$/;"	m	class:BPatch_process
+tool	lib/h/BPatch.h	/^    char *tool;$/;"	m	struct:__anon24
+totalMiniTramps	lib/h/BPatch.h	/^  unsigned int totalMiniTramps;$/;"	m	struct:__anon22
+trampBytes	lib/h/BPatch.h	/^  unsigned int trampBytes;$/;"	m	struct:__anon22
+trampRecursiveOn	lib/h/BPatch.h	/^    bool        trampRecursiveOn;$/;"	m	class:BPatch
+typ	lib/h/BPatch_type.h	/^  Dyninst::SymtabAPI::Type *typ;$/;"	m	class:BPatch_type
+type	lib/h/BPatch.h	/^    BPatch_remote_t type;$/;"	m	struct:__anon25
+type	lib/h/BPatch_object.h	/^       type_t type;$/;"	m	struct:BPatch_object::Region
+type	lib/h/BPatch_snippet.h	/^    BPatch_type *type;$/;"	m	class:BPatch_variableExpr
+type	lib/h/BPatch_type.h	/^    BPatch_type *type;$/;"	m	class:BPatch_localVar
+type	lib/h/BPatch_type.h	/^  BPatch_dataClass type() const { return type_; }$/;"	f	class:BPatch_type
+typeCheckOn	lib/h/BPatch.h	/^    bool	typeCheckOn;$/;"	m	class:BPatch
+typeDes	lib/h/BPatch_type.h	/^  BPatch_dataClass   typeDes;$/;"	m	class:BPatch_field
+type_	lib/h/BPatch_type.h	/^  BPatch_dataClass   type_;$/;"	m	class:BPatch_type
+type_Error	lib/h/BPatch.h	/^    BPatch_type			 *type_Error;$/;"	m	class:BPatch
+type_Untyped	lib/h/BPatch.h	/^    BPatch_type			 *type_Untyped;$/;"	m	class:BPatch
+type_map	lib/h/BPatch_type.h	/^  static std::map<Dyninst::SymtabAPI::Type*,  BPatch_type *> type_map;$/;"	m	class:BPatch_type
+type_t	lib/h/BPatch_object.h	/^          DATA } type_t;$/;"	t	struct:BPatch_object::Region	typeref:enum:BPatch_object::Region::__anon21
+unresolvedCF	lib/h/BPatch_image.h	/^  BPatch_Vector<BPatch_point *> unresolvedCF;$/;"	m	class:BPatch_image
+userData	lib/h/BPatch_process.h	/^  void *userData;$/;"	m	class:OneTimeCodeInfo
+userEventCallbacks	lib/h/BPatch.h	/^   BPatch_Vector<BPatchUserEventCallback> userEventCallbacks;$/;"	m	class:BPatch
+value	lib/h/BPatch_type.h	/^  int          value;$/;"	m	class:BPatch_field
+var_map	lib/h/BPatch_module.h	/^   BPatch_varMap var_map;$/;"	m	class:BPatch_module
+varsAndParamsValid	lib/h/BPatch_function.h	/^    bool varsAndParamsValid;$/;"	m	class:BPatch_function
+~BPatch_Vector	lib/h/BPatch_Vector.h	/^BPatch_Vector<T>::~BPatch_Vector()$/;"	f	class:BPatch_Vector
+~BPatch_basicBlockLoop	lib/h/BPatch_basicBlockLoop.h	/^        ~BPatch_basicBlockLoop() { }$/;"	f	class:BPatch_basicBlockLoop
+~BPatch_branchInstruction	lib/h/BPatch_instruction.h	/^    ~BPatch_branchInstruction() {};$/;"	f	class:BPatch_branchInstruction
+~BPatch_sourceBlock	lib/h/BPatch_sourceBlock.h	/^	virtual ~BPatch_sourceBlock() {}$/;"	f	class:BPatch_sourceBlock
+~BPatch_sourceObj	lib/h/BPatch_sourceObj.h	/^    virtual ~BPatch_sourceObj() { };$/;"	f	class:BPatch_sourceObj
+~BPatch_statement	lib/h/BPatch_statement.h	/^    ~BPatch_statement() {}$/;"	f	class:BPatch_statement
+~insnPredicate	lib/h/BPatch_basicBlock.h	/^  virtual ~insnPredicate() {}$/;"	f	struct:insnPredicate
