@@ -1,4 +1,5 @@
 CC = gcc
+CFLAGS := -I. -I./inc
 
 BIN := test test3
 
@@ -9,10 +10,10 @@ loader.so: loader.c
 	$(CC) -Wall -fPIC -shared $< -o $@ -ldl
 
 test: test.c
-	$(CC) $< -O0 -o $@
+	$(CC) $(CFLAGS) $< -O0 -o $@
 
 test3: test.c
-	$(CC) $< -O3 -o $@
+	$(CC) $(CFLAGS) $< -O3 -o $@
 
 clean:
 	rm -rf *.o $(BIN) loader.so
