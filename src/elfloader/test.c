@@ -22,7 +22,6 @@ int main()
 {
 	print_maps(getpid());
 	print_hello(getpid());
-//	system(cmd);
 
 	while(1) usleep(5000);
 

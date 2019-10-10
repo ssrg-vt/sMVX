@@ -1,24 +1,18 @@
 CC = gcc
 
-#SRC := $(wildcard *.c)
-#BIN := $(SRC:%.c=%)
-BIN := test
+BIN := test test3
 
-all: $(BIN) loader.so test3
+all: $(BIN) loader.so
 	@echo "BIN:" $(BIN)
-#	@echo "SRC:" $(SRC)
 
 loader.so: loader.c
 	$(CC) -Wall -fPIC -shared $< -o $@ -ldl
 
+test: test.c
+	$(CC) $< -O0 -o $@
+
 test3: test.c
 	$(CC) $< -O3 -o $@
 
-%: %.o
-	$(CC) $< -o $@
-
-%.o: %.c
-	$(CC) -c $<
-
 clean:
-	rm -rfv *.o $(BIN) loader.so test3
+	rm -rf *.o $(BIN) loader.so
