@@ -4,5 +4,7 @@ A simple ELF loader to load a variant binary's .text section into the target's m
 ## How to use?
 ```
 $ make
-$ BIN=test3 LD_PRELOAD=./loader.so ./test
+$ ls
+loader.so   test.bin   liblmvx.a ...
+$ BIN=test3 LD_PRELOAD=./loader.so ./test.bin
 ```

@@ -18,6 +18,8 @@
 #include <elf.h>
 #include <sys/mman.h>
 
+#include "../../inc/log.h"
+
 /*
  * --- ELF64 header defination (/usr/include/elf.h) ---
  * typedef struct
@@ -54,7 +56,7 @@ void init(void)
 		exit(1);
 	}
 
-	printf("** ld_preload init function. BIN %s.\n", obj_name);
+	log_info("ld_preload init function. BIN %s.", obj_name);
 	if (init_elf(obj_name)) {
 		fprintf(stderr, "Failed to init ELF binary\n");
 		exit(1);
@@ -63,7 +65,7 @@ void init(void)
 
 void print_elf_header(Elf64_Ehdr *elf_header)
 {
-	printf("%s: version %d, OS abi %d. entry 0x%lx\n", __func__,
+	log_info("%s: version %d, OS abi %d. entry 0x%lx", __func__,
 			elf_header->e_version, elf_header->e_ident[7], elf_header->e_entry);
 }
 
@@ -103,7 +105,7 @@ int init_elf(const char *obj_name)
 	// allocate the ELF section header table in memory
 	sections = elf_header->e_shnum;
 	elf_section_headers = malloc(section_header_size * sections);
-	printf("sections %lu, section header size %lu\n",
+	log_info("sections %lu, section header size %lu",
 			sections, section_header_size * sections);
 
 	// read ELF section header table from binary
@@ -119,7 +121,7 @@ int init_elf(const char *obj_name)
 	for (i = 0; i < sections; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
 		if (strcmp(".text", sh_strtab + section->sh_name)) continue;
-		printf("section[%2d] addr 0x%lx, size 0x%lx. flag 0x%lx. name idx %u. name %s.\n",
+		log_info("section[%2d] addr 0x%lx, size 0x%lx. flag 0x%lx. name idx %u. name %s.",
 				i, section->sh_addr, section->sh_size, section->sh_flags, section->sh_name,
 				sh_strtab + section->sh_name);
 
@@ -131,11 +133,11 @@ int init_elf(const char *obj_name)
 			char *mem = mmap(NULL, mem_size,
 					PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
-			printf("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx\n",
+			log_info("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx",
 					mem, offset, section->sh_size, mem_size);
 			fseek(obj, offset, SEEK_SET);
 			fread(mem + offset, section->sh_size, 1, obj);
-			printf("mem[0] %p, char in hex: 0x%x\n", mem + offset, mem[offset]);
+			log_info("mem[0] %p, char in hex: 0x%x", mem + offset, mem[offset]);
 		}
 #if 0
 		if (section->sh_type == SHT_SYMTAB || section->sh_type == SHT_STRTAB) {
