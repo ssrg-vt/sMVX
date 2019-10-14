@@ -48,9 +48,10 @@
 #define USAGE 		 "Use: $ BIN=<binary-variant> CONF=<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> p1 p2 ..."
 
 int init(void) __attribute__ ((constructor));
-//int load_conf(const char *conf_filename);
 int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr);
-int load_elf(const char *bin_filename);
+int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl);
+
+int func_num = 0;
 
 /**
  * Entry function of the LD_PRELOAD library.
@@ -60,33 +61,69 @@ int init(void)
 	// get env file names
 	const char *bin_filename = getenv("BIN");
 	const char *conf_filename = getenv("CONF");
+
 	if (bin_filename == NULL) {
 		log_error(WARN_BIN);
 		log_error(USAGE);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	if (conf_filename == NULL) {
 		log_error(WARN_CONF);
 		log_error(USAGE);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	// initialize ind_table (<name,addr> table)
 	ind_table = malloc(TAB_SIZE*sizeof(tbl_entry_t));
-	log_info("LD_PRELOAD init function. BIN %s. CONF %s. ind_tbl %p, ind_table[0].p %p",
-			bin_filename, conf_filename, ind_table, &(ind_table[0].func_addr));
+	log_info("LD_PRELOAD init function. BIN %s. CONF %s.", bin_filename, conf_filename);
+	log_info("--> ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
 
 	// load conf file
 	if (init_conf(conf_filename, ind_table, CONF_TAB_ADDR_FILE)) {
 		log_error("Failed to load conf file.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	// load ELF .text section
-	if (load_elf(bin_filename)) {
+	if (load_elf(bin_filename, ind_table)) {
 		log_error("Failed to load ELF binary.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
+
+	return 0;
+}
+
+/**
+ * Loading the configuration files (list of duplicated functions).
+ * */
+int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr)
+{
+	FILE *conf = fopen(conf_filename, "r");
+	FILE *conf_tbl = fopen(conf_tbl_addr, "w");
+	char func_name[128];
+
+	if (conf == NULL) {
+		log_error("Unable to open file.");
+		return 1;
+	}
+
+	// zero out the indirection table and the number of table entries (func num).
+	memset(ind_tbl, 0, TAB_SIZE*sizeof(tbl_entry_t));
+	func_num = 0;
+
+	while (fscanf(conf, "%s", func_name) != EOF) {
+		ind_tbl[func_num].func_name = malloc(strlen(func_name) + 1);
+		strcpy(ind_tbl[func_num].func_name, func_name);
+		log_info("%d: %s. %s. %u/%u", func_num, func_name, ind_tbl[func_num].func_name,
+				strlen(func_name), sizeof(func_name));
+		func_num++;
+	}
+	fclose(conf);
+	log_info("num of functions %d", func_num);
+
+	// print out the indirection table location in memory.
+	fprintf(conf_tbl, "%p", ind_tbl);
+	fclose(conf_tbl);
 
 	return 0;
 }
@@ -100,7 +137,7 @@ void print_elf_header(Elf64_Ehdr *elf_header)
 /**
  * Loading ELF .text section into memory.
  * */
-int load_elf(const char *bin_filename)
+int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 {
 	int i;
 	Elf64_Ehdr *elf_header = malloc(sizeof(Elf64_Ehdr));
@@ -143,7 +180,7 @@ int load_elf(const char *bin_filename)
 	fseek(obj, elf_header->e_shoff, SEEK_SET);
 	fread(elf_section_headers, section_header_size, sections, obj);
 
-	// retrieve sh_strtab header
+	// retrieve sh_strtab header (section header string table)
 	sh_strtab_header = elf_section_headers + elf_header->e_shstrndx;
 	sh_strtab = malloc(sh_strtab_header->sh_size);
 	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
@@ -151,6 +188,7 @@ int load_elf(const char *bin_filename)
 
 	for (i = 0; i < sections; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
+
 		if (strcmp(".text", sh_strtab + section->sh_name)) continue;
 		log_info("section[%2d] addr 0x%lx, size 0x%lx. flag 0x%lx. name idx %u. name %s.",
 				i, section->sh_addr, section->sh_size, section->sh_flags, section->sh_name,
@@ -184,31 +222,4 @@ int load_elf(const char *bin_filename)
 	return 0;
 }
 
-/**
- * Loading the configuration files (list of duplicated functions).
- * */
-//int load_conf(const char *conf_filename, tbl_entry_t *ind_tbl)
-int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr)
-{
-	FILE *conf = fopen(conf_filename, "r");
-	FILE *conf_tbl = fopen(conf_tbl_addr, "w");
-	char func_name[128];
-	int idx = 0;
 
-	if (conf == NULL) {
-		log_error("Unable to open file.");
-		return 1;
-	}
-	while (fscanf(conf, "%s", func_name) != EOF) {
-		ind_tbl[idx].func_name = malloc(strlen(func_name) + 1);
-		strcpy(ind_tbl[idx].func_name, func_name);
-		log_info("%d: %s. %s. %u/%u", idx, func_name, ind_tbl[idx].func_name, strlen(func_name), sizeof(func_name));
-		idx++;
-	}
-	fclose(conf);
-
-	fprintf(conf_tbl, "%p", ind_tbl);
-	fclose(conf_tbl);
-
-	return 0;
-}

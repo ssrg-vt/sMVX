@@ -29,6 +29,7 @@ int lmvx_init()
 		log_error("Failed to open CONF file for indirection table.");
 		exit(EXIT_FAILURE);
 	}
+	fscanf(conf_tbl, "%p", &ind_table);
 
 	// initial stack
 	stack = malloc(STACK_SIZE);
@@ -41,8 +42,8 @@ int lmvx_init()
 	// init ind_table
 //	ind_table[0].func_name = "print_hello";
 
-//	log_info("ind_table %p, [0].p %p.", ind_table, &(ind_table[0].p));
-	log_info("ind_table %p.", ind_table);
+	log_info("--> ind_table %p, [0].name %s.", ind_table, ind_table[0].func_name);
+//	log_info("ind_table %p.", ind_table);
 
 	return 0;
 }
