@@ -2,8 +2,9 @@
  * A simple ELF loader that loads a duplicated .text into memory.
  *
  * Usage:
- *   $ BIN=<binary-variant> LD_PRELOAD=./loader.so ./<binary-vanilla> param1 param2 ...
- * Note: the two binaries could be different
+ *   $ BIN=<binary-variant> CONF=conf/<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> param1 param2 ...
+ * Note: the two binaries could be different; the conf file is a list of function names,
+ * each in a separate line.
  * 
  * Reference:
  *   http://man7.org/linux/man-pages/man5/elf.5.html
@@ -18,6 +19,7 @@
 #include <elf.h>
 #include <sys/mman.h>
 
+#include "../../inc/lmvx.h"
 #include "../../inc/log.h"
 
 /*
@@ -41,26 +43,52 @@
  * } Elf64_Ehdr;			// u64*8 = 8*8 bytes = 64 bytes
  * */
 
-#define WARNING "No variant binary specified.\n\
-Use: $ BIN=<binary-variant> LD_PRELOAD=./loader.so \
-./<binary-vanilla> param1 param2 ...\n"
+#define WARN_BIN	 "No variant binary specified."
+#define WARN_CONF	 "No conf file specified."
+#define USAGE 		 "Use: $ BIN=<binary-variant> CONF=<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> p1 p2 ..."
 
-void init(void) __attribute__ ((constructor));
-int init_elf(const char *obj_name);
+int init(void) __attribute__ ((constructor));
+//int load_conf(const char *conf_filename);
+int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr);
+int load_elf(const char *bin_filename);
 
-void init(void)
+/**
+ * Entry function of the LD_PRELOAD library.
+ * */
+int init(void)
 {
-	const char *obj_name = getenv("BIN");
-	if (obj_name == NULL) {
-		fprintf(stderr, WARNING);
+	// get env file names
+	const char *bin_filename = getenv("BIN");
+	const char *conf_filename = getenv("CONF");
+	if (bin_filename == NULL) {
+		log_error(WARN_BIN);
+		log_error(USAGE);
+		exit(1);
+	}
+	if (conf_filename == NULL) {
+		log_error(WARN_CONF);
+		log_error(USAGE);
 		exit(1);
 	}
 
-	log_info("ld_preload init function. BIN %s.", obj_name);
-	if (init_elf(obj_name)) {
-		fprintf(stderr, "Failed to init ELF binary\n");
+	// initialize ind_table (<name,addr> table)
+	ind_table = malloc(TAB_SIZE*sizeof(tbl_entry_t));
+	log_info("LD_PRELOAD init function. BIN %s. CONF %s. ind_tbl %p, ind_table[0].p %p",
+			bin_filename, conf_filename, ind_table, &(ind_table[0].func_addr));
+
+	// load conf file
+	if (init_conf(conf_filename, ind_table, CONF_TAB_ADDR_FILE)) {
+		log_error("Failed to load conf file.");
 		exit(1);
 	}
+
+	// load ELF .text section
+	if (load_elf(bin_filename)) {
+		log_error("Failed to load ELF binary.");
+		exit(1);
+	}
+
+	return 0;
 }
 
 void print_elf_header(Elf64_Ehdr *elf_header)
@@ -69,7 +97,10 @@ void print_elf_header(Elf64_Ehdr *elf_header)
 			elf_header->e_version, elf_header->e_ident[7], elf_header->e_entry);
 }
 
-int init_elf(const char *obj_name)
+/**
+ * Loading ELF .text section into memory.
+ * */
+int load_elf(const char *bin_filename)
 {
 	int i;
 	Elf64_Ehdr *elf_header = malloc(sizeof(Elf64_Ehdr));
@@ -79,25 +110,25 @@ int init_elf(const char *obj_name)
 	size_t sections;
 	size_t section_header_size = sizeof(Elf64_Shdr);
 
-	FILE *obj = fopen(obj_name, "rb");
+	FILE *obj = fopen(bin_filename, "rb");
 
 	// retrieve ELF header
 	if (obj == NULL) {
-		fprintf(stderr, "Unable to open file\n");
+		log_error("Unable to open file.");
 		return 1;
 	}
 	fread(elf_header, sizeof(Elf64_Ehdr), 1, obj);
 
 	if (elf_header->e_ident[0] != 0x7f || elf_header->e_ident[1] != 'E'
 			|| elf_header->e_ident[2] != 'L' || elf_header->e_ident[3] != 'F') {
-		fprintf(stderr, "Invalid ELF header!\n");
+		log_error("Invalid ELF header!");
 		return 1;
 	}
 
 	if (elf_header->e_ident[4] != ELFCLASS64 ||
 		elf_header->e_ident[5] != ELFDATA2LSB)
 	{
-		fprintf(stderr, "This file is not 64bit little endian\n");
+		log_error("This file is not 64bit little endian.");
 		return 1;
 	}
 	print_elf_header(elf_header);
@@ -125,7 +156,7 @@ int init_elf(const char *obj_name)
 				i, section->sh_addr, section->sh_size, section->sh_flags, section->sh_name,
 				sh_strtab + section->sh_name);
 
-		// alloc .text memory, using offset+size(end) as the memory block size.
+		// allocate .text memory, using offset+size(end) as the memory block size.
 		if ((section->sh_flags & (SHF_ALLOC | SHF_EXECINSTR))
 				&& (section->sh_size > 0)) {
 			uint64_t offset = section->sh_offset;
@@ -149,6 +180,35 @@ int init_elf(const char *obj_name)
 		}
 #endif
 	}
+
+	return 0;
+}
+
+/**
+ * Loading the configuration files (list of duplicated functions).
+ * */
+//int load_conf(const char *conf_filename, tbl_entry_t *ind_tbl)
+int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr)
+{
+	FILE *conf = fopen(conf_filename, "r");
+	FILE *conf_tbl = fopen(conf_tbl_addr, "w");
+	char func_name[128];
+	int idx = 0;
+
+	if (conf == NULL) {
+		log_error("Unable to open file.");
+		return 1;
+	}
+	while (fscanf(conf, "%s", func_name) != EOF) {
+		ind_tbl[idx].func_name = malloc(strlen(func_name) + 1);
+		strcpy(ind_tbl[idx].func_name, func_name);
+		log_info("%d: %s. %s. %u/%u", idx, func_name, ind_tbl[idx].func_name, strlen(func_name), sizeof(func_name));
+		idx++;
+	}
+	fclose(conf);
+
+	fprintf(conf_tbl, "%p", ind_tbl);
+	fclose(conf_tbl);
 
 	return 0;
 }

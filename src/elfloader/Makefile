@@ -39,8 +39,8 @@ liblmvx.a: $(OBJ_FILES)
 	$(HUSH_AR) $(AR) -cq $@ $^
 
 ### Two binaries, from (mostly) same source code
-test.bin: $(TEST_DIR)/test.c $(DEPS)
-	$(HUSH_CC) $(CC) $(CFLAGS) $^ -O0 liblmvx.a -o $@
+test.bin: $(TEST_DIR)/test.c $(DEPS) liblmvx.a
+	$(HUSH_CC) $(CC) $(CFLAGS) $^ -O0 -o $@
 
 ### I need to manually modify test.c (exclude lib) to generate test3
 ### TODO
@@ -52,3 +52,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	rm -rf *.o $(BIN) $(OBJ_DIR)
+
+rebuild:
+	make clean; make

@@ -14,7 +14,7 @@
 char *stack = NULL;
 char *stackTop = NULL;
 
-int fun(void *p)
+int _thread_trampoline(void *p)
 {
 	printf("%s: hello. thread id %ld.\n", __func__, syscall(SYS_gettid));
 	return 0;
@@ -22,6 +22,14 @@ int fun(void *p)
 
 int lmvx_init()
 {
+	FILE *conf_tbl = fopen(CONF_TAB_ADDR_FILE, "r");
+
+	// initial the conf file
+	if (conf_tbl == NULL) {
+		log_error("Failed to open CONF file for indirection table.");
+		exit(EXIT_FAILURE);
+	}
+
 	// initial stack
 	stack = malloc(STACK_SIZE);
 	if (stack == NULL) {
@@ -31,19 +39,29 @@ int lmvx_init()
 	stackTop = stack + STACK_SIZE;
 
 	// init ind_table
-	ind_table[0].func_name = "print_hello";
+//	ind_table[0].func_name = "print_hello";
 
-	log_info("ind_table %p, [0].p %p.", ind_table, &(ind_table[0].p));
+//	log_info("ind_table %p, [0].p %p.", ind_table, &(ind_table[0].p));
+	log_info("ind_table %p.", ind_table);
 
 	return 0;
 }
 
-void lmvx_start(const char *func_name, ...)
+void lmvx_start(const char *func_name, int n, ...)
 {
-//	va_list params;
+	va_list params;
+	unsigned long param;
+
+	va_start(params, n);
+	while (n > 0) {
+		param = va_arg(params, u64);
+		log_info("n: %d, val: %lu -- 0x%lx", n, param, param);
+		n--;
+	}
+	va_end(params);
 
 	log_info("%s: hello. thread id %ld.", __func__, syscall(SYS_gettid));
-	clone(fun, stackTop, CLONE_VM, NULL);
+	clone(_thread_trampoline, stackTop, CLONE_VM, NULL);
 }
 
 void lmvx_end()
