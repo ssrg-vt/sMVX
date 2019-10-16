@@ -52,6 +52,7 @@ int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_
 int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl);
 
 int func_num = 0;
+void *text_base = NULL;
 
 /**
  * Entry function of the LD_PRELOAD library.
@@ -108,7 +109,7 @@ int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_
 	}
 
 	// zero out the indirection table and the number of table entries (func num).
-	memset(ind_tbl, 0, TAB_SIZE*sizeof(tbl_entry_t));
+	memset(ind_tbl, 0, TAB_SIZE * sizeof(tbl_entry_t));
 	func_num = 0;
 
 	while (fscanf(conf, "%s", func_name) != EOF) {
@@ -135,6 +136,80 @@ void print_elf_header(Elf64_Ehdr *elf_header)
 }
 
 /**
+ * Process the .text section:
+ * 	- alloc memory for variant's .text with mmap
+ * 	- copy binary's .text to memory
+ * */
+void* process_text_section(FILE *obj, Elf64_Shdr *section)
+{
+	uint64_t offset = 0, mem_size = 0;
+	char *mem = NULL;
+
+	// allocate .text memory, using offset+size(end) as the memory block size.
+	if ((section->sh_flags & (SHF_ALLOC | SHF_EXECINSTR))
+			&& (section->sh_size > 0)) {
+		offset = section->sh_offset;
+		mem_size = offset + section->sh_size;
+		mem = mmap(NULL, mem_size,
+				PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+
+		log_info("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx",
+				mem, offset, section->sh_size, mem_size);
+		fseek(obj, offset, SEEK_SET);
+		fread(mem + offset, section->sh_size, 1, obj);
+		log_info("mem[0] %p, char in hex: 0x%x", mem + offset, mem[offset]);
+	}
+	return mem;
+}
+
+int sym_in_table(char *symbol, tbl_entry_t *ind_tbl)
+{
+	int i;
+	tbl_entry_t *entry;
+	for (i = 0; i < TAB_SIZE; i++) {
+		entry = ind_tbl + i;
+		if (entry->func_name == NULL) break;
+		if (strcmp(entry->func_name, symbol) == 0)
+			return i;
+	}
+	return -1;
+}
+
+/**
+ * Process the .symtab (symbol table) section
+ * */
+void process_symtab_section(FILE *obj, Elf64_Shdr *section, tbl_entry_t *ind_tbl,
+		char *strtab, void *base)
+{
+	uint64_t offset = 0, size = 0;
+	int i;
+	int idx = 0;
+	int ret = 0;
+	int entry_num;
+	Elf64_Sym *symtab;
+	Elf64_Sym *entry;
+
+	offset = section->sh_offset;
+	size = section->sh_size;
+	entry_num = size / sizeof(Elf64_Sym);
+	symtab = (Elf64_Sym *) malloc(size);
+	log_info("symtab offset %lu, size %lu, entry num %d", offset, size, entry_num);
+
+	fseek(obj, offset, SEEK_SET);
+	fread(symtab, size, 1, obj);
+
+	for (i = 0; i < entry_num; i++) {
+		entry = symtab + i;
+		idx = entry->st_name;
+		if (entry->st_name == 0) continue;
+		if ((ret = sym_in_table(strtab + idx, ind_tbl)) != -1) {
+			log_info("symtab[%2d] %s. ret %d. st_value 0x%lx", i, strtab + idx, ret, entry->st_value);
+			(ind_tbl+ret)->func_addr = base + entry->st_value;
+		}
+	}
+}
+
+/**
  * Loading ELF .text section into memory.
  * */
 int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
@@ -142,9 +217,12 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	int i;
 	Elf64_Ehdr *elf_header = malloc(sizeof(Elf64_Ehdr));
 	Elf64_Shdr *elf_section_headers = NULL;
-	Elf64_Shdr *sh_strtab_header = NULL;
+	Elf64_Shdr *strtab_header = NULL;			// .strtab section header
+	Elf64_Shdr *symtab_header = NULL;			// .symtab section header
+	Elf64_Shdr *sh_strtab_header = NULL;		// .shstrtab
+	char *strtab = NULL;
 	char *sh_strtab = NULL;
-	size_t sections;
+	size_t section_num;
 	size_t section_header_size = sizeof(Elf64_Shdr);
 
 	FILE *obj = fopen(bin_filename, "rb");
@@ -171,14 +249,14 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	print_elf_header(elf_header);
 
 	// allocate the ELF section header table in memory
-	sections = elf_header->e_shnum;
-	elf_section_headers = malloc(section_header_size * sections);
-	log_info("sections %lu, section header size %lu",
-			sections, section_header_size * sections);
+	section_num = elf_header->e_shnum;
+	elf_section_headers = malloc(section_header_size * section_num);
+	log_info("section_num %lu, section header size %lu",
+			section_num, section_header_size * section_num);
 
 	// read ELF section header table from binary
 	fseek(obj, elf_header->e_shoff, SEEK_SET);
-	fread(elf_section_headers, section_header_size, sections, obj);
+	fread(elf_section_headers, section_header_size, section_num, obj);
 
 	// retrieve sh_strtab header (section header string table)
 	sh_strtab_header = elf_section_headers + elf_header->e_shstrndx;
@@ -186,38 +264,31 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
 	fread(sh_strtab, sh_strtab_header->sh_size, 1, obj);
 
-	for (i = 0; i < sections; i++) {
+	for (i = 0; i < section_num; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
 
-		if (strcmp(".text", sh_strtab + section->sh_name)) continue;
-		log_info("section[%2d] addr 0x%lx, size 0x%lx. flag 0x%lx. name idx %u. name %s.",
-				i, section->sh_addr, section->sh_size, section->sh_flags, section->sh_name,
-				sh_strtab + section->sh_name);
-
-		// allocate .text memory, using offset+size(end) as the memory block size.
-		if ((section->sh_flags & (SHF_ALLOC | SHF_EXECINSTR))
-				&& (section->sh_size > 0)) {
-			uint64_t offset = section->sh_offset;
-			uint64_t mem_size = offset + section->sh_size;
-			char *mem = mmap(NULL, mem_size,
-					PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-
-			log_info("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx",
-					mem, offset, section->sh_size, mem_size);
-			fseek(obj, offset, SEEK_SET);
-			fread(mem + offset, section->sh_size, 1, obj);
-			log_info("mem[0] %p, char in hex: 0x%x", mem + offset, mem[offset]);
+		// load .text section into memory space
+		if (strcmp(".text", sh_strtab + section->sh_name) == 0) {
+			text_base = process_text_section(obj, elf_section_headers + i);
+			if (text_base == NULL)
+				log_error("variant .text allocation error");
 		}
-#if 0
-		if (section->sh_type == SHT_SYMTAB || section->sh_type == SHT_STRTAB) {
-			Elf64_Sym *table = malloc(section->sh_size);
-			fseek(obj, section->sh_offset, SEEK_SET);
-			fread(table, section->sh_size, 1, obj);
-			section->sh_addr = (uint64_t)table;
-			printf("type %d\n", section->sh_type);
+
+		if (strcmp(".symtab", sh_strtab + section->sh_name) == 0) {
+			symtab_header = elf_section_headers + i;
 		}
-#endif
+
+		// read .strtab from ELF binary
+		if (strcmp(".strtab", sh_strtab + section->sh_name) == 0) {
+			strtab_header = elf_section_headers + i;
+			strtab = malloc(strtab_header->sh_size);
+			fseek(obj, strtab_header->sh_offset, SEEK_SET);
+			fread(strtab, strtab_header->sh_size, 1, obj);
+		}
 	}
+	
+	// process .symtab section
+	process_symtab_section(obj, symtab_header, ind_tbl, strtab, text_base);
 
 	return 0;
 }

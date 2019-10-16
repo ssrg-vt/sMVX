@@ -55,4 +55,4 @@ dkms.conf
 test
 test.bin
 test3
-conf/tab_addr.conf
+tab_addr.conf

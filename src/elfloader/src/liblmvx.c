@@ -22,6 +22,7 @@ int _thread_trampoline(void *p)
 
 int lmvx_init()
 {
+	int i = 0;
 	FILE *conf_tbl = fopen(CONF_TAB_ADDR_FILE, "r");
 
 	// initial the conf file
@@ -40,10 +41,13 @@ int lmvx_init()
 	stackTop = stack + STACK_SIZE;
 
 	// init ind_table
-//	ind_table[0].func_name = "print_hello";
-
-	log_info("--> ind_table %p, [0].name %s.", ind_table, ind_table[0].func_name);
-//	log_info("ind_table %p.", ind_table);
+	log_info("ind_table %p.", ind_table);
+	while (ind_table[i].func_name != NULL) {
+		log_info("--> [%2d].name %s: %p", i, ind_table[i].func_name, ind_table[i].func_addr);
+		i++;
+	}
+	log_info("test -- check the first 8 bytes of %s: 0x%lx",
+			ind_table[0].func_name, *(long *)(ind_table[0].func_addr));
 
 	return 0;
 }
