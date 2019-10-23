@@ -151,7 +151,8 @@ void* process_text_section(FILE *obj, Elf64_Shdr *section)
 		offset = section->sh_offset;
 		mem_size = offset + section->sh_size;
 		mem = mmap(NULL, mem_size,
-				PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+				PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
+		// TODO: permission not W xor E
 
 		log_info("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx",
 				mem, offset, section->sh_size, mem_size);
