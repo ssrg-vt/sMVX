@@ -25,7 +25,7 @@ int _lmvx_thread_shim(void *p)
 {
 	printf("%s: hello. thread id %ld. pid %d\n", __func__, syscall(SYS_gettid), getpid());
 	//printf("%p. num %lu\n", p, ((shim_args_t *)p)->num_args);
-	printf("%p. num %lu\n", (void *)&args, args.num_args);
+	printf("%p. num %lu. target 0x%lx\n", (void *)&args, args.num_args, args.jump_addr);
 
 	switch (args.num_args) {
 		case 0:
@@ -145,8 +145,8 @@ void lmvx_start(const char *func_name, int n, ...)
 
 	log_info("%s: hello. thread id %ld.", __func__, syscall(SYS_gettid));
 	//clone(_lmvx_thread_shim, stackTop, CLONE_VM, (void *)p);	// p & c share same space
-	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);	// different space, share files
-}
+	// different address space, share files
+	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);}
 
 /**
  * lMVX finishes the variant thread

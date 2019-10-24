@@ -78,7 +78,7 @@ int init(void)
 	// initialize ind_table (<name,addr> table)
 	ind_table = malloc(TAB_SIZE*sizeof(tbl_entry_t));
 	log_info("LD_PRELOAD init function. BIN: %s. CONF: %s.", bin_filename, conf_filename);
-	log_info("--> ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
+//	log_info("--> loader malloc ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
 
 	// load conf file
 	if (init_conf(conf_filename, ind_table, CONF_TAB_ADDR_FILE)) {
@@ -121,7 +121,7 @@ int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_
 		func_num++;
 	}
 	fclose(conf);
-	log_info("num of functions %d", func_num);
+//	log_info("num of functions %d", func_num);
 
 	// print out the indirection table location in memory.
 	fprintf(conf_tbl, "%p", ind_tbl);
@@ -213,7 +213,6 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	int i;
 	Elf64_Ehdr *elf_header = malloc(sizeof(Elf64_Ehdr));
 	Elf64_Shdr *elf_section_headers = NULL;
-	Elf64_Shdr *sh_strtab_header = NULL;		// .shstrtab
 	Elf64_Shdr *strtab_header = NULL;			// .strtab section header
 	Elf64_Shdr *symtab_header = NULL;			// .symtab section header
 	Elf64_Phdr *elf_program_headers = NULL;
@@ -233,11 +232,8 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	/* read section and program headers from binary */
 	read_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
 
-	// retrieve sh_strtab header (section header string table)
-	sh_strtab_header = elf_section_headers + elf_header->e_shstrndx;
-	sh_strtab = malloc(sh_strtab_header->sh_size);
-	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
-	fread(sh_strtab, sh_strtab_header->sh_size, 1, obj);
+	/* read section header string table, retrieve sh_strtab */
+	read_sh_strtab(obj, elf_header, elf_section_headers, &sh_strtab);
 
 	for (i = 0; i < elf_header->e_shnum; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;

@@ -10,6 +10,9 @@ void print_elf_header(Elf64_Ehdr *elf_header)
 			elf_header->e_version, elf_header->e_ident[7], elf_header->e_entry);
 }
 
+/**
+ * Verify the correctness of ELF header.
+ * */
 int verify_elf(Elf64_Ehdr * elf_header)
 {
 	if (elf_header->e_ident[0] != 0x7f || elf_header->e_ident[1] != 'E'
@@ -29,6 +32,9 @@ int verify_elf(Elf64_Ehdr * elf_header)
 	return 0;
 }
 
+/**
+ * Read ELF section header and program (segment) header.
+ * */
 int read_headers(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr **elf_section_headers,
 		Elf64_Phdr **elf_program_headers)
 {
@@ -53,6 +59,22 @@ int read_headers(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr **elf_section_he
 	// read ELF segment (program) header table
 	fseek(obj, elf_header->e_phoff, SEEK_SET);
 	fread(*elf_program_headers, program_header_size, segment_num, obj);
+
+	return 0;
+}
+
+/**
+ * Read section header strtab.
+ * */
+int read_sh_strtab(FILE *obj,Elf64_Ehdr * elf_header, Elf64_Shdr *elf_section_headers,
+		char **sh_strtab)
+{
+	Elf64_Shdr *sh_strtab_header = NULL;		// .shstrtab
+
+	sh_strtab_header = elf_section_headers + elf_header->e_shstrndx;
+	*sh_strtab = malloc(sh_strtab_header->sh_size);
+	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
+	fread(*sh_strtab, sh_strtab_header->sh_size, 1, obj);
 
 	return 0;
 }
