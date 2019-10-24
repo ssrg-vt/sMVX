@@ -65,8 +65,8 @@ _1:
 	__asm__ __volatile__("mov %0, %%rdi"::"g"(args.arg0));
 _0:
 //	__asm__ __volatile__("jmp *%0"::"g"(args.jump_addr));
-	//__asm__ __volatile__("call *%0"::"g"(args.jump_addr));
-	while(1) usleep(5000);
+	__asm__ __volatile__("call *%0"::"g"(args.jump_addr));
+//	while(1) usleep(5000);
 
 	return 0;
 }
@@ -138,7 +138,7 @@ void lmvx_start(const char *func_name, int n, ...)
 	while (i < n) {
 		param = va_arg(params, u64);
 		*(p + 2 + i) = param;
-		log_info("%s: n %d, i %d. val: %lu -- 0x%lx", func_name, n, i, param, param);
+//		log_info("%s: n %d, i %d. val: %lu -- 0x%lx", func_name, n, i, param, param);
 		i++;
 	}
 	va_end(params);

@@ -33,7 +33,7 @@ pre:
 
 ### loader.so
 loader.so: $(LOADER_SRC_DIR)/loader.c $(SRC_DIR)/log.c $(SRC_DIR)/env.c
-	$(HUSH_CC) $(CC) -I$(INC_DIR) -Wall -fPIC -shared $^ -o $@ -ldl
+	$(HUSH_CC) $(CC) -I$(INC_DIR) -Wall -fPIC -shared -g $^ -o $@ -ldl
 
 ### liblmvx.a
 liblmvx.a: $(OBJ_FILES)
