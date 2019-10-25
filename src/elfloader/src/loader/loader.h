@@ -66,7 +66,7 @@ int read_headers(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr **elf_section_he
 /**
  * Read section header strtab.
  * */
-int read_sh_strtab(FILE *obj,Elf64_Ehdr * elf_header, Elf64_Shdr *elf_section_headers,
+int read_sh_strtab(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr *elf_section_headers,
 		char **sh_strtab)
 {
 	Elf64_Shdr *sh_strtab_header = NULL;		// .shstrtab
@@ -75,6 +75,52 @@ int read_sh_strtab(FILE *obj,Elf64_Ehdr * elf_header, Elf64_Shdr *elf_section_he
 	*sh_strtab = malloc(sh_strtab_header->sh_size);
 	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
 	fread(*sh_strtab, sh_strtab_header->sh_size, 1, obj);
+
+	return 0;
+}
+
+void *load_code_segment(FILE *obj, Elf64_Phdr *phdr)
+{
+	int fd = fileno(obj);
+	void *ret = NULL;
+//	int prot = PROT_READ;
+	Elf64_Off offset = phdr->p_offset;
+	Elf64_Xword filesz = phdr->p_filesz;
+//	Elf64_Xword memsz = phdr->p_memsz;
+//	Elf64_Xword align = phdr->p_align;
+//	Elf64_Word flag = phdr->p_flags;
+//	Elf64_Xword real_memsz = (memsz+4096)/4096 * 4096;
+
+	log_info("fd %d", fd);
+	//mmap(NULL, real_memsz, PROT_EXEC|PROT_WRITE, MAP_SHARED, fd, offset);
+	//ret = mmap(NULL, filesz, PROT_EXEC|PROT_WRITE, MAP_SHARED, fd, offset);
+//	log_debug("offset %x, filesz %x, memsz %x, align %x, realsz %x, flag %x",
+//			offset, filesz, memsz, align, real_memsz, flag);
+	ret = mmap(NULL, filesz, PROT_EXEC|PROT_READ, MAP_PRIVATE, fd, offset);
+	if (ret == MAP_FAILED) log_error("mmap failed %d: %s", errno, strerror(errno));
+	log_debug("ret %p", ret);
+
+	return ret;
+}
+
+static inline int is_code_seg(Elf64_Phdr *phdr)
+{
+	if ((phdr->p_type == PT_LOAD) && (phdr->p_flags & PF_X)) {
+		return 1;
+	}
+	return 0;
+}
+
+int load_segments(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Phdr *phdr, void **text_base)
+{
+	int i = 0;
+
+	for (i = 0; i < elf_header->e_phnum; i++) {
+		if (is_code_seg(phdr + i)) {
+			log_info("off 0x%x, FileSiz 0x%x", (phdr + i)->p_offset, (phdr + i)->p_filesz);
+			*text_base = load_code_segment(obj, phdr + i);
+		}
+	}
 
 	return 0;
 }

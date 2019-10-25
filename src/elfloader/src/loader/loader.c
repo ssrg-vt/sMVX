@@ -235,15 +235,18 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	/* read section header string table, retrieve sh_strtab */
 	read_sh_strtab(obj, elf_header, elf_section_headers, &sh_strtab);
 
+	/* load code segment */
+	load_segments(obj, elf_header, elf_program_headers, &text_base);
+
 	for (i = 0; i < elf_header->e_shnum; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
 
 		// load .text section into memory space
-		if (strcmp(".text", sh_strtab + section->sh_name) == 0) {
-			text_base = process_text_section(obj, elf_section_headers + i);
-			if (text_base == NULL)
-				log_error("variant .text allocation error");
-		}
+//		if (strcmp(".text", sh_strtab + section->sh_name) == 0) {
+//			text_base = process_text_section(obj, elf_section_headers + i);
+//			if (text_base == NULL)
+//				log_error("variant .text allocation error");
+//		}
 
 		if (strcmp(".symtab", sh_strtab + section->sh_name) == 0) {
 			symtab_header = elf_section_headers + i;
