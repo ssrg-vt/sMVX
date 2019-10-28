@@ -21,6 +21,7 @@
 
 #include "../../inc/lmvx.h"
 #include "../../inc/log.h"
+#include "loader.h"
 
 /*
  * --- ELF64 header defination (/usr/include/elf.h) ---
@@ -76,8 +77,8 @@ int init(void)
 
 	// initialize ind_table (<name,addr> table)
 	ind_table = malloc(TAB_SIZE*sizeof(tbl_entry_t));
-	log_info("LD_PRELOAD init function. BIN %s. CONF %s.", bin_filename, conf_filename);
-	log_info("--> ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
+	log_info("LD_PRELOAD init function. BIN: %s. CONF: %s.", bin_filename, conf_filename);
+//	log_info("--> loader malloc ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
 
 	// load conf file
 	if (init_conf(conf_filename, ind_table, CONF_TAB_ADDR_FILE)) {
@@ -120,19 +121,13 @@ int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_
 		func_num++;
 	}
 	fclose(conf);
-	log_info("num of functions %d", func_num);
+//	log_info("num of functions %d", func_num);
 
 	// print out the indirection table location in memory.
 	fprintf(conf_tbl, "%p", ind_tbl);
 	fclose(conf_tbl);
 
 	return 0;
-}
-
-void print_elf_header(Elf64_Ehdr *elf_header)
-{
-	log_info("%s: version %d, OS abi %d. entry 0x%lx", __func__,
-			elf_header->e_version, elf_header->e_ident[7], elf_header->e_entry);
 }
 
 /**
@@ -151,7 +146,8 @@ void* process_text_section(FILE *obj, Elf64_Shdr *section)
 		offset = section->sh_offset;
 		mem_size = offset + section->sh_size;
 		mem = mmap(NULL, mem_size,
-				PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+				PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
+		// TODO: permission not W xor E
 
 		log_info("alloc mem: %p, off 0x%lx, .text size 0x%lx, mem size 0x%lx",
 				mem, offset, section->sh_size, mem_size);
@@ -219,52 +215,27 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	Elf64_Shdr *elf_section_headers = NULL;
 	Elf64_Shdr *strtab_header = NULL;			// .strtab section header
 	Elf64_Shdr *symtab_header = NULL;			// .symtab section header
-	Elf64_Shdr *sh_strtab_header = NULL;		// .shstrtab
-	char *strtab = NULL;
+	Elf64_Phdr *elf_program_headers = NULL;
 	char *sh_strtab = NULL;
-	size_t section_num;
-	size_t section_header_size = sizeof(Elf64_Shdr);
+	char *strtab = NULL;
 
 	FILE *obj = fopen(bin_filename, "rb");
 
-	// retrieve ELF header
+	/* read ELF header; verify ELF correctness */
 	if (obj == NULL) {
 		log_error("Unable to open file.");
 		return 1;
 	}
 	fread(elf_header, sizeof(Elf64_Ehdr), 1, obj);
+	if (verify_elf(elf_header)) return 1;
 
-	if (elf_header->e_ident[0] != 0x7f || elf_header->e_ident[1] != 'E'
-			|| elf_header->e_ident[2] != 'L' || elf_header->e_ident[3] != 'F') {
-		log_error("Invalid ELF header!");
-		return 1;
-	}
+	/* read section and program headers from binary */
+	read_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
 
-	if (elf_header->e_ident[4] != ELFCLASS64 ||
-		elf_header->e_ident[5] != ELFDATA2LSB)
-	{
-		log_error("This file is not 64bit little endian.");
-		return 1;
-	}
-	print_elf_header(elf_header);
+	/* read section header string table, retrieve sh_strtab */
+	read_sh_strtab(obj, elf_header, elf_section_headers, &sh_strtab);
 
-	// allocate the ELF section header table in memory
-	section_num = elf_header->e_shnum;
-	elf_section_headers = malloc(section_header_size * section_num);
-	log_info("section_num %lu, section header size %lu",
-			section_num, section_header_size * section_num);
-
-	// read ELF section header table from binary
-	fseek(obj, elf_header->e_shoff, SEEK_SET);
-	fread(elf_section_headers, section_header_size, section_num, obj);
-
-	// retrieve sh_strtab header (section header string table)
-	sh_strtab_header = elf_section_headers + elf_header->e_shstrndx;
-	sh_strtab = malloc(sh_strtab_header->sh_size);
-	fseek(obj, sh_strtab_header->sh_offset, SEEK_SET);
-	fread(sh_strtab, sh_strtab_header->sh_size, 1, obj);
-
-	for (i = 0; i < section_num; i++) {
+	for (i = 0; i < elf_header->e_shnum; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
 
 		// load .text section into memory space

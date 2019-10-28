@@ -5,6 +5,7 @@ LOADER_SRC_DIR := ./src/loader
 INC_DIR := ./inc
 TEST_DIR := ./test
 OBJ_DIR := ./obj
+CONF_TAB_ADDR := conf/tab_addr.conf
 
 SRC_FILES	:= $(wildcard $(SRC_DIR)/*.c)
 OBJ_FILES	:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
@@ -32,7 +33,7 @@ pre:
 
 ### loader.so
 loader.so: $(LOADER_SRC_DIR)/loader.c $(SRC_DIR)/log.c $(SRC_DIR)/env.c
-	$(HUSH_CC) $(CC) -I$(INC_DIR) -Wall -fPIC -shared $^ -o $@ -ldl
+	$(HUSH_CC) $(CC) -I$(INC_DIR) -Wall -fPIC -shared -g $^ -o $@ -ldl
 
 ### liblmvx.a
 liblmvx.a: $(OBJ_FILES)
@@ -51,7 +52,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
 clean:
-	rm -rf *.o $(BIN) $(OBJ_DIR)
+	rm -rf *.o $(BIN) $(OBJ_DIR) $(CONF_TAB_ADDR)
 
 rebuild:
 	make clean; make
