@@ -4,6 +4,7 @@
 
 void mvx_start_hook(const char* );
 void mvx_end_hook(const char* );
+void test_function();
 
 struct shim_arguments
 {

@@ -17,7 +17,7 @@
 #include <address_map.h>
 #include <uthash.h>
 #include <lightweight_mvx.h>
-
+#define PKEY_DISABLE_ACCESS 	(0x1)
 #define LOOKUP_TABLE_SIZE	(100)
 struct address_map* mapping;
 
@@ -34,7 +34,8 @@ int cloned_function(int test, char* ptr)
 
 void test_function()
 {
-	printf("Test function called \n");
+	int i = 256;
+	printf("Test function called: %d \n", i);
 }
 
 static int __mvx_shim(void* args)
@@ -135,9 +136,97 @@ void mvx_end_hook(const char* caller_name)
 	debug_printf("mvx_end_hook called\n");
 }
 
+int
+wrpkru(unsigned int pkru)
+{
+    unsigned int eax = pkru;
+    unsigned int ecx = 0;
+    unsigned int edx = 0;
+    asm volatile(".byte 0x0f,0x01,0xef\n\t"
+                 : : "a" (eax), "c" (ecx), "d" (edx));
+}
+
+int
+pkey_set(int pkey, unsigned long rights, unsigned long flags)
+{
+    unsigned int pkru = (rights << (2 * pkey));
+    return wrpkru(pkru);
+}
+
+int
+pkey_mprotect(void *ptr, size_t size, unsigned long orig_prot,
+              unsigned long pkey)
+{
+    return syscall(SYS_pkey_mprotect, ptr, size, orig_prot, pkey);
+}
+
+int
+pkey_alloc(void)
+{
+    return syscall(SYS_pkey_alloc, 0, 0);
+}
+
+int
+pkey_free(unsigned long pkey)
+{
+    return syscall(SYS_pkey_free, pkey);
+}
+
+#define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \
+                           } while (0)
+
 void __attribute__ ((constructor)) initLibrary(void)
 {
 	debug_printf("Lightweight mvx library instantiated last time\n");
+	int status;
+	int pkey;
+	int *buffer;
+	/*
+	 *Allocate one page of memory
+	 */
+	buffer = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE,
+	              MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+	if (buffer == MAP_FAILED)
+	    errExit("mmap");
+	/*
+	 * Put some random data into the page (still OK to touch)
+	 */
+	*buffer = __LINE__;
+	printf("buffer contains: %d\n", *buffer);
+	/*
+	 * Allocate a protection key:
+	 */
+	pkey = pkey_alloc();
+	if (pkey == -1)
+	    errExit("pkey_alloc");
+	/*
+	 * Disable access to any memory with "pkey" set,
+	 * even though there is none right now
+	 */
+	status = pkey_set(pkey, PKEY_DISABLE_ACCESS, 0);
+	//if (status)
+	//    printf("Status: %d\n", status);
+	//    errExit("pkey_set");
+	/*
+	 * Set the protection key on "buffer".
+	 * Note that it is still read/write as far as mprotect() is
+	 * concerned and the previous pkey_set() overrides it.
+	 */
+	status = pkey_mprotect((void*)0x7ffff7fe4000, 2*getpagesize(),
+	                       PROT_READ | PROT_WRITE | PROT_EXEC, pkey);
+	status = pkey_mprotect((void*)0x7ffff7a3a000, 923*getpagesize(),
+	                       PROT_READ | PROT_WRITE | PROT_EXEC, pkey);
+	//status = pkey_mprotect(buffer, getpagesize(),
+	//                       PROT_READ | PROT_WRITE | PROT_EXEC, pkey);
+	//if (status == -1)
+	//    errExit("pkey_mprotect");
+	//printf("about to read buffer again...\n");
+	/*
+	 * This will crash, because we have disallowed access
+	 */
+	buffer[0] = 12345;
+	printf("buffer contains: %d\n", *buffer);
+	pkey_set(pkey,0,0);
 	//struct address_map* entry = (struct address_map*) malloc(sizeof(struct
 	//								address_map));
 	//strcpy(entry->caller_name, "call_other_function");
