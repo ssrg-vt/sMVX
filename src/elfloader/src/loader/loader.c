@@ -63,6 +63,7 @@ int init(void)
 	// get env file names
 	const char *bin_filename = getenv("BIN");
 	const char *conf_filename = getenv("CONF");
+	const char *vanilla_bin = getenv("VBIN");
 
 	if (bin_filename == NULL) {
 		log_error(WARN_BIN);
@@ -85,6 +86,9 @@ int init(void)
 		log_error("Failed to load conf file.");
 		exit(EXIT_FAILURE);
 	}
+
+	// read proc, find .text base
+///	read_proc(vanilla_bin);
 
 	// load ELF .text section
 	if (load_elf(bin_filename, ind_table)) {
@@ -230,12 +234,12 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	if (verify_elf(elf_header)) return 1;
 
 	/* read section and program headers from binary */
-	read_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
+	read_seg_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
 
 	/* read section header string table, retrieve sh_strtab */
 	read_sh_strtab(obj, elf_header, elf_section_headers, &sh_strtab);
 
-	/* load code segment */
+	/* load code and data segment */
 	load_segments(obj, elf_header, elf_program_headers, &text_base);
 
 	for (i = 0; i < elf_header->e_shnum; i++) {

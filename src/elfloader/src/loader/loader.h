@@ -35,7 +35,7 @@ int verify_elf(Elf64_Ehdr * elf_header)
 /**
  * Read ELF section header and program (segment) header.
  * */
-int read_headers(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr **elf_section_headers,
+int read_seg_headers(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Shdr **elf_section_headers,
 		Elf64_Phdr **elf_program_headers)
 {
 	size_t section_header_size = sizeof(Elf64_Shdr);
@@ -83,7 +83,6 @@ void *load_code_segment(FILE *obj, Elf64_Phdr *phdr)
 {
 	int fd = fileno(obj);
 	void *ret = NULL;
-//	int prot = PROT_READ;
 	Elf64_Off offset = phdr->p_offset;
 	Elf64_Xword filesz = phdr->p_filesz;
 //	Elf64_Xword memsz = phdr->p_memsz;
@@ -92,11 +91,28 @@ void *load_code_segment(FILE *obj, Elf64_Phdr *phdr)
 //	Elf64_Xword real_memsz = (memsz+4096)/4096 * 4096;
 
 	log_info("fd %d", fd);
-	//mmap(NULL, real_memsz, PROT_EXEC|PROT_WRITE, MAP_SHARED, fd, offset);
-	//ret = mmap(NULL, filesz, PROT_EXEC|PROT_WRITE, MAP_SHARED, fd, offset);
-//	log_debug("offset %x, filesz %x, memsz %x, align %x, realsz %x, flag %x",
-//			offset, filesz, memsz, align, real_memsz, flag);
 	ret = mmap(NULL, filesz, PROT_EXEC|PROT_READ, MAP_PRIVATE, fd, offset);
+	if (ret == MAP_FAILED) log_error("mmap failed %d: %s", errno, strerror(errno));
+	log_debug("ret %p", ret);
+
+	return ret;
+}
+
+void *load_data_segment(FILE *obj, Elf64_Phdr *phdr, void *data_loc)
+{
+	int fd = fileno(obj);
+	void *ret = NULL;
+	Elf64_Off offset = phdr->p_offset;
+	Elf64_Xword filesz = phdr->p_filesz;
+
+	Elf64_Xword memsz = phdr->p_memsz;
+	Elf64_Xword align = phdr->p_align;
+	Elf64_Word flag = phdr->p_flags;
+
+	log_debug("fd %d. offset %x, filesz %x, memsz %x, align %x, flag %x. %p",
+			fd, offset, filesz, memsz, align, flag, data_loc);
+
+	ret = mmap(data_loc, filesz, PROT_WRITE|PROT_READ, MAP_PRIVATE, fd, 0);
 	if (ret == MAP_FAILED) log_error("mmap failed %d: %s", errno, strerror(errno));
 	log_debug("ret %p", ret);
 
@@ -111,16 +127,38 @@ static inline int is_code_seg(Elf64_Phdr *phdr)
 	return 0;
 }
 
+static inline int is_data_seg(Elf64_Phdr *phdr)
+{
+	if ((phdr->p_type == PT_LOAD) && (phdr->p_flags & PF_W)) {
+		return 1;
+	}
+	return 0;
+}
+
 int load_segments(FILE *obj, Elf64_Ehdr * elf_header, Elf64_Phdr *phdr, void **text_base)
 {
 	int i = 0;
+	Elf64_Phdr *cseg = NULL;
+	Elf64_Phdr *dseg = NULL;
 
 	for (i = 0; i < elf_header->e_phnum; i++) {
 		if (is_code_seg(phdr + i)) {
-			log_info("off 0x%x, FileSiz 0x%x", (phdr + i)->p_offset, (phdr + i)->p_filesz);
-			*text_base = load_code_segment(obj, phdr + i);
+			cseg = phdr + i;
+			log_debug("code seg: off 0x%x, FileSiz 0x%x", cseg->p_offset, cseg->p_filesz);
+		}
+		if (is_data_seg(phdr + i)) {
+			dseg = phdr + i;
+			log_debug("data seg: off 0x%x, FileSiz 0x%x", dseg->p_offset, dseg->p_filesz);
 		}
 	}
+
+	if (cseg == NULL || dseg == NULL) return 1;
+
+	/* load code segment. */
+	*text_base = load_code_segment(obj, cseg);
+
+	/* load data segment. */
+	load_data_segment(obj, dseg, *text_base + dseg->p_vaddr);
 
 	return 0;
 }
