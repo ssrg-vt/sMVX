@@ -16,9 +16,11 @@ HUSH_LD		= @echo ' [LD]\t'$@;
 HUSH_AR		= @echo ' [AR]\t'$@;
 endif
 
-CC = gcc
+CC = /usr/local/musl/bin/musl-gcc
+#CC = gcc
+CPP = g++
 AR = ar
-CFLAGS := -Wall
+CFLAGS := -Wall -g
 LDFLAGS := -pie
 MKDIR = mkdir
 DEPS = ./inc/lmvx.h
