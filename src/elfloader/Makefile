@@ -1,26 +1,29 @@
 .PHONY: all clean test
 
 SRC_DIR := ./src
-LOADER_SRC_DIR := ./src/loader
+LIB_DIR := ./lib
+DIRS	:= $(SRC_DIR) $(LIB_DIR)
 INC_DIR := ./inc
 TEST_DIR := ./test
 OBJ_DIR := ./obj
 CONF_TAB_ADDR := conf/tab_addr.conf
 
-SRC_FILES	:= $(wildcard $(SRC_DIR)/*.c)
-OBJ_FILES	:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+SRC_FILES		:= $(SRC_DIR)/loader.c $(LIB_DIR)/log.c $(LIB_DIR)/env.c
+#LIB_FILES		:= $(wildcard $(LIB_DIR)/*.c)
+#FILES			:= $(foreach dir,$(DIRS),$(wildcard $(dir)/*.c))
+LIB_OBJ_FILES	:= $(patsubst $(LIB_DIR)/%.c,$(OBJ_DIR)/%.o,$(wildcard $(LIB_DIR)/*.c))
 
 ifneq ($(VERBOSE),YES)
-HUSH_CC		= @echo ' [CC]\t'$@;
-HUSH_LD		= @echo ' [LD]\t'$@;
-HUSH_AR		= @echo ' [AR]\t'$@;
+HUSH_CC		= @echo ' [CC]\t\t'$@;
+HUSH_CC_LD	= @echo ' [CC+LD]\t'$@;
+HUSH_LD		= @echo ' [LD]\t\t'$@;
+HUSH_AR		= @echo ' [AR]\t\t'$@;
 endif
 
-CC = /usr/local/musl/bin/musl-gcc
-#CC = gcc
+CC = /usr/local/musl/bin/musl-gcc	#CC = gcc
 CPP = g++
 AR = ar
-CFLAGS := -Wall -g
+CFLAGS := -Wall -g -fPIC
 LDFLAGS := -pie
 MKDIR = mkdir
 DEPS = ./inc/lmvx.h
@@ -31,27 +34,35 @@ all: pre $(BIN)
 	@echo "BIN:" $(BIN)
 
 pre:
+#	@echo $(FILES)
+	@echo $(SRC_FILES)
+#	@echo $(LIB_FILES)
+	@echo $(LIB_OBJ_FILES)
+	@echo $(LIB_DIR)/%.c
 	$(MKDIR) -p $(OBJ_DIR)
 
 ### loader.so
-loader.so: $(LOADER_SRC_DIR)/loader.c $(SRC_DIR)/log.c $(SRC_DIR)/env.c
-	$(HUSH_CC) $(CC) -I$(INC_DIR) -Wall -fPIC -shared -g $^ -o $@ -ldl
+loader.so: $(SRC_FILES)
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) -I$(INC_DIR) -Wall -fPIC -shared -g $^ -o $@ -ldl
 
 ### liblmvx.a
-liblmvx.a: $(OBJ_FILES)
+liblmvx.a: $(LIB_OBJ_FILES)
+	@echo "Generate "$@":"
 	$(HUSH_AR) $(AR) -cq $@ $^
 
 ### Two binaries, from (mostly) same source code
 test.bin: $(TEST_DIR)/test.c $(DEPS) liblmvx.a
+	@echo "Generate "$@":"
 	$(HUSH_CC) $(CC) $(CFLAGS) $^ -O0 -o $@
 
+$(OBJ_DIR)/%.o: $(LIB_DIR)/%.c
+	$(HUSH_CC) $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+
 ### I need to manually modify test.c (exclude lib) to generate test3
-### TODO
+### TODO: no need for this
 test3: $(TEST_DIR)/test.c $(DEPS)
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -O3 -o $@
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(HUSH_CC) $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
 clean:
 	rm -rf *.o $(BIN) $(OBJ_DIR) $(CONF_TAB_ADDR)

@@ -19,9 +19,9 @@
 #include <elf.h>
 #include <sys/mman.h>
 
-#include "../../inc/lmvx.h"
-#include "../../inc/log.h"
-#include "../../inc/env.h"
+#include "../inc/lmvx.h"
+#include "../inc/log.h"
+#include "../inc/env.h"
 #include "loader.h"
 
 /*

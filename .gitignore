@@ -57,3 +57,5 @@ test
 test.bin
 test3
 tab_addr.conf
+.gdb_history
+peda-session*

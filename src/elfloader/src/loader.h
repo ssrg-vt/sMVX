@@ -3,7 +3,7 @@
 
 #include <elf.h>
 #include <assert.h>
-#include "../../inc/log.h"
+#include "../inc/log.h"
 
 typedef struct {
 	uint64_t code_start;
