@@ -19,8 +19,9 @@
 #include <elf.h>
 #include <sys/mman.h>
 
-#include "../../inc/lmvx.h"
-#include "../../inc/log.h"
+#include "../inc/lmvx.h"
+#include "../inc/log.h"
+#include "../inc/env.h"
 #include "loader.h"
 
 /*
@@ -44,92 +45,105 @@
  * } Elf64_Ehdr;			// u64*8 = 8*8 bytes = 64 bytes
  * */
 
-#define WARN_BIN	 "No variant binary specified."
 #define WARN_CONF	 "No conf file specified."
-#define USAGE 		 "Use: $ BIN=<binary-variant> CONF=<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> p1 p2 ..."
+#define USAGE 		 "Use: $ CONF=<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> p1 p2 ..."
 
-int init(void) __attribute__ ((constructor));
-int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr);
-int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl);
+#define TAB_SIZE	16
+/* num of func_desc_t, and the array of func_desc_t */
+int g_func_num = 0;
+func_desc_t g_func[TAB_SIZE];
 
-int func_num = 0;
-void *text_base = NULL;
+/* describe the proc info */
+static proc_info_t pinfo;
+
+static void *new_text_base = NULL;
 
 /**
  * Entry function of the LD_PRELOAD library.
  * */
-int init(void)
+int init(int argc, char** argv, char** env)
 {
 	// get env file names
-	const char *bin_filename = getenv("BIN");
 	const char *conf_filename = getenv("CONF");
+	printf("%x. %s\n", argc, getenv("LOG_LEVEL"));
+	init_env();
 
-	if (bin_filename == NULL) {
-		log_error(WARN_BIN);
-		log_error(USAGE);
-		exit(EXIT_FAILURE);
-	}
 	if (conf_filename == NULL) {
 		log_error(WARN_CONF);
 		log_error(USAGE);
 		exit(EXIT_FAILURE);
 	}
-
-	// initialize ind_table (<name,addr> table)
-	ind_table = malloc(TAB_SIZE*sizeof(tbl_entry_t));
-	log_info("LD_PRELOAD init function. BIN: %s. CONF: %s.", bin_filename, conf_filename);
-//	log_info("--> loader malloc ind_tbl %p, ind_table[0].p %p", ind_table, &(ind_table[0].func_addr));
+//	log_info("LD_PRELOAD init function. CONF: %s. binary: %s.",
+//			conf_filename, argv[0]);
 
 	// load conf file
-	if (init_conf(conf_filename, ind_table, CONF_TAB_ADDR_FILE)) {
+	if (init_conf(conf_filename, g_func)) {
 		log_error("Failed to load conf file.");
 		exit(EXIT_FAILURE);
 	}
 
-	// load ELF .text section
-	if (load_elf(bin_filename, ind_table)) {
-		log_error("Failed to load ELF binary.");
-		exit(EXIT_FAILURE);
-	}
+	// read proc, find .text base
+	//read_proc(argv[0] + 2, &pinfo);
+	read_proc("test.bin", &pinfo);
+
+	// dup proc mem
+	new_text_base = dup_proc(&pinfo);
+
+	// rewrite first (several) instructions to redirect control to clone
+	rewrite_insn(&pinfo, g_func);
+
+	//log_debug("code 0x%lx/0x%lx. new text base %p", pinfo.code_start,
+	//		pinfo.code_end, new_text_base);
+	gen_conf(g_func, new_text_base, CONF_TAB_ADDR_FILE);
 
 	return 0;
 }
 
 /**
- * Loading the configuration files (list of duplicated functions).
+ * Loading the config files (a list of sensitive functions <name,offset>)
+ *   into an in-memory func_desc_t array.
+ * Log the in-memory array address.
  * */
-int init_conf(const char *conf_filename, tbl_entry_t *ind_tbl, const char *conf_tbl_addr)
+int init_conf(const char *conf_filename, func_desc_t *func)
 {
-	FILE *conf = fopen(conf_filename, "r");
-	FILE *conf_tbl = fopen(conf_tbl_addr, "w");
+	FILE *conf = fopen(conf_filename, "r");		// conf of function list.
 	char func_name[128];
+	int len = 0;
+	uint32_t func_off = 0;
 
 	if (conf == NULL) {
-		log_error("Unable to open file.");
+		log_error("Unable to open conf file: %s.", conf_filename);
 		return 1;
 	}
 
-	// zero out the indirection table and the number of table entries (func num).
-	memset(ind_tbl, 0, TAB_SIZE * sizeof(tbl_entry_t));
-	func_num = 0;
-
-	while (fscanf(conf, "%s", func_name) != EOF) {
-		ind_tbl[func_num].func_name = malloc(strlen(func_name) + 1);
-		strcpy(ind_tbl[func_num].func_name, func_name);
-		log_info("%d: %s. %s. %u/%u", func_num, func_name, ind_tbl[func_num].func_name,
-				strlen(func_name), sizeof(func_name));
-		func_num++;
+	g_func_num = 0;
+	while (fscanf(conf, "%s %x", func_name, &func_off) != EOF) {
+		len = strlen(func_name);
+		// name
+		func[g_func_num].name = malloc(len + 1);
+		//func[g_func_num].name[len] = 0;
+		//strncpy(func[g_func_num].name, func_name, len);
+		strcpy(func[g_func_num].name, func_name);
+		// offset + flag
+		func[g_func_num].offset = func_off;
+		func[g_func_num].flag = 0;
+		log_debug("[%2d] %s: offset 0x%x. name len %d", g_func_num, func_name, func_off, len);
+		g_func_num++;
 	}
 	fclose(conf);
-//	log_info("num of functions %d", func_num);
-
-	// print out the indirection table location in memory.
-	fprintf(conf_tbl, "%p", ind_tbl);
-	fclose(conf_tbl);
 
 	return 0;
 }
 
+void gen_conf(func_desc_t *func, void *base, const char *CONF_TBL_ADDR)
+{
+	FILE *conf_tbl = fopen(CONF_TBL_ADDR, "w");	// conf file of ind_tbl address
+
+	fprintf(conf_tbl, "%p %p", func, base);
+	fclose(conf_tbl);
+}
+
+#if 0
 /**
  * Process the .text section:
  * 	- alloc memory for variant's .text with mmap
@@ -230,20 +244,16 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 	if (verify_elf(elf_header)) return 1;
 
 	/* read section and program headers from binary */
-	read_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
+	read_seg_headers(obj, elf_header, &elf_section_headers, &elf_program_headers);
 
 	/* read section header string table, retrieve sh_strtab */
 	read_sh_strtab(obj, elf_header, elf_section_headers, &sh_strtab);
 
+	/* load code and data segment */
+	load_segments(obj, elf_header, elf_program_headers, &text_base);
+
 	for (i = 0; i < elf_header->e_shnum; i++) {
 		Elf64_Shdr *section = elf_section_headers + i;
-
-		// load .text section into memory space
-		if (strcmp(".text", sh_strtab + section->sh_name) == 0) {
-			text_base = process_text_section(obj, elf_section_headers + i);
-			if (text_base == NULL)
-				log_error("variant .text allocation error");
-		}
 
 		if (strcmp(".symtab", sh_strtab + section->sh_name) == 0) {
 			symtab_header = elf_section_headers + i;
@@ -263,5 +273,27 @@ int load_elf(const char *bin_filename, tbl_entry_t *ind_tbl)
 
 	return 0;
 }
+#endif
 
+#if 0
+static int retrieve_args(int argc, char** argv, char** env) {
+  log_debug("print args:");
+  for (int i = 0; i < argc; ++i)
+	  log_debug("  Arg %d (%p) '%s'\n", i, (void*)argv[i], argv[i]);
+  return 0;
+}
 
+void f1()
+{
+	printf("1");
+}
+
+void f2()
+{
+	printf("2");
+}
+
+__attribute__((section(".preinit_array"))) static void *c1 = &f1;
+__attribute__((section(".init_array"))) static void *ctr = &retrieve_args;
+__attribute__((section(".fini_array"))) static void *c2 = &f2;
+#endif

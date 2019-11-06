@@ -5,16 +5,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sched.h>
-#include <linux/sched.h>
+//#include <linux/sched.h>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/wait.h>	// wait()
 
 #include "../inc/lmvx.h"
 #include "../inc/log.h"		// log functions
+#include "../inc/env.h"
 
 char *stack = NULL;
 char *stackTop = NULL;
+
+static func_desc_t *g_func = NULL;
+static void *g_base = NULL;
+
+int flag_lmvx = 0;
 
 /*
  * Global memory to store thread function call arguments
@@ -23,32 +29,23 @@ shim_args_t args;
 
 int _lmvx_thread_shim(void *p)
 {
-	printf("%s: hello. thread id %ld. pid %d\n", __func__, syscall(SYS_gettid), getpid());
-	//printf("%p. num %lu\n", p, ((shim_args_t *)p)->num_args);
-	printf("%p. num %lu. target 0x%lx\n", (void *)&args, args.num_args, args.jump_addr);
+	log_info("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 
 	switch (args.num_args) {
 		case 0:
-			goto _0;
-			break;
+			goto _0; break;
 		case 1:
-			goto _1;
-			break;
+			goto _1; break;
 		case 2:
-			goto _2;
-			break;
+			goto _2; break;
 		case 3:
-			goto _3;
-			break;
+			goto _3; break;
 		case 4:
-			goto _4;
-			break;
+			goto _4; break;
 		case 5:
-			goto _5;
-			break;
+			goto _5; break;
 		case 6:
-			goto _6;
-			break;
+			goto _6; break;
 	}
 
 _6:
@@ -64,24 +61,25 @@ _2:
 _1:
 	__asm__ __volatile__("mov %0, %%rdi"::"g"(args.arg0));
 _0:
-//	__asm__ __volatile__("jmp *%0"::"g"(args.jump_addr));
 	__asm__ __volatile__("call *%0"::"g"(args.jump_addr));
-//	while(1) usleep(5000);
 
 	return 0;
 }
 
-void *find_symbol_addr(const char *symbol, tbl_entry_t *ind_tbl)
+int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
 {
 	int i;
-	tbl_entry_t *entry;
+	func_desc_t *entry;
+
 	for (i = 0; i < TAB_SIZE; i++) {
 		entry = ind_tbl + i;
-		if (entry->func_name == NULL) break;
-		if (strcmp(symbol, entry->func_name) == 0)
-			return entry->func_addr;
+		log_debug("[%2d]: %s|%s, %x, %x. %d", i, entry->name, symbol,
+				entry->offset, entry->flag, strcmp(entry->name, symbol));
+		if (entry->name == NULL) break;
+		if (!strcmp(symbol, entry->name))
+			return i;
 	}
-	return NULL;
+	return -1;
 }
 
 /**
@@ -90,24 +88,32 @@ void *find_symbol_addr(const char *symbol, tbl_entry_t *ind_tbl)
 int lmvx_init()
 {
 	int i = 0;
+	init_env();
 
-	// load the conf file, read ind_table base addr
+	// load the conf file, read g_func base addr
 	FILE *conf_tbl = fopen(CONF_TAB_ADDR_FILE, "r");
 	if (conf_tbl == NULL) {
-		log_error("Failed to open CONF file for indirection table.");
-		//exit(EXIT_FAILURE);
+		log_info("No CONF file for indirection table. vanilla mode!");
+		flag_lmvx = 0;
 		return 1;
 	}
-	fscanf(conf_tbl, "%p", &ind_table);
 
-	// initialize the ind_table
-	log_info("ind_table %p.", ind_table);
-	while (ind_table[i].func_name != NULL) {
-		log_info("--> [%2d].name %s: %p", i, ind_table[i].func_name, ind_table[i].func_addr);
+	// otherwise, enable lmvx mode.
+	flag_lmvx = 1;
+
+	fscanf(conf_tbl, "%p %p", &g_func, &g_base);
+	log_debug("g_func %p. g_base %p", g_func, g_base);
+	fclose(conf_tbl);
+	remove(CONF_TAB_ADDR_FILE);	// remove the tmp conf file. TODO: vulnerable
+
+	// initialize the g_func
+	while (g_func[i].name != NULL) {
+		log_debug("--> [%2d].name %s: %x. flag %d", i, g_func[i].name,
+				g_func[i].offset, g_func[i].flag);
 		i++;
 	}
-	log_info("test -- check the first 8 bytes of %s: 0x%lx",
-			ind_table[0].func_name, *(long *)(ind_table[0].func_addr));
+	log_debug("test -- check the first 8 bytes of %s: 0x%x",
+			g_func[0].name, (g_func[0].offset));
 
 	// initialize the thread stack
 	stack = malloc(STACK_SIZE);
@@ -128,11 +134,16 @@ void lmvx_start(const char *func_name, int n, ...)
 	va_list params;
 	u64 param;
 	u64 *p = (u64 *)&args;
-	int i = 0;
+	int i = 0, idx;
+
+	if (!flag_lmvx) return;
 
 	assert(n <= 6);		// TODO: handle functions with 6+ params
 
-	*p = (u64)find_symbol_addr(func_name, ind_table);
+	log_debug("name %s", func_name);
+	idx = (u64)find_symbol_addr(func_name, g_func);
+	*p = (u64)g_base + g_func[idx].offset;
+	log_debug("idx %d, off %x. 0x%lx", idx, g_func[idx].offset, *p);
 	*(p + 1) = n;
 	va_start(params, n);
 	while (i < n) {
@@ -143,10 +154,11 @@ void lmvx_start(const char *func_name, int n, ...)
 	}
 	va_end(params);
 
-	log_info("%s: hello. thread id %ld.", __func__, syscall(SYS_gettid));
+	log_info("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	//clone(_lmvx_thread_shim, stackTop, CLONE_VM, (void *)p);	// p & c share same space
 	// different address space, share files
-	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);}
+	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+}
 
 /**
  * lMVX finishes the variant thread
@@ -154,10 +166,14 @@ void lmvx_start(const char *func_name, int n, ...)
 void lmvx_end()
 {
 	int status;
-	log_info("%s: goodbye. thread id %ld.", __func__, syscall(SYS_gettid));
+
+	if (!flag_lmvx) return;
+
+	log_info("%s: wait child pid %d.", __func__, getpid());
+
 	if (wait(&status) == -1) {
 		log_error("Wait for child error. errno %d (%s)", errno, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	log_info("Parent exits");
+	log_info("parent exits\n");
 }
