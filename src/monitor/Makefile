@@ -1,4 +1,4 @@
-CC          := gcc
+CC          := /usr/local/musl/bin/musl-gcc
 OPT_LEVEL   := -O0
 INC         := -Iheader -Icommon
 SRC         := $(wildcard *.c)

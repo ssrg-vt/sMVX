@@ -4,8 +4,12 @@
 
 void call_other_function(char* string)
 {
+	char* a;
 	test_function();
-	printf("This is the string: %s\n", string);
+	//a = (char*)0x7ffff7f1a000;
+	//printf("Test: %s\n", a);
+
+	//printf("This is the string: %s\n", string);
 	// Redirect stderr to stdout
 	//dup2(1, 2);
 	//printf("step 3: stderr redirected to stdout\n");
