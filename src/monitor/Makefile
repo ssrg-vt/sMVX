@@ -4,7 +4,7 @@ INC         := -Iheader -Icommon
 SRC         := $(wildcard *.c)
 OBJ         := $(SRC:.c=.o)
 CFLAGS      := $(OPT_LEVEL) -c $(INC) -fPIC
-LDFLAGS     := -L/usr/local/lib -lseccomp
+LDFLAGS     := -L/usr/local/lib #-lseccomp
 
 all: monitor_trampoline
 

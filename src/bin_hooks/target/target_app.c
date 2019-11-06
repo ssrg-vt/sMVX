@@ -5,7 +5,7 @@
 void call_other_function(char* string)
 {
 	char* a;
-	test_function();
+	//test_function();
 	//a = (char*)0x7ffff7f1a000;
 	//printf("Test: %s\n", a);
 
