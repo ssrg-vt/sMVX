@@ -20,6 +20,7 @@ char *stackTop = NULL;
 static func_desc_t *g_func = NULL;
 static void *g_base = NULL;
 
+/* A global variable used for executing critical function once */
 int flag_lmvx = 0;
 
 /*
@@ -29,7 +30,7 @@ shim_args_t args;
 
 int _lmvx_thread_shim(void *p)
 {
-	log_info("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
+	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 
 	switch (args.num_args) {
 		case 0:
@@ -73,7 +74,7 @@ int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
 
 	for (i = 0; i < TAB_SIZE; i++) {
 		entry = ind_tbl + i;
-		log_debug("[%2d]: %s|%s, %x, %x. %d", i, entry->name, symbol,
+		log_trace("[%2d]: %s|%s, %x, %x. %d", i, entry->name, symbol,
 				entry->offset, entry->flag, strcmp(entry->name, symbol));
 		if (entry->name == NULL) break;
 		if (!strcmp(symbol, entry->name))
@@ -140,24 +141,26 @@ void lmvx_start(const char *func_name, int n, ...)
 
 	assert(n <= 6);		// TODO: handle functions with 6+ params
 
-	log_debug("name %s", func_name);
+	log_trace("name %s", func_name);
 	idx = (u64)find_symbol_addr(func_name, g_func);
 	*p = (u64)g_base + g_func[idx].offset;
-	log_debug("idx %d, off %x. 0x%lx", idx, g_func[idx].offset, *p);
+	log_trace("idx %d, off %x. 0x%lx", idx, g_func[idx].offset, *p);
 	*(p + 1) = n;
 	va_start(params, n);
 	while (i < n) {
 		param = va_arg(params, u64);
 		*(p + 2 + i) = param;
-//		log_info("%s: n %d, i %d. val: %lu -- 0x%lx", func_name, n, i, param, param);
 		i++;
 	}
 	va_end(params);
 
-	log_info("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
-	//clone(_lmvx_thread_shim, stackTop, CLONE_VM, (void *)p);	// p & c share same space
+	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+
+	flag_lmvx = 0;
 	// different address space, share files
 	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+	//clone(_lmvx_thread_shim, stackTop, CLONE_VM, (void *)p);	// p & c share same space
+	flag_lmvx = 1;
 }
 
 /**

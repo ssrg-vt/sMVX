@@ -59,3 +59,4 @@ test3
 tab_addr.conf
 .gdb_history
 peda-session*
+nginx.dec

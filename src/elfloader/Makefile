@@ -30,16 +30,20 @@ DEPS = ./inc/lmvx.h
 
 BIN := liblmvx.a test.bin loader.so
 
-all: pre $(BIN)
+all: pre $(BIN) post
 	@echo "BIN:" $(BIN)
 
 pre:
-#	@echo $(FILES)
 	@echo $(SRC_FILES)
-#	@echo $(LIB_FILES)
 	@echo $(LIB_OBJ_FILES)
 	@echo $(LIB_DIR)/%.c
 	$(MKDIR) -p $(OBJ_DIR)
+
+post: test.bin
+	@echo "=== dump sensitive functions ==="
+	@objdump -S test.bin | grep "print_hello>:"
+	@objdump -S test.bin | grep "print_maps>:"
+	@cat conf/func.conf
 
 ### loader.so
 loader.so: $(SRC_FILES)
@@ -58,11 +62,6 @@ test.bin: $(TEST_DIR)/test.c $(DEPS) liblmvx.a
 
 $(OBJ_DIR)/%.o: $(LIB_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
-
-### I need to manually modify test.c (exclude lib) to generate test3
-### TODO: no need for this
-test3: $(TEST_DIR)/test.c $(DEPS)
-	$(HUSH_CC) $(CC) $(CFLAGS) $< -O3 -o $@
 
 clean:
 	rm -rf *.o $(BIN) $(OBJ_DIR) $(CONF_TAB_ADDR)
