@@ -1,15 +1,16 @@
 CC          := /usr/local/musl/bin/musl-gcc
+#CC          := gcc
 OPT_LEVEL   := -O0
 INC         := -Iheader -Icommon
 SRC         := $(wildcard *.c)
 OBJ         := $(SRC:.c=.o)
 CFLAGS      := $(OPT_LEVEL) -c $(INC) -fPIC
-LDFLAGS     := -L/usr/local/lib #-lseccomp
+LDFLAGS     := -L/usr/local/lib  #-lseccomp #Uncomment after fixing issue #13 in github
 
 all: monitor_trampoline
 
 monitor_trampoline : $(OBJ)
-	$(CC) -shared $^ $(LDFLAGS) -o libmonitor_trampoline.so -ldl
+	$(CC) -shared $^ $(LDFLAGS) -o libmonitor_trampoline.so #-ldl
 
 install: libmonitor_trampoline.so
 	install -C libmonitor_trampoline.so /usr/local/lib/

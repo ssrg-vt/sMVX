@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <lightweight_mvx.h>
+//#include <lightweight_mvx.h>
 
 void call_other_function(char* string)
 {
@@ -9,7 +9,7 @@ void call_other_function(char* string)
 	//a = (char*)0x7ffff7f1a000;
 	//printf("Test: %s\n", a);
 
-	//printf("This is the string: %s\n", string);
+	printf("This is the string: %s\n", string);
 	// Redirect stderr to stdout
 	//dup2(1, 2);
 	//printf("step 3: stderr redirected to stdout\n");
