@@ -11,6 +11,8 @@ typedef struct {
 	uint64_t data_end;
 } proc_info_t;
 
+int read_proc(const char *bin_name, proc_info_t *pinfo);
+void store_original_functions();
 
 
 #endif
