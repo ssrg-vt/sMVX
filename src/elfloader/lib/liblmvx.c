@@ -67,15 +67,19 @@ _0:
 	return 0;
 }
 
+/**
+ * Return the index of the func_desc_t table with a symbol as input.
+ * */
 int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
 {
 	int i;
 	func_desc_t *entry;
 
+	assert(symbol != NULL);
 	for (i = 0; i < TAB_SIZE; i++) {
 		entry = ind_tbl + i;
-		log_trace("[%2d]: %s|%s, %x, %x. %d", i, entry->name, symbol,
-				entry->offset, entry->flag, strcmp(entry->name, symbol));
+		log_trace("[%2d]: %s|%s, %x, %x.", i, entry->name, symbol,
+				entry->offset, entry->flag);
 		if (entry->name == NULL) break;
 		if (!strcmp(symbol, entry->name))
 			return i;
@@ -84,9 +88,11 @@ int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
 }
 
 /**
- * lMVX library initialization
+ * lMVX library initialization.
+ * Init the log env, open conf file (func desc table), init child stack memory.
+ * It sets a global variable flag_lmvx when successfully loads the conf file.
  * */
-int lmvx_init()
+int lmvx_init(void)
 {
 	int i = 0;
 	init_env();
@@ -130,7 +136,7 @@ int lmvx_init()
 /**
  * lMVX spawns a variant thread
  * */
-void lmvx_start(const char *func_name, int n, ...)
+void lmvx_start(const char *func_name, int argc, ...)
 {
 	va_list params;
 	u64 param;
@@ -139,15 +145,15 @@ void lmvx_start(const char *func_name, int n, ...)
 
 	if (!flag_lmvx) return;
 
-	assert(n <= 6);		// TODO: handle functions with 6+ params
+	assert(argc <= 6);		// TODO: handle functions with 6+ params
 
 	log_trace("name %s", func_name);
 	idx = (u64)find_symbol_addr(func_name, g_func);
 	*p = (u64)g_base + g_func[idx].offset;
 	log_trace("idx %d, off %x. 0x%lx", idx, g_func[idx].offset, *p);
-	*(p + 1) = n;
-	va_start(params, n);
-	while (i < n) {
+	*(p + 1) = argc;
+	va_start(params, argc);
+	while (i < argc) {
 		param = va_arg(params, u64);
 		*(p + 2 + i) = param;
 		i++;
@@ -159,24 +165,21 @@ void lmvx_start(const char *func_name, int n, ...)
 	flag_lmvx = 0;
 	// different address space, share files
 	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
-	//clone(_lmvx_thread_shim, stackTop, CLONE_VM, (void *)p);	// p & c share same space
 	flag_lmvx = 1;
 }
 
 /**
  * lMVX finishes the variant thread
  * */
-void lmvx_end()
+void lmvx_end(void)
 {
 	int status;
-
 	if (!flag_lmvx) return;
 
-	log_info("%s: wait child pid %d.", __func__, getpid());
-
+	log_info("%s: %d wait child pid.", __func__, getpid());
 	if (wait(&status) == -1) {
 		log_error("Wait for child error. errno %d (%s)", errno, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	log_info("parent exits\n");
+	log_info("Leaving deC code region.\n");
 }
