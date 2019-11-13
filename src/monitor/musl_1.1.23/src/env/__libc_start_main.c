@@ -7,6 +7,21 @@
 #include "atomic.h"
 #include "libc.h"
 
+#define PKEY_NO_ACCESS  (0x1)
+#define PKEY_ALL_ACCESS (0x0)
+#define ACTIVATE()    \
+	do {          \
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS << (2*1))),\
+		"c" (0), "d" (0));                                             \
+	}while(0)
+
+#define DEACTIVATE()                                                           \
+	do {                                                                   \
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_ALL_ACCESS <<        \
+						      (2*1))), "c" (0), "d"    \
+		 (0));                                                         \
+	} while(0)
+
 static void dummy(void) {}
 weak_alias(dummy, _init);
 
@@ -88,9 +103,12 @@ int __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 static int libc_start_main_stage2(int (*main)(int,char **,char **), int argc, char **argv)
 {
 	char **envp = argv+argc+1;
+	int retcode = 0;
 	__libc_start_init();
-
+	ACTIVATE();
 	/* Pass control to the application */
-	exit(main(argc, argv, envp));
+	retcode = main(argc, argv, envp);
+	DEACTIVATE();
+	exit(retcode);
 	return 0;
 }
