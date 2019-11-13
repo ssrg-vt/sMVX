@@ -32,6 +32,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
 	log_debug("bin: %s", bin_name);
+	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
 	while (fgets(line, 511, fproc) != NULL) {
