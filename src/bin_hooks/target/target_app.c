@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 //#include <lightweight_mvx.h>
 
 void call_other_function(char* string)

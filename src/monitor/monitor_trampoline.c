@@ -20,9 +20,6 @@
 #include <pkey.h>
 #include <syscall_blocking.h>
 
-/* Main pkey used to lock all our libraries */
-unsigned long pkey = 0;
-
 /**
  * Read /proc/self/maps, find out the code/data locations
  * */
@@ -75,8 +72,7 @@ void __attribute__ ((constructor)) init_tramp(void)
 
 	/* Associate pages of the libraries with the allocated pkey */
 	associate_pkey_library(&monitor_info, pkey);
-	//associate_pkey_library(&libc_info, pkey);
-	//activate_pkey();
+	associate_pkey_library(&libc_info, pkey);
 }
 
 void __attribute__ ((destructor)) exit_tramp(void)
