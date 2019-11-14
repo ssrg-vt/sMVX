@@ -57,6 +57,7 @@ func_desc_t g_func[TAB_SIZE];
 /* describe the proc info */
 static proc_info_t pinfo;
 
+/* base address of the newly allocated code */
 static void *new_text_base = NULL;
 
 /**
@@ -141,6 +142,9 @@ int init_conf(const char *conf_filename, func_desc_t *func)
 	return 0;
 }
 
+/**
+ * Temporarily store the func_desc_t array in a file.
+ * */
 void gen_conf(func_desc_t *func, void *base, const char *CONF_TBL_ADDR)
 {
 	FILE *conf_tbl = fopen(CONF_TBL_ADDR, "w");	// conf file of ind_tbl address

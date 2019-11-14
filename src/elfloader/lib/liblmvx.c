@@ -142,6 +142,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	u64 param;
 	u64 *p = (u64 *)&args;
 	int i = 0, idx;
+	int ret = 0;
 
 	if (!flag_lmvx) return;
 
@@ -164,8 +165,9 @@ void lmvx_start(const char *func_name, int argc, ...)
 
 	flag_lmvx = 0;
 	// different address space, share files
-	clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+	ret = clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
 	flag_lmvx = 1;
+	log_info("clone ret (child pid) %d", ret);
 }
 
 /**

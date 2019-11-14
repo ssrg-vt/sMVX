@@ -41,9 +41,12 @@ pre:
 
 post: test.bin
 	@echo "=== dump sensitive functions ==="
-	@objdump -S test.bin | grep "print_hello>:"
-	@objdump -S test.bin | grep "print_maps>:"
+	@objdump -S test.bin | grep "recursive_func>:"
+	@objdump -S test.bin | grep "simple_func>:"
 	@cat conf/func.conf
+
+test_run:
+	BIN=test.bin CONF=conf/func.conf LD_PRELOAD=./loader.so ./test.bin
 
 ### loader.so
 loader.so: $(SRC_FILES)
