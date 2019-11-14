@@ -9,7 +9,6 @@
 #include <sched.h>
 #include <errno.h>
 #include <sys/syscall.h>
-#include <dlfcn.h>
 #include <stdarg.h>
 #include <stddef.h>
 
@@ -20,8 +19,8 @@
 #include <pkey.h>
 #include <syscall_blocking.h>
 
-/* Main pkey used to lock all our libraries */
-unsigned long pkey = 0;
+/* PID of the child variant */
+unsigned long mvx_child_pid = 0;
 
 /**
  * Read /proc/self/maps, find out the code/data locations
@@ -58,12 +57,15 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	return 0;
 }
 
+
 void __attribute__ ((constructor)) init_tramp(void)
 {
+	unsigned long pkey;
 	proc_info_t monitor_info, libc_info;
 
-	/* Always register printf in this order */
-	real_printf = dlsym(RTLD_NEXT, "printf");
+	/* Always call these functions in this order because debug_printf uses
+	 * real_printf */
+	store_original_functions();
 	debug_printf("Trampoline library instantiated\n");
 
 	/* Associate keys with both the monitor and libc */
@@ -75,8 +77,7 @@ void __attribute__ ((constructor)) init_tramp(void)
 
 	/* Associate pages of the libraries with the allocated pkey */
 	associate_pkey_library(&monitor_info, pkey);
-	//associate_pkey_library(&libc_info, pkey);
-	//activate_pkey();
+	associate_pkey_library(&libc_info, pkey);
 }
 
 void __attribute__ ((destructor)) exit_tramp(void)
