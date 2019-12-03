@@ -1,4 +1,4 @@
-#include <monitor_trampoline.h>
+#include <libmonitor.h>
 #include <sys/mman.h>
 #include <sys/syscall.h>
 #include <sys/prctl.h>

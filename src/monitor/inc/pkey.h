@@ -1,7 +1,7 @@
 #ifndef __PKEY_H__
 #define __PKEY_H__
-#include <monitor_trampoline.h>
-
+#include <libmonitor.h>
+#include <loader.h>
 #define PKEY_NO_ACCESS  (0x1)
 #define PKEY_ALL_ACCESS (0x0)
 

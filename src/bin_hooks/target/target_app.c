@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include <sched.h>
 //#include <lightweight_mvx.h>
+#include <monitor_trampoline.h>
 
 int cloned_function(void* p)
 {
@@ -21,7 +22,7 @@ void call_other_function(char* string)
 	char* stackTop;
 
 	printf("This is the string: %s\n", string);
-
+	ld_preload_function(pid);
 	/* Fork Test */
 	//pid = fork();
 	//if (!pid)

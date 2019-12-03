@@ -15,58 +15,28 @@
 /* Local headers */
 #include <debug.h>
 #include <config.h>
-#include <monitor_trampoline.h>
+#include <libmonitor.h>
 #include <pkey.h>
 #include <syscall_blocking.h>
+#include <loader.h>
 
 /* PID of the child variant */
 unsigned long mvx_child_pid = 0;
 
-/**
- * Read /proc/self/maps, find out the code/data locations
- * */
-int read_proc(const char *bin_name, proc_info_t *pinfo)
-{
-	FILE * fproc;
-	char line[512];
-	char flag[8];
-	uint64_t start, end;
-	uint32_t file_offset, dev_major, dev_minor, inode;
-
-	fproc = fopen("/proc/self/maps", "r");
-	while (fgets(line, 511, fproc) != NULL) {
-		sscanf(line, "%lx-%lx %31s %x %x:%x %u", &start, &end, flag, 
-				&file_offset, &dev_major, &dev_minor, &inode);
-		if (strstr(line, bin_name)) {
-			if (!strcmp(flag, "r-xp")) {
-				pinfo->code_start = start;
-				pinfo->code_end = end;
-			}
-			if (!strcmp(flag, "r--p")) {
-				pinfo->rodata_start = start;
-				pinfo->rodata_end = end;
-			}
-			if (!strcmp(flag, "rw-p")) {
-				pinfo->data_start = start;
-				pinfo->data_end = end;
-			}
-		}
-	}
-	fclose(fproc);
-
-	return 0;
-}
-
-
-void __attribute__ ((constructor)) init_tramp(void)
+void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 {
 	unsigned long pkey;
 	proc_info_t monitor_info, libc_info;
 
+	/*Call this guy all the time first */
+	store_original_functions();
+
+	/* Load elf binary */
+	init_loader();
+
 	/* Always call these functions in this order because debug_printf uses
 	 * real_printf */
-	store_original_functions();
-	debug_printf("Trampoline library instantiated\n");
+	log_info("Trampoline library instantiated\n");
 
 	/* Associate keys with both the monitor and libc */
 	read_proc("libmonitor", &monitor_info);

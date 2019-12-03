@@ -22,13 +22,12 @@ endif
 
 CC = /usr/local/musl/bin/musl-gcc	#CC = gcc
 CPP = g++
-AR = ar
 CFLAGS := -Wall -g -fPIC
 LDFLAGS := -pie
 MKDIR = mkdir
 DEPS = ./inc/lmvx.h
 
-BIN := liblmvx.a test.bin loader.so
+BIN := liblmvx.a test.bin
 
 all: pre $(BIN) post
 	@echo "BIN:" $(BIN)

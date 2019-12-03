@@ -5,8 +5,8 @@ INC         := /usr/local/dec/inc/
 SRC         := $(wildcard *.c)
 OBJ         := $(SRC:.c=.o)
 CFLAGS      := $(OPT_LEVEL) -c -I$(INC)
-#LDFLAGS     := -L/usr/local/lib -llightweight_mvx
-LDFLAGS     := -L/usr/local/lib
+LDFLAGS     := -L/usr/local/lib -lmonitor_trampoline
+#LDFLAGS     := -L/usr/local/lib
 LD          := /usr/bin/ld
 
 all: target_app
