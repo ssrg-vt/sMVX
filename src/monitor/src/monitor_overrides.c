@@ -30,12 +30,15 @@ int (*real_fputc)(int c, FILE *f);
 int (*real_fflush)(FILE *f);
 int (* real_vsprintf)(char *restrict s, const char *restrict fmt, va_list ap);
 int (*real_puts)(const char *s);
+int (*real_vprintf)(const char *restrict fmt, va_list ap);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
 {
 	if (!(real_printf	= dlsym(RTLD_NEXT, "printf")))
 		log_error("printf symbol not found \n");
+	if (!(real_vprintf	= dlsym(RTLD_NEXT, "vprintf")))
+		log_error("vprintf symbol not found \n");
 	if (!(real_fork		= dlsym(RTLD_NEXT, "fork")))
 		log_error("fork symbol not found \n");
 	if (!(real_clone	= dlsym(RTLD_NEXT, "clone")))
@@ -72,7 +75,7 @@ int printf(const char *restrict fmt, ...)
 	DEACTIVATE();
 	va_list args;
 	va_start(args, fmt);
-	real_printf(fmt, args);
+	real_vprintf(fmt, args);
 	va_end(args);
 	ACTIVATE();
 	return 1;
