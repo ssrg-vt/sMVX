@@ -1,6 +1,5 @@
 #include <syscall_blocking.h>
 //#include <sys/prctl.h>
-#include <seccomp.h>
 #include <string.h>
 
 // Uncomment after fixing issue #13 in github

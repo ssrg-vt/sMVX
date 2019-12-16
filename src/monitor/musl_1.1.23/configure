@@ -562,6 +562,7 @@ tryldflag LDFLAGS_AUTO -Wl,--exclude-libs=ALL
 # --dynamic-list rather than -Bsymbolic-functions for greater
 # control over what symbols are left unbound.
 tryldflag LDFLAGS_AUTO -Wl,--dynamic-list="$srcdir/dynamic.list"
+tryldflag LDFLAGS_AUTO -Wl,-Bsymbolic
 
 # Find compiler runtime library
 test -z "$LIBCC" && tryldflag LIBCC -lgcc && tryldflag LIBCC -lgcc_eh

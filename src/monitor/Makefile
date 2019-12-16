@@ -20,7 +20,7 @@ OPT_LEVEL   := -O0
 INC         := -I$(INC_DIR) -I$(COMMON_DIR)
 SRC         := $(shell find $(SRC_DIR) -name '*.c')
 OBJ         := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o, $(SRC))
-CFLAGS      := $(OPT_LEVEL) -c $(INC) -fPIC
+CFLAGS      := $(OPT_LEVEL) -fPIC -c $(INC)
 LDFLAGS     := -L/usr/local/lib  #-lseccomp #Uncomment after fixing issue #13 in github
 MKDIR       = mkdir
 
@@ -66,14 +66,17 @@ liblmvx.so: $(LIB_OBJ_FILES)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(OBJ_DIR)/log.o $(OBJ_DIR)/env.o $(LDFLAGS) -o liblmvx.so
 
 ## Two binaries, from (mostly) same source code
-test.bin: $(TEST_DIR)/test.c  liblmvx.so
+test.bin: $(TEST_DIR)/test.c liblmvx.so
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -Wall -g -fPIC $^ -O0 -o $@
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -g $^ -O0 -o $@
 
 test_run:
 	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
 
-clean :
+debug:
+	gdb test.bin -ex "set environment CONF=conf/func.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+
+clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin
 
 rebuild:
@@ -85,4 +88,4 @@ $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
-.PHONY: all clean install monitor_trampoline pre post
+.PHONY: all clean install monitor_trampoline pre post test_run debug rebuild

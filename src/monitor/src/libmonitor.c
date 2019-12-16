@@ -25,9 +25,6 @@ unsigned long mvx_child_pid = 0;
 
 void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 {
-	unsigned long pkey;
-	proc_info_t monitor_info, libc_info;
-
 	/*Call this guy all the time first */
 	store_original_functions();
 
@@ -37,20 +34,27 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	/* Always call these functions in this order because debug_printf uses
 	 * real_printf */
 	log_info("Trampoline library instantiated\n");
+}
+
+//void __attribute__ ((destructor)) exit_tramp(void)
+//{
+//	debug_printf("Trampoline library exited\n");
+//}
+
+void associate_all_pkeys()
+{
+	unsigned long pkey;
+	proc_info_t monitor_info, libc_info;
+	DEACTIVATE();
+	/* Allocate pkey */
+	pkey = syscall(SYS_pkey_alloc, 0, 0);
 
 	/* Associate keys with both the monitor and libc */
 	read_proc("libmonitor", &monitor_info);
 	read_proc("libc", &libc_info);
 
-	/* Allocate pkey */
-	pkey = syscall(SYS_pkey_alloc, 0, 0);
-
 	/* Associate pages of the libraries with the allocated pkey */
-	associate_pkey_library(&monitor_info, pkey);
 	associate_pkey_library(&libc_info, pkey);
-}
-
-void __attribute__ ((destructor)) exit_tramp(void)
-{
-	debug_printf("Trampoline library exited\n");
+	associate_pkey_library(&monitor_info, pkey);
+	DEACTIVATE();
 }

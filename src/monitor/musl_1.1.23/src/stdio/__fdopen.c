@@ -6,6 +6,21 @@
 #include <string.h>
 #include "libc.h"
 
+#define PKEY_NO_ACCESS  (0x1)
+#define PKEY_ALL_ACCESS (0x0)
+#define ACTIVATE()    \
+	do {          \
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS << (2*1))),\
+		"c" (0), "d" (0));                                             \
+	}while(0)
+
+#define DEACTIVATE()                                                           \
+	do {                                                                   \
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_ALL_ACCESS <<        \
+						      (2*1))), "c" (0), "d"    \
+		 (0));                                                         \
+	} while(0)
+
 FILE *__fdopen(int fd, const char *mode)
 {
 	FILE *f;
@@ -19,9 +34,10 @@ FILE *__fdopen(int fd, const char *mode)
 
 	/* Allocate FILE+buffer or fail */
 	if (!(f=malloc(sizeof *f + UNGET + BUFSIZ))) return 0;
-
+	DEACTIVATE();
 	/* Zero-fill only the struct, not the buffer */
 	memset(f, 0, sizeof *f);
+	DEACTIVATE();
 
 	/* Impose mode restrictions */
 	if (!strchr(mode, '+')) f->flags = (*mode == 'r') ? F_NOWR : F_NORD;

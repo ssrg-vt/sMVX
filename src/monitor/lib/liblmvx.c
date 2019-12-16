@@ -29,11 +29,13 @@ int flag_lmvx = 0;
  * */
 shim_args_t args;
 
+void associate_all_pkeys();
+
 int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
-	//ACTIVATE();
+	ACTIVATE();
 	switch (args.num_args) {
 		case 0:
 			goto _0; break;
@@ -114,7 +116,7 @@ int lmvx_init(void)
 	flag_lmvx = 1;
 
 	fscanf(conf_tbl, "%p %p", &g_func, &g_base);
-	log_debug("g_func %p. g_base %p", g_func, g_base);
+	//log_debug("g_func %p. g_base %p", g_func, g_base);
 	fclose(conf_tbl);
 	remove(CONF_TAB_ADDR_FILE);	// remove the tmp conf file. TODO: vulnerable
 
@@ -135,6 +137,7 @@ int lmvx_init(void)
 	}
 	stackTop = stack + STACK_SIZE;
 
+	associate_all_pkeys();
 	//ACTIVATE();
 	return 0;
 }
@@ -154,11 +157,15 @@ void lmvx_start(const char *func_name, int argc, ...)
 	if (!flag_lmvx) return;
 
 	assert(argc <= 6);		// TODO: handle functions with 6+ params
+	DEACTIVATE();
 
 	log_trace("name %s", func_name);
+	DEACTIVATE();
 	idx = (u64)find_symbol_addr(func_name, g_func);
+	DEACTIVATE();
 	*p = (u64)g_base + g_func[idx].offset;
 	log_trace("idx %d, off %x. 0x%lx", idx, g_func[idx].offset, *p);
+	DEACTIVATE();
 	*(p + 1) = argc;
 	va_start(params, argc);
 	while (i < argc) {
@@ -168,14 +175,17 @@ void lmvx_start(const char *func_name, int argc, ...)
 	}
 	va_end(params);
 
+	DEACTIVATE();
 	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+	DEACTIVATE();
 
 	flag_lmvx = 0;
 	// different address space, share files
 	ret = clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+	DEACTIVATE();
 	flag_lmvx = 1;
 	log_info("clone ret (child pid) %d", ret);
-	//ACTIVATE();
+	ACTIVATE();
 }
 
 /**
@@ -188,10 +198,17 @@ void lmvx_end(void)
 	if (!flag_lmvx) return;
 
 	log_info("%s: %d wait child pid.", __func__, getpid());
+	DEACTIVATE();
 	if (wait(&status) == -1) {
 		log_error("Wait for child error. errno %d (%s)", errno, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	log_info("Leaving deC code region.\n");
-	//ACTIVATE();
+	ACTIVATE();
+}
+
+/* This will be preloaded, we should never call this */
+void associate_all_pkeys()
+{
+	log_error("Real associate_all_pkeys called\n");
 }

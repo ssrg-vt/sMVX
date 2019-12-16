@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <pkey.h>
 #include "log.h"
 #include "env.h"
 
@@ -29,14 +30,17 @@ void log_log(log_level_t level, const char *file, int line, const char *fmt, ...
     }
 
     fprintf(stderr, "%s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ", level_colors[level], level_names[level], file, line);
-
+    DEACTIVATE();
     va_list args;
     va_start(args, fmt);
     vfprintf(stderr, fmt, args);
+    DEACTIVATE();
     va_end(args);
 
     fprintf(stderr, "\n");
+    DEACTIVATE();
     fflush(stderr);
+    DEACTIVATE();
 }
 
 int str_to_log_level(const char *str, log_level_t *level) 
