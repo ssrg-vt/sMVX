@@ -30,12 +30,16 @@ int flag_lmvx = 0;
 shim_args_t args;
 
 void associate_all_pkeys();
+void store_child_pid();
 
 int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
+	DEACTIVATE(); /* Deactivate pkey for the other process */
+	store_child_pid(getpid());
 	ACTIVATE();
+
 	switch (args.num_args) {
 		case 0:
 			goto _0; break;
@@ -138,7 +142,6 @@ int lmvx_init(void)
 	stackTop = stack + STACK_SIZE;
 
 	associate_all_pkeys();
-	//ACTIVATE();
 	return 0;
 }
 
@@ -209,6 +212,12 @@ void lmvx_end(void)
 
 /* This will be preloaded, we should never call this */
 void associate_all_pkeys()
+{
+	log_error("Real associate_all_pkeys called\n");
+}
+
+/* Also preload the child pid */
+void store_child_pid(unsigned long pid)
 {
 	log_error("Real associate_all_pkeys called\n");
 }

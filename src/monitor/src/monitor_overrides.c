@@ -3,16 +3,23 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
 
 /* Local headers */
 #include <debug.h>
 #include <libmonitor.h>
 #include <pkey.h>
 #include <loader.h>
+#include <ipc.h>
 
-/* Defined in monitor_trampoline.c */
-extern unsigned long mvx_child_pid;
+/* Mutexes and cond variables */
+pthread_mutex_t monitor_mutex;
+pthread_cond_t master_done;
 
+/* Shared memory */
+struct call_data* calldata_ptr;
+
+extern bool mvx_active;
 
 /* Real functions not being overridden */
 int (*real_printf)(const char* restrict fmt, ...);
@@ -31,6 +38,7 @@ int (*real_fflush)(FILE *f);
 int (* real_vsprintf)(char *restrict s, const char *restrict fmt, va_list ap);
 int (*real_puts)(const char *s);
 int (*real_vprintf)(const char *restrict fmt, va_list ap);
+void *(*real_memcpy)(void *restrict dest, const void *restrict src, size_t n);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
@@ -67,6 +75,8 @@ void store_original_functions()
 		log_error("vsprintf symbol not found \n");
 	if (!(real_puts		= dlsym(RTLD_NEXT, "puts")))
 		log_error("puts symbol not found \n");
+	if (!(real_memcpy	= dlsym(RTLD_NEXT, "memcpy")))
+		log_error("memcpy symbol not found \n");
 }
 
 /* Functions we are overriding */
@@ -81,10 +91,73 @@ int printf(const char *restrict fmt, ...)
 	return 1;
 }
 
+int scanf(const char *restrict fmt, ...)
+{
+	DEACTIVATE();
+	va_list args;
+
+	pthread_mutex_lock(&monitor_mutex);
+	/* If we are a child, we wait for master to complete emulation*/
+	if (is_child()){
+		while(!calldata_ptr->ready_for_check)
+			pthread_cond_wait(&master_done, &monitor_mutex);
+
+		real_printf(calldata_ptr->em_data.buf);
+	}
+	else{
+		/* Parent, get input, perform vscanf, then emulate */
+		va_start(args, fmt);
+		vscanf(fmt, args);
+		va_end(args);
+
+		real_memcpy(&calldata_ptr->em_data.buf, fmt, strlen(fmt));
+	}
+	pthread_mutex_unlock(&monitor_mutex);
+	ACTIVATE();
+	return 1;
+}
+
 void *memset(void *dest, int c, size_t n)
 {
 	DEACTIVATE();
 	void* retval = real_memset(dest, c, n);
+	ACTIVATE();
+	return retval;
+}
+
+void *memcpy(void *restrict dest, const void *restrict src, size_t n)
+{
+	DEACTIVATE();
+	void* retval;
+	if(mvx_active){
+		pthread_mutex_lock(&monitor_mutex);
+		/* Have child check */
+		if (is_child()){
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&master_done, &monitor_mutex);
+			real_printf("Child woken up by master\n");
+			retval = real_memcpy(dest, src, n);
+			//retval = is_child;
+			/* Perform retval cross-check*/
+			if ((uint64_t)retval != calldata_ptr->retval){
+				assert(false);
+			}
+			real_printf("Child is done\n");
+		}
+		else{
+			retval = real_memcpy(dest, src, n);
+			/* Copy retval to shared memory */
+			calldata_ptr->retval = (uint64_t)retval;
+			calldata_ptr->ready_for_check = true;
+			real_printf("Master is done with memcpy, waiting for child\n");
+			pthread_cond_signal(&master_done);
+			real_printf("Master is woken up by child\n");
+		}
+		pthread_mutex_unlock(&monitor_mutex);
+	}
+	else{
+		retval = real_memcpy(dest, src, n);
+	}
 	ACTIVATE();
 	return retval;
 }
