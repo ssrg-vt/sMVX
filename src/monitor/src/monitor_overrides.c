@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sys/socket.h>
 
 /* Local headers */
 #include <debug.h>
@@ -39,6 +40,13 @@ int (* real_vsprintf)(char *restrict s, const char *restrict fmt, va_list ap);
 int (*real_puts)(const char *s);
 int (*real_vprintf)(const char *restrict fmt, va_list ap);
 void *(*real_memcpy)(void *restrict dest, const void *restrict src, size_t n);
+void *(*real_free)(void *p);
+ssize_t (*real_recv)(int fd, void *buf, size_t len, int flags);
+int (*real_memcmp)(const void *vl, const void *vr, size_t n);
+ssize_t (*real_sendfile)(int out_fd, int in_fd, off_t *ofs, size_t count);
+ssize_t (*real_writev)(int fd, const struct iovec *iov, int count);
+ssize_t (*real_write)(int fd, const void *buf, size_t count);
+int (*real_open)(const char *filename, int flags, ...);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
@@ -77,6 +85,20 @@ void store_original_functions()
 		log_error("puts symbol not found \n");
 	if (!(real_memcpy	= dlsym(RTLD_NEXT, "memcpy")))
 		log_error("memcpy symbol not found \n");
+	if (!(real_free		= dlsym(RTLD_NEXT, "free")))
+		log_error("free symbol not found \n");
+	if (!(real_recv		= dlsym(RTLD_NEXT, "recv")))
+		log_error("recv symbol not found \n");
+	if (!(real_memcmp	= dlsym(RTLD_NEXT, "memcmp")))
+		log_error("memcmp symbol not found \n");
+	if (!(real_sendfile	= dlsym(RTLD_NEXT, "sendfile")))
+		log_error("sendfile symbol not found \n");
+	if (!(real_writev	= dlsym(RTLD_NEXT, "writev")))
+		log_error("writev symbol not found \n");
+	if (!(real_write	= dlsym(RTLD_NEXT, "write")))
+		log_error("write symbol not found \n");
+	if (!(real_open		= dlsym(RTLD_NEXT, "open")))
+		log_error("open symbol not found \n");
 }
 
 /* Functions we are overriding */
@@ -300,6 +322,13 @@ void *malloc(size_t n)
 	return retval;
 }
 
+void free(void* p)
+{
+	DEACTIVATE();
+	real_free(p);
+	ACTIVATE();
+}
+
 int ld_preload_function(int i)
 {
 	DEACTIVATE();
@@ -324,5 +353,54 @@ int fflush(FILE *f)
 	retval = real_fflush(f);
 	ACTIVATE();
 	return retval;
+}
 
+ssize_t recv(int fd, void *buf, size_t len, int flags)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	retval = real_recv(fd, buf, len, flags);
+	ACTIVATE();
+	return retval;
+}
+
+int memcmp(const void *vl, const void *vr, size_t n)
+{
+	DEACTIVATE();
+	int retval;
+	retval = real_memcmp(vl, vr, n);
+	ACTIVATE();
+	return retval;
+}
+
+ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	retval = real_sendfile(out_fd, in_fd, ofs, count);
+	ACTIVATE();
+	return retval;
+}
+
+ssize_t writev(int fd, const struct iovec *iov, int count)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	retval = real_writev(fd, iov, count);
+	ACTIVATE();
+	return retval;
+}
+
+ssize_t write(int fd, const void *buf, size_t count)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	retval = real_write(fd, buf, count);
+	ACTIVATE();
+	return retval;
+}
+
+int open(const char *filename, int flags, ...)
+{
+	
 }
