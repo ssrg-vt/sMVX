@@ -27,6 +27,7 @@
 *.so
 *.so.*
 *.dylib
+*.swp
 
 # Executables
 *.exe
@@ -53,7 +54,6 @@ Mkfile.old
 dkms.conf
 
 # misc
-test
 test.bin
 test3
 tab_addr.conf
