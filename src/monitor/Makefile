@@ -68,7 +68,7 @@ liblmvx.so: $(LIB_OBJ_FILES)
 ## Two binaries, from (mostly) same source code
 test.bin: $(TEST_DIR)/test.c liblmvx.so
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -Wall -fPIC -g $^ -O0 -o $@
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 test_run:
 	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
