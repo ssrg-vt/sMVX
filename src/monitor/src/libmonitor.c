@@ -26,8 +26,7 @@
 #include <ipc.h>
 
 #define MONITOR_SHARED_MEM_NAME "/monitor-memory"
-
-bool mvx_active = false;
+#define MONITOR_SYNC_MEM_NAME "/monitor-sync-memory"
 
 /* PID of the child variant */
 unsigned long mvx_child_pid = 0;
@@ -37,9 +36,7 @@ unsigned long mvx_parent_pid = 0;
 
 /* Shared memory */
 extern struct call_data* calldata_ptr;
-
-extern pthread_mutex_t monitor_mutex;
-extern pthread_cond_t master_done;
+extern struct sync_data* syncdata_ptr;
 
 void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 {
@@ -63,9 +60,6 @@ void associate_all_pkeys()
 	/* Allocate pkey */
 	pkey = syscall(SYS_pkey_alloc, 0, 0);
 
-	/* Set flag that mvx is active */
-	mvx_active = true;
-
 	/* Associate keys with both the monitor and libc */
 	read_proc("libmonitor", &monitor_info);
 	read_proc("libc", &libc_info);
@@ -81,21 +75,25 @@ void store_child_pid(unsigned long pid)
 	mvx_child_pid = pid;
 }
 
+void set_mvx_active()
+{
+	/* Set flag that mvx is active */
+	calldata_ptr->mvx_active = true;
+}
+
+void clear_mvx_active()
+{
+	/* clear flag that mvx is active */
+	calldata_ptr->mvx_active = false;
+}
+
 void setup_ipc()
 {
 	pthread_mutexattr_t attrmutex;
 	pthread_condattr_t attrcond;
 
 	int fd_shm;
-
-	pthread_mutexattr_init(&attrmutex);
-	pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
-
-	pthread_condattr_init(&attrcond);
-	pthread_condattr_setpshared(&attrcond, PTHREAD_PROCESS_SHARED);
-
-	pthread_mutex_init(&monitor_mutex, &attrmutex);
-	pthread_cond_init(&master_done, &attrcond);
+	int fd_shm_sync;
 
 	/* Create shared memory */
 	if ((fd_shm = shm_open (MONITOR_SHARED_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
@@ -114,8 +112,37 @@ void setup_ipc()
 		assert(false);
 	}
 
+	/* Create synchronization shared memory */
+	if ((fd_shm_sync = shm_open (MONITOR_SYNC_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
+		log_error("Failed to create semaphore\n");
+		assert(false);
+	}
+
+	if (ftruncate (fd_shm_sync, sizeof (struct sync_data)) == -1){
+		log_error("Failed to ftruncate\n");
+		assert(false);
+	}
+
+	if ((syncdata_ptr = mmap (NULL, sizeof (struct sync_data), PROT_READ | PROT_WRITE, MAP_SHARED,
+	        fd_shm_sync, 0)) == MAP_FAILED){
+		log_error("Failed to mmap\n");
+		assert(false);
+	}
+
+	pthread_mutexattr_init(&attrmutex);
+	pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
+
+	pthread_condattr_init(&attrcond);
+	pthread_condattr_setpshared(&attrcond, PTHREAD_PROCESS_SHARED);
+
+	pthread_mutex_init(&(syncdata_ptr->monitor_mutex), &attrmutex);
+	pthread_cond_init(&(syncdata_ptr->master_done), &attrcond);
+	pthread_cond_init(&(syncdata_ptr->follower_done), &attrcond);
+
 	/* Initialize calldata */
 	calldata_ptr->ready_for_check = false;
+	calldata_ptr->check_done = false;
+	calldata_ptr->mvx_active = false;
 }
 
 bool is_parent()
