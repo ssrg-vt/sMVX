@@ -203,15 +203,13 @@ void lmvx_end(void)
 	int status;
 	if (!flag_lmvx) return;
 
+	if (wait(&status) == -1) {
+		exit(EXIT_FAILURE);
+	}
+
 	clear_mvx_active();
-	log_info("%s: %d wait child pid.", __func__, getpid());
 	DEACTIVATE();
 
-	//if (wait(&status) == -1) {
-	//	log_error("Wait for child error. errno %d (%s)", errno, strerror(errno));
-	//	exit(EXIT_FAILURE);
-	//}
-	log_info("Leaving deC code region.\n");
 	ACTIVATE();
 }
 

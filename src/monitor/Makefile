@@ -20,7 +20,7 @@ OPT_LEVEL   := -O0
 INC         := -I$(INC_DIR) -I$(COMMON_DIR)
 SRC         := $(shell find $(SRC_DIR) -name '*.c')
 OBJ         := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o, $(SRC))
-CFLAGS      := $(OPT_LEVEL) -fPIC -c $(INC) -DINTEL_MPK
+CFLAGS      := $(OPT_LEVEL) -fPIC -c $(INC)# -DINTEL_MPK
 LDFLAGS     := -L/usr/local/lib  #-lseccomp #Uncomment after fixing issue #13 in github
 MKDIR       = mkdir
 
@@ -81,7 +81,7 @@ test_run:
 	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
 
 nginx_run:
-	LOG_LEVEL=TRACE BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
+	LOG_LEVEL=FATAL BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 debug:
 	gdb test.bin -ex "set environment CONF=conf/func.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"

@@ -863,11 +863,11 @@ ngx_http_handler(ngx_http_request_t *r)
     r->gzip_ok = 0;
     r->gzip_vary = 0;
 #endif
-    printf("PID: %u before\n", getpid());
+    //printf("PID: %u before\n", getpid());
 
     r->write_event_handler = ngx_http_core_run_phases;
     ngx_http_core_run_phases(r);
-    printf("PID: %u finished executing ngx_http_handler\n", getpid());
+    //printf("PID: %u finished executing ngx_http_handler\n", getpid());
 }
 
 

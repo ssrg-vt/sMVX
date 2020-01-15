@@ -54,6 +54,12 @@ int (*real_accept4)(int fd, struct sockaddr *restrict addr, socklen_t *restrict 
 int (*real_epoll_ctl)(int fd, int op, int fd2, struct epoll_event *ev);
 int (*real_fstat)(int fd, struct stat *st);
 ssize_t (*real_recv)(int fd, void *buf, size_t len, int flags);
+int (*real_shutdown)(int fd, int how);
+int (*real_setsockopt)(int fd, int level, int optname, const void *optval,
+		       socklen_t optlen);
+int (*real_gettimeofday)(struct timeval *restrict tv, void *restrict tz);
+struct tm *(*real_localtime_r)(const time_t *restrict t, struct tm *restrict
+				 tm);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
@@ -120,6 +126,14 @@ void store_original_functions()
 		log_error("fstat symbol not found \n");
 	if (!(real_recv		= dlsym(RTLD_NEXT, "recv")))
 		log_error("recv symbol not found \n");
+	if (!(real_shutdown	= dlsym(RTLD_NEXT, "shutdown")))
+		log_error("shutdown symbol not found \n");
+	if (!(real_setsockopt	= dlsym(RTLD_NEXT, "setsockopt")))
+		log_error("setsockopt symbol not found \n");
+	if (!(real_gettimeofday	= dlsym(RTLD_NEXT, "gettimeofday")))
+		log_error("gettimeofday symbol not found \n");
+	if (!(real_localtime_r= dlsym(RTLD_NEXT, "localtime_r")))
+		log_error("__localtime_r symbol not found \n");
 }
 
 ///* Functions we are overriding */
@@ -411,16 +425,20 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_debug("Child called %s, args: out_fd %u, in_fd %u \n", __func__, out_fd, in_fd);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
 			retval = calldata_ptr->em_data.retval;
-			log_debug("Child is done with %s \n", __func__);
+			/* Perform offset emulation */
+			real_memcpy(ofs, calldata_ptr->em_data.buf, sizeof(off_t));
+			real_memset(calldata_ptr->em_data.buf, 0, sizeof(off_t));
+			log_debug("Child is done with %s, retval: %u, offset: %u\n", __func__, retval, *ofs);
 			calldata_ptr->ready_for_check = false;
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s, args: out_fd %u, in_fd %u \n", __func__, out_fd, in_fd);
 			while(calldata_ptr->ready_for_check){
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -428,15 +446,16 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)
 			retval = real_sendfile(out_fd, in_fd, ofs, count);
 			/* Copy retval to shared memory */
 			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy buffer data to shared memory */
+			real_memcpy(calldata_ptr->em_data.buf, ofs, sizeof(off_t));
 			calldata_ptr->ready_for_check = true;
-			log_debug("Master is done with %s, signalling child\n",
-				  __func__);
+			log_debug("Master is done with %s, signalling child, retval: %u, offset: %u\n", __func__, retval,*ofs);
 			pthread_cond_signal(&(syncdata_ptr->master_done));
 		}
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_sendfile(out_fd, in_fd, ofs, count);
 	}
 	ACTIVATE();
@@ -451,7 +470,7 @@ ssize_t writev(int fd, const struct iovec *iov, int count)
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_debug("Child called %s, arguments:fd %u, count %u\n", __func__, fd, count);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
@@ -461,6 +480,7 @@ ssize_t writev(int fd, const struct iovec *iov, int count)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s, arguments: fd %u, count %u\n", __func__, fd, count);
 			while(calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -475,7 +495,7 @@ ssize_t writev(int fd, const struct iovec *iov, int count)
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_writev(fd, iov, count);
 	}
 	ACTIVATE();
@@ -490,7 +510,8 @@ ssize_t write(int fd, const void *buf, size_t count)
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_error("Child called %s, arguments:fd %u, count %u\n", __func__, fd, count);
+			log_error("Child says Buffer is: %s\n", (char*)buf);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
@@ -500,6 +521,8 @@ ssize_t write(int fd, const void *buf, size_t count)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_error("Master called %s, arguments: fd %u, count %u\n", __func__, fd, count);
+			log_error("Master says Buffer is: %s\n", (char*)buf);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -507,14 +530,13 @@ ssize_t write(int fd, const void *buf, size_t count)
 			/* Copy retval to shared memory */
 			calldata_ptr->em_data.retval = (uint64_t)retval;
 			calldata_ptr->ready_for_check = true;
-			log_debug("Master is done with %s, signalling child\n",
-				  __func__);
+			log_debug("Master is done with %s, signalling child\n", __func__);
 			pthread_cond_signal(&(syncdata_ptr->master_done));
 		}
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_write(fd, buf, count);
 	}
 	ACTIVATE();
@@ -527,12 +549,10 @@ int open(const char *filename, int flags, ...)
 	unsigned mode = 0;
 	int retval;
 	if(calldata_ptr->mvx_active){
-		log_debug("Before mutex lock, func: %s, is_child %u\n",
-			  __func__, is_child());
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_debug("Child called %s, filename: %s\n", __func__, filename);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
@@ -542,6 +562,7 @@ int open(const char *filename, int flags, ...)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s, filename: %s\n", __func__, filename);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -567,7 +588,7 @@ int open(const char *filename, int flags, ...)
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		if ((flags & O_CREAT) || (flags & O_TMPFILE) == O_TMPFILE) {
 			va_list ap;
 			va_start(ap, flags);
@@ -591,7 +612,7 @@ int close(int fd)
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_debug("Child called %s, fd is: %u\n", __func__, fd);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
@@ -601,6 +622,7 @@ int close(int fd)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s, fd is: %u\n", __func__, fd);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -615,7 +637,7 @@ int close(int fd)
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_close(fd);
 	}
 	ACTIVATE();
@@ -640,6 +662,7 @@ int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t 
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s\n", __func__);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -654,7 +677,7 @@ int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t 
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_epoll_pwait(fd, ev, cnt, to, sigs);
 	}
 	ACTIVATE();
@@ -679,6 +702,7 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s\n", __func__);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -693,7 +717,7 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_epoll_wait(fd, ev, cnt, to);
 	}
 	ACTIVATE();
@@ -718,6 +742,7 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s\n", __func__);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -732,7 +757,7 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_accept4(fd, addr, len, flg);
 	}
 	ACTIVATE();
@@ -757,6 +782,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s\n", __func__);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -771,7 +797,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_epoll_ctl(fd, op ,fd2, ev);
 	}
 	ACTIVATE();
@@ -788,7 +814,6 @@ int fstat(int fd, struct stat *st)
 		if (is_child()){
 			log_debug("Child called %s\n", __func__);
 			while(!calldata_ptr->ready_for_check){
-				log_debug("Child is waiting for fstat");
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			}
 			/* Perform retval emulation */
@@ -798,14 +823,13 @@ int fstat(int fd, struct stat *st)
 									  stat));
 			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
 									 stat));
-			log_debug("Child is done with %s \n", __func__);
+			log_debug("Child is done with %s , mode: %u\n",__func__, st->st_mode);
 			calldata_ptr->ready_for_check = false;
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s\n", __func__);
 			while(calldata_ptr->ready_for_check ){
-				log_debug("fstat master waiting, %u\n",
-					  calldata_ptr->ready_for_check);
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
 			}
@@ -818,13 +842,12 @@ int fstat(int fd, struct stat *st)
 
 			calldata_ptr->ready_for_check = true;
 			pthread_cond_signal(&(syncdata_ptr->master_done));
-			log_debug("Master is done with %s, signalling child\n",
-				  __func__);
+			log_debug("Master is done with %s , mode: %u\n",__func__, st->st_mode);
 		}
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_fstat(fd, st);
 	}
 	ACTIVATE();
@@ -839,41 +862,219 @@ ssize_t recv(int fd, void *buf, size_t len, int flags)
 		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
 		/* Have child check */
 		if (is_child()){
-			log_debug("Child called %s\n", __func__);
+			log_debug("Child called %s, args: fd %u, len %u\n", __func__, fd, len);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
 			/* Perform retval emulation */
 			retval = calldata_ptr->em_data.retval;
+			/* Errno emulation */
+			errno =  calldata_ptr->em_data.err;
 			/* Perform buf emulation */
 			real_memcpy(buf, calldata_ptr->em_data.buf, len);
 			real_memset(calldata_ptr->em_data.buf, 0, len);
-			log_debug("Child is done with %s \n", __func__);
+			log_debug("Child is done with %s, retval: %u, buf:%s\n", __func__, retval, buf);
 			calldata_ptr->ready_for_check = false;
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
+			log_debug("Master called %s, args: fd %u, len %u\n", __func__, fd, len);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
 			retval = real_recv(fd, buf, len, flags);
 			/* Copy retval to shared memory */
 			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy system errno */
+			calldata_ptr->em_data.err = errno;
 			/* Copy buffer data to shared memory */
 			real_memcpy(calldata_ptr->em_data.buf, buf, len);
 
 			calldata_ptr->ready_for_check = true;
 			pthread_cond_signal(&(syncdata_ptr->master_done));
-			log_debug("Master is done with %s, signalling child\n",
-				  __func__);
+			log_debug("Master is done with %s, retval: %u, buf:%s\n", __func__, retval, buf);
 		}
 		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
 	}
 	else{
-		log_debug("Master called %s, mvx isn't active\n", __func__);
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
 		retval = real_recv(fd, buf, len, flags);
 	}
 	ACTIVATE();
 	return retval;
+}
 
+int shutdown(int fd, int how)
+{
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s, args: fd %u, how %u\n", __func__, fd, how);
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			log_debug("Child is done with %s, retval: %u\n", __func__, retval);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s, args: fd %u, how %u\n", __func__, fd, how);
+			while(calldata_ptr->ready_for_check )
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			retval = real_shutdown(fd, how);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s, signalling child, retval: %u\n", __func__, retval);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
+		retval = real_shutdown(fd, how);
+	}
+	ACTIVATE();
+	return retval;
+}
 
+int setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen)
+{
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s, args: fd %u, level %u\n", __func__, fd, level);
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			log_debug("Child is done with %s, retval: %u\n", __func__, retval);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s, args: fd %u, level %u\n", __func__, fd, level);
+			while(calldata_ptr->ready_for_check )
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			retval = real_setsockopt(fd, level, optname, optval,
+						 optlen);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s, signalling child, retval: %u\n", __func__, retval);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
+		retval = real_setsockopt(fd, level, optname, optval,
+						 optlen);
+	}
+	ACTIVATE();
+	return retval;
+}
+//
+//int gettimeofday(struct timeval *restrict tv, void *restrict tz)
+//{
+//	DEACTIVATE();
+//	int retval;
+//	if(calldata_ptr->mvx_active){
+//		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+//		/* Have child check */
+//		if (is_child()){
+//			log_debug("Child called %s\n", __func__);
+//			while(!calldata_ptr->ready_for_check)
+//				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+//			/* Perform retval emulation */
+//			retval = calldata_ptr->em_data.retval;
+//			/* Perform buf emulation */
+//			real_memcpy(tv, calldata_ptr->em_data.buf, sizeof(struct
+//									  timeval));
+//			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
+//									 timeval));
+//			log_debug("Child is done with %s, retval: %u\n", __func__, retval);
+//			calldata_ptr->ready_for_check = false;
+//			pthread_cond_signal(&(syncdata_ptr->follower_done));
+//		}
+//		else{
+//			log_debug("Master called %s\n", __func__);
+//			while(calldata_ptr->ready_for_check )
+//				pthread_cond_wait(&(syncdata_ptr->follower_done),
+//						  &(syncdata_ptr->monitor_mutex));
+//			retval = real_gettimeofday(tv, tz);
+//			/* Copy retval to shared memory */
+//			calldata_ptr->em_data.retval = (uint64_t)retval;
+//			/* Copy buffer data to shared memory */
+//			real_memcpy(calldata_ptr->em_data.buf, tv, sizeof(struct
+//									  timeval));
+//
+//			calldata_ptr->ready_for_check = true;
+//			pthread_cond_signal(&(syncdata_ptr->master_done));
+//			log_debug("Master is done with %s, signalling child, retval: %u\n", __func__, retval);
+//		}
+//		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+//	}
+//	else{
+//		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
+//		retval = real_gettimeofday(tv, tz);
+//	}
+//	ACTIVATE();
+//	return retval;
+//}
+
+struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
+{
+	DEACTIVATE();
+	struct tm* retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s\n", __func__);
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			/* Perform retval emulation */
+			retval = (struct tm*)calldata_ptr->em_data.retval;
+			/* Perform buf emulation */
+			real_memcpy(tm, calldata_ptr->em_data.buf, sizeof(struct
+									  tm));
+			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
+									 tm));
+			log_debug("Child is done with %s, retval: %u\n", __func__, retval);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s\n", __func__);
+			while(calldata_ptr->ready_for_check )
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			retval = real_localtime_r(t, tm);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy buffer data to shared memory */
+			real_memcpy(calldata_ptr->em_data.buf, tm, sizeof(struct
+									  tm));
+
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s, signalling child, retval: %u\n", __func__, retval);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u\n", __func__, getpid());
+		retval = real_localtime_r(t, tm);
+	}
+	ACTIVATE();
+	return retval;
 }

@@ -13,6 +13,7 @@ struct emulation_data
 	uint64_t arg3;
 	uint64_t arg4;
 	uint64_t arg5;
+	uint64_t err;
 	uint64_t retval;
 	uint8_t buf[4096];
 };
