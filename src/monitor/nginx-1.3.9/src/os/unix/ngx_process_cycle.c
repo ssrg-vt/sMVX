@@ -9,7 +9,7 @@
 #include <ngx_core.h>
 #include <ngx_event.h>
 #include <ngx_channel.h>
-
+#include <lmvx.h>
 
 static void ngx_start_worker_processes(ngx_cycle_t *cycle, ngx_int_t n,
     ngx_int_t type);
@@ -312,7 +312,9 @@ ngx_single_process_cycle(ngx_cycle_t *cycle)
     for ( ;; ) {
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0, "worker cycle");
 
+	//if (flag_lmvx) lmvx_start("ngx_process_events_and_timers", 1, cycle);
         ngx_process_events_and_timers(cycle);
+	//if (flag_lmvx) lmvx_end();
 
         if (ngx_terminate || ngx_quit) {
 

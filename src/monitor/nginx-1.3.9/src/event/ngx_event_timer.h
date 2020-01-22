@@ -40,7 +40,7 @@ ngx_event_del_timer(ngx_event_t *ev)
                     ngx_event_ident(ev->data), ev->timer.key);
 
     ngx_mutex_lock(ngx_event_timer_mutex);
-
+    printf("Address of ngx_event_timer_rbtree: %p\n", &ngx_event_timer_rbtree);
     ngx_rbtree_delete(&ngx_event_timer_rbtree, &ev->timer);
 
     ngx_mutex_unlock(ngx_event_timer_mutex);

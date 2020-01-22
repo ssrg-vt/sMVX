@@ -53,6 +53,8 @@ post: test.bin
 post_nginx:
 	@echo "=== dump nginx function ==="
 	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_handler>:"
+	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_process_request_line>:"
+	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_process_events_and_timers>:"
 	@cat nginx-1.3.9/conf/mvx.conf
 
 monitor: $(OBJ)
