@@ -30,12 +30,18 @@ int flag_lmvx = 0;
 shim_args_t args;
 
 void associate_all_pkeys();
+void store_child_pid();
+void set_mvx_active();
+void clear_mvx_active();
 
 int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
+	store_child_pid(getpid());
 	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
+	DEACTIVATE(); /* Deactivate pkey for the other process */
 	ACTIVATE();
+
 	switch (args.num_args) {
 		case 0:
 			goto _0; break;
@@ -138,7 +144,6 @@ int lmvx_init(void)
 	stackTop = stack + STACK_SIZE;
 
 	associate_all_pkeys();
-	//ACTIVATE();
 	return 0;
 }
 
@@ -180,6 +185,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	DEACTIVATE();
 
 	flag_lmvx = 0;
+	set_mvx_active();
 	// different address space, share files
 	ret = clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
 	DEACTIVATE();
@@ -197,13 +203,13 @@ void lmvx_end(void)
 	int status;
 	if (!flag_lmvx) return;
 
-	log_info("%s: %d wait child pid.", __func__, getpid());
-	DEACTIVATE();
 	if (wait(&status) == -1) {
-		log_error("Wait for child error. errno %d (%s)", errno, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	log_info("Leaving deC code region.\n");
+
+	clear_mvx_active();
+	DEACTIVATE();
+
 	ACTIVATE();
 }
 
@@ -211,4 +217,22 @@ void lmvx_end(void)
 void associate_all_pkeys()
 {
 	log_error("Real associate_all_pkeys called\n");
+}
+
+/* Also preload the child pid */
+void store_child_pid(unsigned long pid)
+{
+	log_error("Real store_child_pid called\n");
+}
+
+/* Preload the setting of mvx */
+void set_mvx_active()
+{
+	log_error("Real set_mvx_active called\n");
+}
+
+/* Preload the clearing of mvx */
+void clear_mvx_active()
+{
+	log_error("Real clear_mvx_active called\n");
 }

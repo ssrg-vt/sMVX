@@ -11,6 +11,10 @@
 #include <sys/syscall.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <semaphore.h>
+#include <stdbool.h>
+#include <pthread.h>
+#include <stdlib.h>
 
 /* Local headers */
 #include <debug.h>
@@ -19,9 +23,20 @@
 #include <pkey.h>
 #include <syscall_blocking.h>
 #include <loader.h>
+#include <ipc.h>
+
+#define MONITOR_SHARED_MEM_NAME "/monitor-memory"
+#define MONITOR_SYNC_MEM_NAME "/monitor-sync-memory"
 
 /* PID of the child variant */
 unsigned long mvx_child_pid = 0;
+
+/* PID of the parent variant */
+unsigned long mvx_parent_pid = 0;
+
+/* Shared memory */
+extern struct call_data* calldata_ptr;
+extern struct sync_data* syncdata_ptr;
 
 void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 {
@@ -31,15 +46,11 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	/* Load elf binary */
 	init_loader();
 
-	/* Always call these functions in this order because debug_printf uses
-	 * real_printf */
+	mvx_parent_pid = getpid();
+
+	setup_ipc();
 	log_info("Trampoline library instantiated\n");
 }
-
-//void __attribute__ ((destructor)) exit_tramp(void)
-//{
-//	debug_printf("Trampoline library exited\n");
-//}
 
 void associate_all_pkeys()
 {
@@ -57,4 +68,97 @@ void associate_all_pkeys()
 	associate_pkey_library(&libc_info, pkey);
 	associate_pkey_library(&monitor_info, pkey);
 	DEACTIVATE();
+}
+
+void store_child_pid(unsigned long pid)
+{
+	mvx_child_pid = pid;
+}
+
+void set_mvx_active()
+{
+	/* Set flag that mvx is active */
+	calldata_ptr->mvx_active = true;
+}
+
+void clear_mvx_active()
+{
+	/* clear flag that mvx is active */
+	calldata_ptr->mvx_active = false;
+}
+
+void setup_ipc()
+{
+	pthread_mutexattr_t attrmutex;
+	pthread_condattr_t attrcond;
+
+	int fd_shm;
+	int fd_shm_sync;
+
+	/* Create shared memory */
+	if ((fd_shm = shm_open (MONITOR_SHARED_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
+		log_error("Failed to create semaphore\n");
+		assert(false);
+	}
+
+	if (ftruncate (fd_shm, sizeof (struct call_data)) == -1){
+		log_error("Failed to ftruncate\n");
+		assert(false);
+	}
+
+	if ((calldata_ptr = mmap (NULL, sizeof (struct call_data), PROT_READ | PROT_WRITE, MAP_SHARED,
+	        fd_shm, 0)) == MAP_FAILED){
+		log_error("Failed to mmap\n");
+		assert(false);
+	}
+
+	/* Create synchronization shared memory */
+	if ((fd_shm_sync = shm_open (MONITOR_SYNC_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
+		log_error("Failed to create semaphore\n");
+		assert(false);
+	}
+
+	if (ftruncate (fd_shm_sync, sizeof (struct sync_data)) == -1){
+		log_error("Failed to ftruncate\n");
+		assert(false);
+	}
+
+	if ((syncdata_ptr = mmap (NULL, sizeof (struct sync_data), PROT_READ | PROT_WRITE, MAP_SHARED,
+	        fd_shm_sync, 0)) == MAP_FAILED){
+		log_error("Failed to mmap\n");
+		assert(false);
+	}
+
+	pthread_mutexattr_init(&attrmutex);
+	pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
+
+	pthread_condattr_init(&attrcond);
+	pthread_condattr_setpshared(&attrcond, PTHREAD_PROCESS_SHARED);
+
+	pthread_mutex_init(&(syncdata_ptr->monitor_mutex), &attrmutex);
+	pthread_cond_init(&(syncdata_ptr->master_done), &attrcond);
+	pthread_cond_init(&(syncdata_ptr->follower_done), &attrcond);
+
+	/* Initialize calldata */
+	calldata_ptr->ready_for_check = false;
+	calldata_ptr->check_done = false;
+	calldata_ptr->mvx_active = false;
+}
+
+bool is_parent()
+{
+	bool retval = false;
+	int pid = getpid();
+	if (pid == mvx_parent_pid)
+		retval = true;
+	return retval;
+}
+
+bool is_child()
+{
+	bool retval = false;
+	int pid = getpid();
+	if (pid == mvx_child_pid)
+		retval = true;
+	return retval;
 }

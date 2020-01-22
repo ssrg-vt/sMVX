@@ -20,7 +20,7 @@ OPT_LEVEL   := -O0
 INC         := -I$(INC_DIR) -I$(COMMON_DIR)
 SRC         := $(shell find $(SRC_DIR) -name '*.c')
 OBJ         := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o, $(SRC))
-CFLAGS      := $(OPT_LEVEL) -fPIC -c $(INC)
+CFLAGS      := $(OPT_LEVEL) -fPIC -c $(INC)# -DINTEL_MPK
 LDFLAGS     := -L/usr/local/lib  #-lseccomp #Uncomment after fixing issue #13 in github
 MKDIR       = mkdir
 
@@ -35,6 +35,8 @@ BIN := test.bin
 
 all: pre monitor liblmvx.so test.bin post
 
+nginx: pre monitor liblmvx.so post_nginx
+
 pre:
 	@echo $(SRC)
 	@echo $(LIB_OBJ_FILES)
@@ -47,6 +49,13 @@ post: test.bin
 	@objdump -S test.bin | grep "recursive_func>:"
 	@objdump -S test.bin | grep "simple_func>:"
 	@cat conf/func.conf
+
+post_nginx:
+	@echo "=== dump nginx function ==="
+	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_handler>:"
+	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_process_request_line>:"
+	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_process_events_and_timers>:"
+	@cat nginx-1.3.9/conf/mvx.conf
 
 monitor: $(OBJ)
 	@echo $(OBJ)
@@ -68,19 +77,28 @@ liblmvx.so: $(LIB_OBJ_FILES)
 ## Two binaries, from (mostly) same source code
 test.bin: $(TEST_DIR)/test.c liblmvx.so
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -Wall -fPIC -g $^ -O0 -o $@
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 test_run:
 	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
 
+nginx_run:
+	LOG_LEVEL=FATAL BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
+
 debug:
 	gdb test.bin -ex "set environment CONF=conf/func.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+
+nginx_debug:
+	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set environment CONF=nginx-1.3.9/conf/mvx.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx-1.3.9/objs/nginx"
 
 clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin
 
 rebuild:
-	make clean; make
+	make clean; make all
+
+nginx_rebuild:
+	make clean; make nginx
 
 $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@

@@ -5,6 +5,7 @@
 #include <pkey.h>
 #include <unistd.h>
 
+#ifdef INTEL_MPK
 /* Pkey related functions */
 
 void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey)
@@ -27,3 +28,12 @@ void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey)
 	syscall(SYS_pkey_mprotect, lib_info->data_start, data_length
 		, PROT_READ | PROT_WRITE, pkey);
 }
+
+#else
+
+void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey)
+{
+	log_warn("MPK not enabled\n");
+}
+
+#endif
