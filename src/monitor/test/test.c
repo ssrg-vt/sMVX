@@ -18,8 +18,6 @@ void simple_func(int pid)
 {
 	char* localstring = "Test localstring\n";
 	void* to;
-	/** lmvx library **/
-	if (flag_lmvx) lmvx_start(__func__, 1, pid);
 
 	to = malloc(4096);
 	memcpy(to, localstring, 10);
@@ -27,17 +25,11 @@ void simple_func(int pid)
 	printf("%s: Local pid: %ld\n", __func__, gettid());
 	sprintf(cmd, "cat /proc/%d/maps", pid);
 	printf("%s\n", cmd);
-
-	/** lmvx library **/
-	if(flag_lmvx) lmvx_end();
 }
 
 int recursive_func(int p_pid, char *name, int cnt)
 {
 	char *new_name = "parant";
-
-	/** lmvx library **/
-//	if (flag_lmvx) lmvx_start(__func__, 4, pid, tid, name, cnt);
 
 	printf("(%d) Enter %s. Str: %s! Parent pid %d. Local pid %d. Cnt %d.\n",
 			getpid(), __func__, name, p_pid, getpid(), cnt);
@@ -49,9 +41,6 @@ int recursive_func(int p_pid, char *name, int cnt)
 	if (cnt > 1) recursive_func(p_pid, name, cnt-1);
 	printf("(%d) Finish. Cnt %d\n", getpid(), cnt);
 
-	/** lmvx library **/
-//	if(flag_lmvx) lmvx_end();
-
 	return 0;
 }
 
@@ -59,13 +48,18 @@ int main()
 {
 	/** lmvx library **/
 	lmvx_init();
-	simple_func(getpid());
 
 	/** lmvx library **/
-	if (flag_lmvx) lmvx_start("recursive_func", 3, getpid(), "tom", 3);
+	lmvx_start("simple_func", 1, getpid());
+	simple_func(getpid());
+	/** lmvx library **/
+	lmvx_end();
+
+	/** lmvx library **/
+	lmvx_start("recursive_func", 3, getpid(), "tom", 3);
 	recursive_func(getpid(), "tom", 3);
 	/** lmvx library **/
-	if(flag_lmvx) lmvx_end();
+	lmvx_end();
 
 	while(1) usleep(5000);
 
