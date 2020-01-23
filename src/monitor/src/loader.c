@@ -57,10 +57,10 @@ int g_func_num = 0;
 func_desc_t g_func[TAB_SIZE];
 
 /* describe the proc info */
-static proc_info_t pinfo;
+proc_info_t pinfo;
 
 /* base address of the newly allocated code */
-static void *new_text_base = NULL;
+void *new_text_base = NULL;
 
 /**
  * Entry function of the LD_PRELOAD library.
@@ -99,13 +99,14 @@ int init_loader()
 
 	// dup proc mem
 	new_text_base = dup_proc(&pinfo);
+	log_info("g_func %p, new_text_base %p", g_func, new_text_base);
 
 	// rewrite first (several) instructions to redirect control to clone
 	rewrite_insn(&pinfo, g_func);
 
 	//log_debug("code 0x%lx/0x%lx. new text base %p", pinfo.code_start,
 	//		pinfo.code_end, new_text_base);
-	gen_conf(g_func, new_text_base, CONF_TAB_ADDR_FILE);
+	//gen_conf(g_func, new_text_base, CONF_TAB_ADDR_FILE);
 
 	return 0;
 }
