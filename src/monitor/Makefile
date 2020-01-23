@@ -72,7 +72,7 @@ install: libmonitor.so liblmvx.so
 ### liblmvx.so
 liblmvx.so: $(LIB_OBJ_FILES)
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -shared $^ $(OBJ_DIR)/log.o $(OBJ_DIR)/env.o $(LDFLAGS) -o liblmvx.so
+	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o liblmvx.so
 
 ## Two binaries, from (mostly) same source code
 test.bin: $(TEST_DIR)/test.c liblmvx.so
@@ -81,6 +81,14 @@ test.bin: $(TEST_DIR)/test.c liblmvx.so
 
 test_run:
 	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
+
+## Pointer test case --> pointer.bin
+pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
+
+pointer_test:
+	LOG_LEVEL=TRACE BIN=pointer CONF=conf/pointer.conf LD_PRELOAD=libmonitor.so ./pointer.bin
 
 nginx_run:
 	LOG_LEVEL=FATAL BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx

@@ -1,19 +1,5 @@
 #define _GNU_SOURCE
-
-#include <assert.h>
-#include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <sched.h>
-//#include <linux/sched.h>
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <sys/wait.h>	// wait()
-
-#include "../inc/lmvx.h"
-#include "../inc/log.h"		// log functions
-#include "../inc/env.h"
-#include "../inc/pkey.h"
 
 int flag_lmvx = 1;	// TODO: a fake value, need to be deleted.
 
@@ -44,23 +30,23 @@ void lmvx_end(void)
 /* This will be preloaded, we should never call this */
 void associate_all_pkeys()
 {
-	log_error("Real associate_all_pkeys called\n");
+	fprintf(stderr, "%s: Real associate_all_pkeys called\n", __func__);
 }
 
 /* Also preload the child pid */
 void store_child_pid(unsigned long pid)
 {
-	log_error("Real store_child_pid called\n");
+	fprintf(stderr, "%s: Real store_child_pid called\n", __func__);
 }
 
 /* Preload the setting of mvx */
 void set_mvx_active()
 {
-	log_error("Real set_mvx_active called\n");
+	fprintf(stderr, "%s: Real set_mvx_active called\n", __func__);
 }
 
 /* Preload the clearing of mvx */
 void clear_mvx_active()
 {
-	log_error("Real clear_mvx_active called\n");
+	fprintf(stderr, "%s: Real clear_mvx_active called\n", __func__);
 }
