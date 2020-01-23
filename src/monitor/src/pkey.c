@@ -33,7 +33,7 @@ void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey)
 
 void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey)
 {
-	log_warn("MPK not enabled\n");
+	log_warn("MPK not enabled");
 }
 
 #endif
