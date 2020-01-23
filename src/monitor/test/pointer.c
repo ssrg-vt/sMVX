@@ -30,8 +30,10 @@ int main(int argc, char *argv[])
 
 	p_global = &g_a;
 	/** lmvx library **/
-	if (flag_lmvx) lmvx_start("fun", 1, p_global);
+	lmvx_start("fun", 1, p_global);
 	fun(p_global);
+	lmvx_end();
+
 	p_fn(&g_a);
 	g_p_fn(&g_a);
 

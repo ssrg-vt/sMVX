@@ -44,7 +44,7 @@ pre:
 	$(MKDIR) -p $(OBJ_DIR)
 	$(MKDIR) $(OBJ_DIR)/$(LIB_DIR)
 
-post: test.bin
+post: test.bin pointer.bin
 	@echo "=== dump sensitive functions ==="
 	@objdump -S test.bin | grep "recursive_func>:"
 	@objdump -S test.bin | grep "simple_func>:"
