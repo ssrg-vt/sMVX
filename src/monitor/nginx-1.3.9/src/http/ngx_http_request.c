@@ -524,9 +524,9 @@ ngx_http_init_request(ngx_event_t *rev)
     (void) ngx_atomic_fetch_add(ngx_stat_requests, 1);
 #endif
 
-    if (flag_lmvx) lmvx_start("ngx_http_process_request_line", 1, rev);
+    //lmvx_start("ngx_http_process_request_line", 1, rev);
     rev->handler(rev);
-    if(flag_lmvx) lmvx_end();
+    //lmvx_end();
 }
 
 
@@ -1696,9 +1696,9 @@ ngx_http_process_request(ngx_http_request_t *r)
     c->write->handler = ngx_http_request_handler;
     r->read_event_handler = ngx_http_block_reading;
 
-    //if (flag_lmvx) lmvx_start("ngx_http_handler", 1, r);
+    lmvx_start("ngx_http_handler", 1, r);
     ngx_http_handler(r);
-    //if(flag_lmvx) lmvx_end();
+    lmvx_end();
 
     ngx_http_run_posted_requests(c);
 }

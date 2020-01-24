@@ -312,9 +312,9 @@ ngx_single_process_cycle(ngx_cycle_t *cycle)
     for ( ;; ) {
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle->log, 0, "worker cycle");
 
-	//if (flag_lmvx) lmvx_start("ngx_process_events_and_timers", 1, cycle);
+	//lmvx_start("ngx_process_events_and_timers", 1, cycle);
         ngx_process_events_and_timers(cycle);
-	//if (flag_lmvx) lmvx_end();
+	//lmvx_end();
 
         if (ngx_terminate || ngx_quit) {
 
