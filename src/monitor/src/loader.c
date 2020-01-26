@@ -78,7 +78,7 @@ int init_loader(int argc, char** argv, char** env)
 	read_binary_info(&binfo);
 
 	// dup proc mem
-	new_text_base = dup_proc(&pinfo);
+	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
 	log_info("g_func %p, old_text_base %p, new_text_base %p", g_func,
 			old_text_base, new_text_base);
@@ -189,19 +189,20 @@ int read_binary_info(binary_info_t *binfo)
 /**
  * Duplicate the proc mem (code,rodata,data)
  * */
-void *dup_proc(proc_info_t *pinfo)
+void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 {
 	void *mem = NULL;
 	// code, rodata, data segment size
 	uint64_t code_sz, rodata_sz, data_sz;
-	uint64_t total_sz = pinfo->data_end - pinfo->code_start;
+	// .bss is not in rw vma (data); only consider PIE code
+	uint64_t total_sz = ROUNDUP(binfo->bss_start + binfo->bss_size, 4096);
 	// .rodata offset, .data offset
 	uint64_t rodata_off, data_off;
 
 	// calculate size and offset
 	code_sz = pinfo->code_end - pinfo->code_start;
 	rodata_sz = pinfo->rodata_end - pinfo->rodata_start;
-	data_sz = pinfo->data_end - pinfo->data_start;
+	data_sz = total_sz - (pinfo->data_start - pinfo->code_start);
 
 	rodata_off = pinfo->rodata_start - pinfo->code_start;
 	data_off = pinfo->data_start - pinfo->code_start;

@@ -29,7 +29,8 @@ echo "File" $tmpfile "created"
 result=$(readelf -SW $bin | grep " .text" | python elf-section.py)
 echo ".text:" $result
 echo $result > $tmpfile
-result=$(readelf -SW $bin | grep " .data" | python elf-section.py)
+## use " .data " to avoid finding out ".rodata" and ".data.rel.ro"
+result=$(readelf -SW $bin | grep " .data " | python elf-section.py)
 echo ".data:" $result
 echo $result >> $tmpfile
 result=$(readelf -SW $bin | grep " .bss"  | python elf-section.py)
