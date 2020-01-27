@@ -19,60 +19,37 @@
 #include <elf.h>
 #include <sys/mman.h>
 
-//#include "../inc/lmvx.h"
 #include <log.h>
 #include <env.h>
 #include <loader.h>
 
-/*
- * --- ELF64 header defination (/usr/include/elf.h) ---
- * typedef struct
- * {
- *  unsigned char	e_ident[EI_NIDENT];	// Magic number and other info. | u64*2
- *  Elf64_Half	e_type;			// Object file type. u16
- *  Elf64_Half	e_machine;		// Architecture. u16 
- *  Elf64_Word	e_version;		// Object file version. u32 | u64
- *  Elf64_Addr	e_entry;		// Entry point virtual address. | u64
- *  Elf64_Off	e_phoff;		// Program header table file offset. | u64 
- *  Elf64_Off	e_shoff;		// Section header table file offset. | u64 
- *  Elf64_Word	e_flags;		// Processor-specific flags. u32 
- *  Elf64_Half	e_ehsize;		// ELF header size in bytes. u16
- *  Elf64_Half	e_phentsize;	// Program header table entry size. u16 | u64 
- *  Elf64_Half	e_phnum;		// Program header table entry count. u16 
- *  Elf64_Half	e_shentsize;	// Section header table entry size. u16
- *  Elf64_Half	e_shnum;		// Section header table entry count. u16
- *  Elf64_Half	e_shstrndx;		// Section header string table index. u16 | u64
- * } Elf64_Ehdr;			// u64*8 = 8*8 bytes = 64 bytes
- * */
-
-#define CONF_TAB_ADDR_FILE		"conf/tab_addr.conf"
-
-#define WARN_CONF	 "No bin file specified."
-#define WARN_BIN	 "No conf file specified."
-#define USAGE 		 "Use: $ CONF=<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> p1 p2 ..."
+#define WARN_CONF	 "No CONF file specified."
+#define WARN_BIN	 "No BIN file specified."
+#define USAGE 		 "Use: $ BIN=<binary> CONF=<func.conf> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
 
 #define TAB_SIZE	16
+/** Global variables inside libmonitor.so **/
 /* num of func_desc_t, and the array of func_desc_t */
 int g_func_num = 0;
 func_desc_t g_func[TAB_SIZE];
-
-/* describe the proc info */
+/* describe the proc info and binary info. */
 proc_info_t pinfo;
-
+binary_info_t binfo;
 /* base address of the newly allocated code */
 void *new_text_base = NULL;
+void *old_text_base = NULL;
 
 /**
  * Entry function of the LD_PRELOAD library.
  * */
-int init_loader()
+int init_loader(int argc, char** argv, char** env)
 {
 	// get env file names
 	const char *conf_filename = getenv("CONF");
 	const char *bin_name = getenv("BIN");
 
 	// init the env to enable logging (log_xxx printf)
-	//printf("argc 0x%x. %s\n", argc, getenv("LOG_LEVEL"));
+	printf("argc 0x%x. LOG_LEVEL %s\n", argc, getenv("LOG_LEVEL"));
 	init_env();
 
 	if (conf_filename == NULL) {
@@ -97,16 +74,18 @@ int init_loader()
 	// read proc, find .text base
 	read_proc(bin_name, &pinfo);
 
+	// read binary info from a profile file - "/tmp/dec.info"
+	read_binary_info(&binfo);
+
 	// dup proc mem
-	new_text_base = dup_proc(&pinfo);
-	log_info("g_func %p, new_text_base %p", g_func, new_text_base);
+	new_text_base = dup_proc(&pinfo, &binfo);
+	old_text_base = (void *)(pinfo.code_start);
+	log_info("g_func %p, old_text_base %p, new_text_base %p", g_func,
+			old_text_base, new_text_base);
 
+	// TODO: only if we want to work on binary campatibility ...
 	// rewrite first (several) instructions to redirect control to clone
-	rewrite_insn(&pinfo, g_func);
-
-	//log_debug("code 0x%lx/0x%lx. new text base %p", pinfo.code_start,
-	//		pinfo.code_end, new_text_base);
-	//gen_conf(g_func, new_text_base, CONF_TAB_ADDR_FILE);
+	//rewrite_insn(&pinfo, g_func);
 
 	return 0;
 }
@@ -146,17 +125,6 @@ int init_conf(const char *conf_filename, func_desc_t *func)
 }
 
 /**
- * Temporarily store the func_desc_t array in a file.
- * */
-void gen_conf(func_desc_t *func, void *base, const char *CONF_TBL_ADDR)
-{
-	FILE *conf_tbl = fopen(CONF_TBL_ADDR, "w");	// conf file of ind_tbl address
-
-	fprintf(conf_tbl, "%p %p", func, base);
-	fclose(conf_tbl);
-}
-
-/**
  * Read /proc/self/maps, find out the code/data locations
  * */
 int read_proc(const char *bin_name, proc_info_t *pinfo)
@@ -167,7 +135,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	uint64_t start, end;
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
-	log_debug("bin: %s", bin_name);
+	log_debug("BIN: %s", bin_name);
 	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
@@ -195,21 +163,46 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 }
 
 /**
+ * Read binary info from a profile file "binary.info"
+ * */
+int read_binary_info(binary_info_t *binfo)
+{
+	FILE *fbin = 0;
+
+	fbin = fopen("/tmp/dec.info", "r");
+
+	fscanf(fbin, "%lx %lx %lx %lx %lx %lx", 
+		&(binfo->code_start), &(binfo->code_size), 
+		&(binfo->data_start), &(binfo->data_size),
+		&(binfo->bss_start), &(binfo->bss_size));
+
+	fclose(fbin);
+
+	log_info(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]", 
+		binfo->code_start, binfo->code_size, 
+		binfo->data_start, binfo->data_size,
+		binfo->bss_start, binfo->bss_size);
+
+	return 0;
+}
+
+/**
  * Duplicate the proc mem (code,rodata,data)
  * */
-void *dup_proc(proc_info_t *pinfo)
+void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 {
 	void *mem = NULL;
 	// code, rodata, data segment size
 	uint64_t code_sz, rodata_sz, data_sz;
-	uint64_t total_sz = pinfo->data_end - pinfo->code_start;
+	// .bss is not in rw vma (data); only consider PIE code
+	uint64_t total_sz = ROUNDUP(binfo->bss_start + binfo->bss_size, 4096);
 	// .rodata offset, .data offset
 	uint64_t rodata_off, data_off;
 
 	// calculate size and offset
 	code_sz = pinfo->code_end - pinfo->code_start;
 	rodata_sz = pinfo->rodata_end - pinfo->rodata_start;
-	data_sz = pinfo->data_end - pinfo->data_start;
+	data_sz = total_sz - (pinfo->data_start - pinfo->code_start);
 
 	rodata_off = pinfo->rodata_start - pinfo->code_start;
 	data_off = pinfo->data_start - pinfo->code_start;

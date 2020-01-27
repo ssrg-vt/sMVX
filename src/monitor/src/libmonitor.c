@@ -295,7 +295,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	idx = (u64)find_symbol_addr(func_name, g_func);
 	DEACTIVATE();
 	*p = (u64)new_text_base + g_func[idx].offset;
-	log_trace("fun name %s. idx %d, off %x. 0x%lx", func_name,
+	log_debug("fun name %s. idx %d, off %x. 0x%lx", func_name,
 			idx, g_func[idx].offset, *p);
 	DEACTIVATE();
 	*(p + 1) = argc;
@@ -334,6 +334,7 @@ void lmvx_end(void)
 	}
 
 	clear_mvx_active();
+	log_trace("%s: finish lmvx region. status %d", __func__, status);
 	DEACTIVATE();
 
 	ACTIVATE();
