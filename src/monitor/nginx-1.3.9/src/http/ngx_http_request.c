@@ -1696,9 +1696,9 @@ ngx_http_process_request(ngx_http_request_t *r)
     c->write->handler = ngx_http_request_handler;
     r->read_event_handler = ngx_http_block_reading;
 
-    lmvx_start("ngx_http_handler", 1, r);
+    //lmvx_start("ngx_http_handler", 1, r);
     ngx_http_handler(r);
-    lmvx_end();
+    //lmvx_end();
 
     ngx_http_run_posted_requests(c);
 }

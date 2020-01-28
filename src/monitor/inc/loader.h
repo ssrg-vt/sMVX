@@ -48,5 +48,6 @@ int read_proc(const char *bin_name, proc_info_t *pinfo);
 int read_binary_info(binary_info_t *binfo);
 void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo);
 int rewrite_insn(proc_info_t *pinfo, func_desc_t *func);
+void copy_data_bss();
 
 #endif

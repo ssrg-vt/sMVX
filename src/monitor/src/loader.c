@@ -261,3 +261,25 @@ int rewrite_insn(proc_info_t *pinfo, func_desc_t *func)
 	return 0;
 }
 
+/**
+ * Copy over the data bss
+ * */
+void copy_data_bss()
+{
+	if (!new_text_base || !old_text_base
+	    || !binfo.bss_start || !binfo.bss_size) {
+		log_error("Lacking information, copy_bss called in wrong order");
+		assert(0);
+	}
+
+	/* Check that areas do not overlap */
+	if ((old_text_base + binfo.bss_size) > new_text_base){
+		log_error("Overlapping memory ranges in copy_bss before memcpy");
+		assert(0);
+	}
+
+	memcpy(new_text_base + binfo.bss_start, old_text_base +
+	       binfo.bss_start, binfo.bss_size);
+	memcpy(new_text_base + binfo.data_start, old_text_base +
+	       binfo.data_start, binfo.data_size);
+}
