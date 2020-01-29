@@ -82,11 +82,6 @@ int init_loader(int argc, char** argv, char** env)
 	old_text_base = (void *)(pinfo.code_start);
 	log_info("g_func %p, old_text_base %p, new_text_base %p", g_func,
 			old_text_base, new_text_base);
-
-	// TODO: only if we want to work on binary campatibility ...
-	// rewrite first (several) instructions to redirect control to clone
-	//rewrite_insn(&pinfo, g_func);
-
 	return 0;
 }
 
@@ -211,8 +206,8 @@ void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 	if (code_sz+rodata_sz+data_sz != total_sz) {
 		log_warn("mem space has gap");
 	}
-	log_debug("code sz 0x%lx, rodata sz 0x%lx, total sz 0x%lx",
-			code_sz, rodata_sz, total_sz);
+	log_debug("code sz 0x%lx, rodata sz 0x%lx, data sz 0x%lx, total sz 0x%lx",
+			code_sz, rodata_sz, data_sz, total_sz);
 
 	// allocate memory
 	mem = mmap(NULL, total_sz, PROT_WRITE|PROT_READ|PROT_EXEC,
@@ -247,6 +242,7 @@ void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 /**
  * Rewrite the first several instructions.
  * */
+#if 0
 int rewrite_insn(proc_info_t *pinfo, func_desc_t *func)
 {
 	int i;
@@ -260,6 +256,7 @@ int rewrite_insn(proc_info_t *pinfo, func_desc_t *func)
 
 	return 0;
 }
+#endif
 
 /**
  * Copy over the data bss
