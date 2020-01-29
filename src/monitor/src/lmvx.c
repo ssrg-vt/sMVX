@@ -21,7 +21,7 @@ shim_args_t args;
 char *stack = NULL;
 char *stackTop = NULL;
 
-extern func_desc_t g_func[];
+//extern func_desc_t g_func[];
 extern void *new_text_base;
 
 /* A global variable used for executing critical function once. */
@@ -71,25 +71,24 @@ _0:
 }
 
 /**
- * Return the index of the func_desc_t table with a symbol as input.
+ * Return the offset of the function with function name (symbol) as param.
  * */
-static int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
+static u64 find_symbol_offset(const char *symbol)
 {
 	DEACTIVATE();
-	int i;
-	func_desc_t *entry;
+	hash_table_t *entry = NULL;
 
 	assert(symbol != NULL);
-	for (i = 0; i < TAB_SIZE; i++) {
-		entry = ind_tbl + i;
-		//log_trace("[%2d]: %s|%s, %x, %x.", i, entry->name, symbol,
-		//		entry->offset, entry->flag);
-		if (entry->name == NULL) break;
-		if (!strcmp(symbol, entry->name))
-			return i;
+
+	HASH_FIND_STR(g_ht_fun, symbol, entry);
+	if (entry == NULL) {
+		log_error("Cannot find symbol %s", symbol);
+		return 0;
 	}
-	//ACTIVATE();
-	return -1;
+	else {
+		log_info("Function name %s, offset 0x%lx", symbol, entry->offset);
+		return entry->offset;
+	}
 }
 
 /**
@@ -99,16 +98,6 @@ int lmvx_init(void)
 {
 	DEACTIVATE();
 	int i = 0;
-
-	// just some debug info. TODO: remove them
-	log_debug("%s: g_func %p. new_text_base %p", __func__, g_func, new_text_base);
-	while (g_func[i].name != NULL) {
-		log_info("--> [%2d].name %s: %x. flag %d", i, g_func[i].name,
-				g_func[i].offset, g_func[i].flag);
-		i++;
-	}
-	log_debug("test -- check the first 8 bytes of %s: 0x%x",
-			g_func[0].name, (g_func[0].offset));
 
 	/* initialize the thread stack */
 	stack = malloc(STACK_SIZE);
@@ -129,20 +118,20 @@ void lmvx_start(const char *func_name, int argc, ...)
 {
 	DEACTIVATE();
 	va_list params;
-	u64 param;
-	u64 *p = (u64 *)&args;
-	int i = 0, idx;
-	int ret = 0;
+	u64 param, offset;
+	u64 *p = (u64 *)&args;	/* jmp addr, n args, arg0, ..., arg5 */
+	int i = 0, ret = 0;
 
 	assert(argc <= 6);		// TODO: handle functions with 6+ params
 	DEACTIVATE();
 
-	idx = (u64)find_symbol_addr(func_name, g_func);
+	/* find function offset from hash table. */
+	offset = find_symbol_offset(func_name);
+	assert(offset != 0);
 	DEACTIVATE();
-	*p = (u64)new_text_base + g_func[idx].offset;
-	log_debug("fun name %s. idx %d, off %x. 0x%lx", func_name,
-			idx, g_func[idx].offset, *p);
-	DEACTIVATE();
+
+	/* prepare "shim_args_t args" */
+	*p = (u64)new_text_base + offset;
 	*(p + 1) = argc;
 	va_start(params, argc);
 	while (i < argc) {
@@ -152,15 +141,17 @@ void lmvx_start(const char *func_name, int argc, ...)
 	}
 	va_end(params);
 
-	/* update code pointers */
-	update_pointers_self();
-
-	DEACTIVATE();
-	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+	log_debug("fun name %s. offset %x. jmp to 0x%lx", func_name, offset, *p);
 	DEACTIVATE();
 
 	/* Synchronize over the bss and data */
 	copy_data_bss();
+
+	/* update code pointers */
+	update_pointers_self();
+
+	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+	DEACTIVATE();
 
 	flag_lmvx = 0;
 	set_mvx_active();

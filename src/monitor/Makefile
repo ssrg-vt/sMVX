@@ -33,9 +33,9 @@ endif
 
 BIN := test.bin
 
-all: pre monitor liblmvx.so test.bin post
+all: pre monitor liblmvx.so test.bin
 
-nginx: pre monitor liblmvx.so post_nginx
+nginx: pre monitor liblmvx.so
 
 pre: clean
 	@echo $(SRC)
@@ -43,19 +43,6 @@ pre: clean
 	@echo $(LIB_DIR)/%.c
 	$(MKDIR) -p $(OBJ_DIR)
 	$(MKDIR) $(OBJ_DIR)/$(LIB_DIR)
-
-post: test.bin pointer.bin
-	@echo "=== dump sensitive functions ==="
-	@objdump -S test.bin | grep "recursive_func>:"
-	@objdump -S test.bin | grep "simple_func>:"
-	@cat conf/func.conf
-
-post_nginx:
-	@echo "=== dump nginx function ==="
-	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_handler>:"
-	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_http_process_request_line>:"
-	@objdump -S nginx-1.3.9/objs/nginx | grep "ngx_process_events_and_timers>:"
-	@cat nginx-1.3.9/conf/mvx.conf
 
 monitor: $(OBJ)
 	@echo $(OBJ)
@@ -80,7 +67,7 @@ test.bin: $(TEST_DIR)/test.c liblmvx.so
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 test_run:
-	LOG_LEVEL=TRACE BIN=test.bin CONF=conf/func.conf LD_PRELOAD=libmonitor.so ./test.bin
+	LOG_LEVEL=TRACE BIN=test.bin LD_PRELOAD=libmonitor.so ./test.bin
 
 ## Pointer test case --> pointer.bin
 pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
@@ -88,16 +75,16 @@ pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 pointer_test:
-	LOG_LEVEL=TRACE BIN=pointer CONF=conf/pointer.conf LD_PRELOAD=libmonitor.so ./pointer.bin
+	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=libmonitor.so ./pointer.bin
 
 nginx_run:
-	LOG_LEVEL=TRACE BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
+	LOG_LEVEL=TRACE BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 debug:
-	gdb test.bin -ex "set environment CONF=conf/func.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+	gdb test.bin -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
 
 nginx_debug:
-	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set environment CONF=nginx-1.3.9/conf/mvx.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx-1.3.9/objs/nginx"
+	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
 clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin
@@ -114,4 +101,4 @@ $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
-.PHONY: all clean install monitor_trampoline pre post test_run debug rebuild
+.PHONY: all clean install monitor_trampoline pre test_run debug rebuild
