@@ -286,7 +286,7 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 	for (i = bss_start; i <= bss_end-8; i+=8) {
 		p = (uint64_t *)i;
 		if (*p >= code_start && *p <= code_end) {
-			log_info("code pointer @ %p -> 0x%lx, offset 0x%lx (.bss)", p, *p, (*p - code_start));
+			log_info("code pointer @ %p -> 0x%lx (func addr), offset to base 0x%lx (.bss)", p, *p, (*p - base));
 			*p += delta;
 			cnt++;
 		}

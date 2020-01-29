@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	printf("%s: pid %d. &p_fn %p\n", __func__, getpid(), &p_fn);
 
 	/** lmvx library **/
-	lmvx_start("g_p_fn", 1, &g_a);
+	lmvx_start("fun", 1, &g_a);
 	g_p_fn(&g_a);
 	lmvx_end();
 
