@@ -91,7 +91,7 @@ pointer_test:
 	LOG_LEVEL=TRACE BIN=pointer CONF=conf/pointer.conf LD_PRELOAD=libmonitor.so ./pointer.bin
 
 nginx_run:
-	LOG_LEVEL=FATAL BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
+	LOG_LEVEL=TRACE BIN=nginx-1.3.9/objs/nginx CONF=nginx-1.3.9/conf/mvx.conf LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 debug:
 	gdb test.bin -ex "set environment CONF=conf/func.conf" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
