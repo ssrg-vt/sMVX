@@ -37,7 +37,7 @@ all: pre monitor liblmvx.so test.bin post
 
 nginx: pre monitor liblmvx.so post_nginx
 
-pre:
+pre: clean
 	@echo $(SRC)
 	@echo $(LIB_OBJ_FILES)
 	@echo $(LIB_DIR)/%.c
