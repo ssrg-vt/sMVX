@@ -27,7 +27,7 @@ extern void *new_text_base;
 /* A global variable used for executing critical function once. */
 int flag_lmvx = 1;
 
-int _lmvx_thread_shim(void *p)
+static int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	store_child_pid(getpid());
@@ -73,7 +73,7 @@ _0:
 /**
  * Return the index of the func_desc_t table with a symbol as input.
  * */
-int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
+static int find_symbol_addr(const char *symbol, func_desc_t *ind_tbl)
 {
 	DEACTIVATE();
 	int i;
@@ -152,6 +152,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	}
 	va_end(params);
 
+	update_pointers_self();
 	DEACTIVATE();
 	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	DEACTIVATE();

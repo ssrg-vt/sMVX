@@ -44,44 +44,55 @@ void *old_text_base = NULL;
  * */
 int init_loader(int argc, char** argv, char** env)
 {
-	// get env file names
+	/* get env file names */
 	const char *conf_filename = getenv("CONF");
 	const char *bin_name = getenv("BIN");
 
-	// init the env to enable logging (log_xxx printf)
-	printf("argc 0x%x. LOG_LEVEL %s\n", argc, getenv("LOG_LEVEL"));
+	/* init the LOG_LEVEL env to enable logging (log_xxx printf) */
 	init_env();
+	log_debug("LD_PRELOAD argc 0x%x. LOG_LEVEL %s", argc, getenv("LOG_LEVEL"));
 
-	if (conf_filename == NULL) {
-		log_error(WARN_CONF);
-		log_error(USAGE);
+	/* check whether CONF and BIN have been set. */
+	if (check_env(conf_filename, bin_name))
 		exit(EXIT_FAILURE);
-	}
-	if (bin_name == NULL) {
-		log_error(WARN_BIN);
-		log_error(USAGE);
-		exit(EXIT_FAILURE);
-	}
-	log_info("LD_PRELOAD Binary: %s. CONF: %s.",
-			bin_name, conf_filename);
 
-	// load conf file
+	/* load conf file */
 	if (init_conf(conf_filename, g_func)) {
 		log_error("Failed to load conf file.");
 		exit(EXIT_FAILURE);
 	}
 
-	// read proc, find .text base
+	/* read proc, find .text base */
 	read_proc(bin_name, &pinfo);
 
-	// read binary info from a profile file - "/tmp/dec.info"
+	/* read binary info from a profile file - "/tmp/dec.info" */
 	read_binary_info(&binfo);
 
-	// dup proc mem
+	/* duplicate the code and data (.data, .bss) VMAs */
 	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
-	log_info("g_func %p, old_text_base %p, new_text_base %p", g_func,
-			old_text_base, new_text_base);
+	log_info("g_func %p, old_text_base %p, new_text_base %p. delta %lx", g_func,
+			old_text_base, new_text_base, new_text_base - old_text_base);
+
+	return 0;
+}
+
+/**
+ * Check whether the environment of CONF and BIN have been set.
+ * */
+static int check_env(const char *conf_filename, const char *bin_name)
+{
+	if (conf_filename == NULL) {
+		log_error(WARN_CONF);
+		log_error(USAGE);
+		return 1;
+	}
+	if (bin_name == NULL) {
+		log_error(WARN_BIN);
+		log_error(USAGE);
+		return 1;
+	}
+	log_info("BIN: %s. CONF: %s.", bin_name, conf_filename);
 
 	return 0;
 }
@@ -91,7 +102,7 @@ int init_loader(int argc, char** argv, char** env)
  *   into an in-memory func_desc_t array.
  * Log the in-memory array address.
  * */
-int init_conf(const char *conf_filename, func_desc_t *func)
+static int init_conf(const char *conf_filename, func_desc_t *func)
 {
 	FILE *conf = fopen(conf_filename, "r");		// conf of function list.
 	char func_name[128];
@@ -131,7 +142,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	uint64_t start, end;
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
-	log_debug("BIN: %s", bin_name);
+	log_debug("VMA name: %s", bin_name);
 	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
@@ -161,7 +172,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 /**
  * Read binary info from a profile file "binary.info"
  * */
-int read_binary_info(binary_info_t *binfo)
+static int read_binary_info(binary_info_t *binfo)
 {
 	FILE *fbin = 0;
 
@@ -185,7 +196,7 @@ int read_binary_info(binary_info_t *binfo)
 /**
  * Duplicate the proc mem (code,rodata,data)
  * */
-void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
+static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 {
 	void *mem = NULL;
 	// code, rodata, data segment size
@@ -238,6 +249,59 @@ void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 	}
 
 	return mem;
+}
+
+/**
+ * Search code pointers from process space.
+ * */
+static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
+{
+	int cnt = 0;
+	uint64_t code_start, code_end;
+	uint64_t data_start, data_end;
+	uint64_t bss_start, bss_end;
+	uint64_t base, i, *p;
+
+	/* runtime information is from base (/proc/<pid>/maps) + binary info */
+	base = pinfo->code_start;
+	code_start = base + binfo->code_start;
+	code_end = code_start + binfo->code_size;
+	data_start = base + binfo->data_start;
+	data_end = data_start + binfo->data_size;
+	bss_start = base + binfo->bss_start;
+	bss_end = bss_start + binfo->bss_size;
+	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]\n\t\t\t\t bss: [0x%lx,0x%lx]",
+			code_start, code_end, data_start, data_end, bss_start, bss_end);
+
+	/* search code pointers in .data and .bss */
+	for (i = data_start; i <= data_end-8; i+=8) {
+		p = (uint64_t *)i;
+		if (*p >= code_start && *p <= code_end) {
+			log_info("code pointer @ %p -> 0x%lx, offset 0x%lx (.data)", p, *p, (*p - code_start));
+			*p += delta;
+			cnt++;
+		}
+	}
+
+	for (i = bss_start; i <= bss_end-8; i+=8) {
+		p = (uint64_t *)i;
+		if (*p >= code_start && *p <= code_end) {
+			log_info("code pointer @ %p -> 0x%lx, offset 0x%lx (.bss)", p, *p, (*p - code_start));
+			*p += delta;
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
+/**
+ * Search code and data pointers from process space.
+ * */
+void update_pointers_self()
+{
+	int pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	log_info("%s: # of code pointers %d", __func__, pointer_cnt);
 }
 
 /**
