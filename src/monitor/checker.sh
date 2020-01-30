@@ -26,6 +26,7 @@ echo "File" $tmpfile "created"
 #dump_location
 #echo "Success"
 
+## dump the sections first
 result=$(readelf -SW $bin | grep " .text" | python elf-section.py)
 echo ".text:" $result
 echo $result > $tmpfile
@@ -36,6 +37,12 @@ echo $result >> $tmpfile
 result=$(readelf -SW $bin | grep " .bss"  | python elf-section.py)
 echo " .bss:" $result
 echo $result >> $tmpfile
+
+## dump function symbol and name
+nm $bin | grep " T " >> $tmpfile
+nm $bin | grep " t " >> $tmpfile
+#result=$(nm $bin | grep " T ")
+#echo $result >> $tmpfile
 
 echo
 echo "Verify: cat "$tmpfile

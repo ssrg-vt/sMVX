@@ -23,21 +23,19 @@
 #include <env.h>
 #include <loader.h>
 
-#define WARN_CONF	 "No CONF file specified."
-#define WARN_BIN	 "No BIN file specified."
-#define USAGE 		 "Use: $ BIN=<binary> CONF=<func.conf> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
+#define USAGE 		 "Use: $ BIN=<binary name> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
 
-#define TAB_SIZE	16
 /** Global variables inside libmonitor.so **/
-/* num of func_desc_t, and the array of func_desc_t */
-int g_func_num = 0;
-func_desc_t g_func[TAB_SIZE];
 /* describe the proc info and binary info. */
 proc_info_t pinfo;
 binary_info_t binfo;
-/* base address of the newly allocated code */
+/* base address of the both new and old memory */
 void *new_text_base = NULL;
 void *old_text_base = NULL;
+
+/* global hash table for <function name, offset> */
+hash_table_t *g_ht_fun;
+rev_hash_table_t *g_ht_offset;
 
 /**
  * Entry function of the LD_PRELOAD library.
@@ -45,21 +43,16 @@ void *old_text_base = NULL;
 int init_loader(int argc, char** argv, char** env)
 {
 	/* get env file names */
-	const char *conf_filename = getenv("CONF");
 	const char *bin_name = getenv("BIN");
 
 	/* init the LOG_LEVEL env to enable logging (log_xxx printf) */
 	init_env();
 	log_debug("LD_PRELOAD argc 0x%x. LOG_LEVEL %s", argc, getenv("LOG_LEVEL"));
 
-	/* check whether CONF and BIN have been set. */
-	if (check_env(conf_filename, bin_name))
-		exit(EXIT_FAILURE);
-
-	/* load conf file */
-	if (init_conf(conf_filename, g_func)) {
-		log_error("Failed to load conf file.");
-		exit(EXIT_FAILURE);
+	/* check whether BIN has been set. */
+	if (bin_name == NULL) {
+		log_error(USAGE);
+		assert(bin_name);
 	}
 
 	/* read proc, find .text base */
@@ -71,62 +64,8 @@ int init_loader(int argc, char** argv, char** env)
 	/* duplicate the code and data (.data, .bss) VMAs */
 	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
-	log_info("g_func %p, old_text_base %p, new_text_base %p. delta %lx", g_func,
+	log_info("old_text_base %p, new_text_base %p. delta %lx",
 			old_text_base, new_text_base, new_text_base - old_text_base);
-
-	return 0;
-}
-
-/**
- * Check whether the environment of CONF and BIN have been set.
- * */
-static int check_env(const char *conf_filename, const char *bin_name)
-{
-	if (conf_filename == NULL) {
-		log_error(WARN_CONF);
-		log_error(USAGE);
-		return 1;
-	}
-	if (bin_name == NULL) {
-		log_error(WARN_BIN);
-		log_error(USAGE);
-		return 1;
-	}
-	log_info("BIN: %s. CONF: %s.", bin_name, conf_filename);
-
-	return 0;
-}
-
-/**
- * Loading the config files (a list of sensitive functions <name,offset>)
- *   into an in-memory func_desc_t array.
- * Log the in-memory array address.
- * */
-static int init_conf(const char *conf_filename, func_desc_t *func)
-{
-	FILE *conf = fopen(conf_filename, "r");		// conf of function list.
-	char func_name[128];
-	int len = 0;
-	uint32_t func_off = 0;
-
-	if (conf == NULL) {
-		log_error("Unable to open conf file: %s.", conf_filename);
-		return 1;
-	}
-
-	g_func_num = 0;
-	while (fscanf(conf, "%s %x", func_name, &func_off) != EOF) {
-		len = strlen(func_name);
-		// name
-		func[g_func_num].name = malloc(len + 1);
-		strcpy(func[g_func_num].name, func_name);
-		// offset + flag
-		func[g_func_num].offset = func_off;
-		func[g_func_num].flag = 0;
-		log_debug("[%2d] %s: offset 0x%x. name len %d", g_func_num, func_name, func_off, len);
-		g_func_num++;
-	}
-	fclose(conf);
 
 	return 0;
 }
@@ -170,11 +109,15 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 }
 
 /**
- * Read binary info from a profile file "binary.info"
+ * Read binary info from a profile file "/tmp/dec.info"
  * */
 static int read_binary_info(binary_info_t *binfo)
 {
 	FILE *fbin = 0;
+	char t, name[128];
+	uint64_t offset;
+	hash_table_t *entry;
+	rev_hash_table_t *rv_entry;
 
 	fbin = fopen("/tmp/dec.info", "r");
 
@@ -183,12 +126,28 @@ static int read_binary_info(binary_info_t *binfo)
 		&(binfo->data_start), &(binfo->data_size),
 		&(binfo->bss_start), &(binfo->bss_size));
 
-	fclose(fbin);
-
 	log_info(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]", 
 		binfo->code_start, binfo->code_size, 
 		binfo->data_start, binfo->data_size,
 		binfo->bss_start, binfo->bss_size);
+
+	while (fscanf(fbin, "%lx %c %127s", &offset, &t, name) != EOF) {
+		/* add entry to hash table */
+		entry = (hash_table_t *)malloc(sizeof(hash_table_t));
+		strcpy(entry->name, name);
+		entry->offset = offset;
+		HASH_ADD_STR(g_ht_fun, name, entry);
+
+		/* add entry to reverse hash table. */
+		rv_entry = (rev_hash_table_t *)malloc(sizeof(rev_hash_table_t));
+		strcpy(rv_entry->name, name);
+		rv_entry->offset = offset;
+		HASH_ADD_INT(g_ht_offset, offset, rv_entry);
+
+		//log_info("%s:\t\t0x%lx", name, offset);
+	}
+
+	fclose(fbin);
 
 	return 0;
 }
@@ -254,6 +213,7 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 /**
  * Search code pointers from process space.
  * */
+#if 0
 static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
 {
 	int cnt = 0;
@@ -288,6 +248,58 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 		if (*p >= code_start && *p <= code_end) {
 			log_info("code pointer @ %p -> 0x%lx (func addr), offset to base 0x%lx (.bss)", p, *p, (*p - base));
 			*p += delta;
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+#endif
+static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
+{
+	int cnt = 0, offset;
+	uint64_t code_start, code_end;
+	uint64_t data_start, data_end;
+	uint64_t bss_start, bss_end;
+	uint64_t base, new_base, i, *p;
+	rev_hash_table_t *entry = NULL;
+
+	/* original code area */
+	base = pinfo->code_start;
+	code_start = base + binfo->code_start;
+	code_end = code_start + binfo->code_size;
+
+	/* new data area */
+	new_base = pinfo->code_start + delta;
+	data_start = new_base + binfo->data_start;
+	data_end = data_start + binfo->data_size;
+	bss_start = new_base + binfo->bss_start;
+	bss_end = bss_start + binfo->bss_size;
+
+	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]\n\t\t\t\t bss: [0x%lx,0x%lx]",
+			code_start, code_end, data_start, data_end, bss_start, bss_end);
+
+	/* search code pointers in .data and .bss */
+	for (i = data_start; i <= data_end-8; i+=8) {
+		p = (uint64_t *)i;
+		offset = (int)(*p - base);
+		HASH_FIND_INT(g_ht_offset, &offset, entry);
+		if (entry != NULL) {
+			*p += delta;
+			log_debug("update p %p --> offset 0x%lx (%s). new loc %p (.data)",
+					p, offset, entry->name, *p);
+			cnt++;
+		}
+	}
+
+	for (i = bss_start; i <= bss_end-8; i+=8) {
+		p = (uint64_t *)i;
+		offset = (int)(*p - base);
+		HASH_FIND_INT(g_ht_offset, &offset, entry);
+		if (entry != NULL) {
+			*p += delta;
+			log_debug("update p %p --> offset 0x%lx (%s). new loc %p (.bss)",
+					p, offset, entry->name, *p);
 			cnt++;
 		}
 	}

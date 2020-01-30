@@ -1,9 +1,8 @@
 #ifndef __LOADER_H
 #define __LOADER_H
 
-#include <elf.h>
 #include <assert.h>
-#include <log.h>
+#include "uthash.h"
 
 /*
 ** Arguments x and y are both integers. Argument y must be a power of 2.
@@ -14,6 +13,7 @@
 */
 #define ROUNDUP(x,y)     (((x)+y-1)&~(y-1))
 
+/* Runtime "/proc/<pid>/maps" info */
 typedef struct {
 	uint64_t code_start;
 	uint64_t code_end;
@@ -23,6 +23,7 @@ typedef struct {
 	uint64_t data_end;
 } proc_info_t;
 
+/* Binary section info from "readelf -SW <binary>" */
 typedef struct {
 	uint64_t code_start;
 	uint64_t code_size;
@@ -32,23 +33,30 @@ typedef struct {
 	uint64_t bss_size;
 } binary_info_t;
 
+/* Hash table: name (key) --> offset */
 typedef struct {
-	char *name;
-	uint32_t offset;
-	uint32_t flag;
-} func_desc_t;
+	char name[128];		/* key: function name */
+	uint64_t offset;
+	UT_hash_handle hh;	/* make this struct hashable */
+} hash_table_t;
 
-extern int g_func_num;
+/* Reverse hash table: offset (key) --> name */
+typedef struct {
+	int offset;			/* key: function offset */
+	char name[128];
+	UT_hash_handle hh;	/* make this struct hashable */
+} rev_hash_table_t;
 
+extern hash_table_t *g_ht_fun;
+extern rev_hash_table_t *g_ht_offset;
+
+/* function declaration */
 int init_loader();
 int read_proc(const char *bin_name, proc_info_t *pinfo);
+void copy_data_bss();
 void update_pointers_self();
-static int check_env(const char *conf_filename, const char *bin_name);
-static int init_conf(const char *conf_filename, func_desc_t *func);
 static int read_binary_info(binary_info_t *binfo);
 static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo);
 static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta);
-void copy_data_bss();
-//int rewrite_insn(proc_info_t *pinfo, func_desc_t *func);
 
 #endif
