@@ -31,6 +31,13 @@ static int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	store_child_pid(getpid());
+
+	/* update heap code pointers */
+	update_heap_pointers_self();
+
+	// TODO: comment for now
+	//update_vma_permission();
+
 	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	ACTIVATE();

@@ -81,7 +81,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	uint64_t start, end;
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
-	log_debug("VMA name: %s", bin_name);
+	log_debug("%s: VMA name: %s", __func__, bin_name);
 	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
@@ -105,6 +105,29 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	}
 	fclose(fproc);
 
+	return 0;
+}
+
+/**
+ * Read /proc/self/maps, find out the start and end locations of a proc entry
+ * @return 0 no such entry found
+ * */
+int read_proc_line(const char *bin_name, uint64_t *start, uint64_t *end)
+{
+	FILE * fproc;
+	char line[512];
+	char flag[8];
+	uint32_t file_offset, dev_major, dev_minor, inode;
+
+	log_debug("%s: VMA name: %s", __func__, bin_name);
+	assert(bin_name != NULL);
+
+	fproc = fopen("/proc/self/maps", "r");
+	while (fgets(line, 511, fproc) != NULL) {
+		sscanf(line, "%lx-%lx %31s %x %x:%x %u", start, end, flag,
+				&file_offset, &dev_major, &dev_minor, &inode);
+		if (strstr(line, bin_name)) return 1;
+	}
 	return 0;
 }
 
@@ -211,50 +234,8 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 }
 
 /**
- * Search code pointers from process space.
+ * Search and update code pointers in .data and .bss from the process space.
  * */
-#if 0
-static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
-{
-	int cnt = 0;
-	uint64_t code_start, code_end;
-	uint64_t data_start, data_end;
-	uint64_t bss_start, bss_end;
-	uint64_t base, i, *p;
-
-	/* runtime information is from base (/proc/<pid>/maps) + binary info */
-	base = pinfo->code_start;
-	code_start = base + binfo->code_start;
-	code_end = code_start + binfo->code_size;
-	data_start = base + binfo->data_start;
-	data_end = data_start + binfo->data_size;
-	bss_start = base + binfo->bss_start;
-	bss_end = bss_start + binfo->bss_size;
-	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]\n\t\t\t\t bss: [0x%lx,0x%lx]",
-			code_start, code_end, data_start, data_end, bss_start, bss_end);
-
-	/* search code pointers in .data and .bss */
-	for (i = data_start; i <= data_end-8; i+=8) {
-		p = (uint64_t *)i;
-		if (*p >= code_start && *p <= code_end) {
-			log_info("code pointer @ %p -> 0x%lx, offset 0x%lx (.data)", p, *p, (*p - code_start));
-			*p += delta;
-			cnt++;
-		}
-	}
-
-	for (i = bss_start; i <= bss_end-8; i+=8) {
-		p = (uint64_t *)i;
-		if (*p >= code_start && *p <= code_end) {
-			log_info("code pointer @ %p -> 0x%lx (func addr), offset to base 0x%lx (.bss)", p, *p, (*p - base));
-			*p += delta;
-			cnt++;
-		}
-	}
-
-	return cnt;
-}
-#endif
 static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
 {
 	int cnt = 0, offset;
@@ -276,18 +257,19 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 	bss_start = new_base + binfo->bss_start;
 	bss_end = bss_start + binfo->bss_size;
 
-	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]\n\t\t\t\t bss: [0x%lx,0x%lx]",
+	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]"
+			"\n\t\t\t\t bss: [0x%lx,0x%lx]",
 			code_start, code_end, data_start, data_end, bss_start, bss_end);
 
-	/* search code pointers in .data and .bss */
+	/* search code pointers in .data, .bss and heap */
 	for (i = data_start; i <= data_end-8; i+=8) {
 		p = (uint64_t *)i;
 		offset = (int)(*p - base);
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("update p %p --> offset 0x%lx (%s). new loc %p (.data)",
-					p, offset, entry->name, *p);
+			log_debug("update %p @offset 0x%lx. new loc %p (.data) [%s]",
+					p, offset, *p, entry->name);
 			cnt++;
 		}
 	}
@@ -298,8 +280,37 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("update p %p --> offset 0x%lx (%s). new loc %p (.bss)",
-					p, offset, entry->name, *p);
+			log_debug("update %p @offset 0x%lx. new loc %p (.bss) [%s]",
+					p, offset, *p, entry->name);
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
+/**
+ * Search and update code pointers on heap.
+ * */
+static int update_heap_code_pointers(uint64_t base, int64_t delta)
+{
+	int cnt = 0, offset;
+	uint64_t heap_start, heap_end;
+	uint64_t i, *p;
+	rev_hash_table_t *entry = NULL;
+
+	read_proc_line("[heap]", &heap_start, &heap_end);
+	log_debug("%s: heap [0x%lx,0x%lx]. size 0x%lx", __func__,
+			heap_start, heap_end, heap_end - heap_start);
+
+	for (i = heap_start; i <= heap_end-8; i+=8) {
+		p = (uint64_t *)i;
+		offset = (int)(*p - base);
+		HASH_FIND_INT(g_ht_offset, &offset, entry);
+		if (entry != NULL) {
+			*p += delta;
+			log_debug("update %p @offset 0x%lx. new loc %p (.heap) [%s]",
+					p, offset, *p, entry->name);
 			cnt++;
 		}
 	}
@@ -313,7 +324,29 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 void update_pointers_self()
 {
 	int pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	//update_heap_code_pointers();
 	log_info("%s: # of code pointers %d", __func__, pointer_cnt);
+}
+
+/**
+ * Search the code and data pointers in heap from the process space.
+ * */
+void update_heap_pointers_self()
+{
+	int pointer_cnt = update_heap_code_pointers(pinfo.code_start, new_text_base - old_text_base);
+	log_info("%s: # of code pointers on *heap* %d", __func__, pointer_cnt);
+}
+
+/**
+ * TODO: we want to convert the VMA permission in lmvx_start()
+ * */
+void update_vma_permission()
+{
+	uint64_t start, end, len;
+	start = pinfo.code_start;
+	end = pinfo.code_end;
+	len = end - start;
+	mprotect((void *)start, len, PROT_READ);
 }
 
 /**

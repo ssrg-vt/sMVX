@@ -55,8 +55,11 @@ int init_loader();
 int read_proc(const char *bin_name, proc_info_t *pinfo);
 void copy_data_bss();
 void update_pointers_self();
+void update_heap_pointers_self();
+void update_vma_permission();
 static int read_binary_info(binary_info_t *binfo);
 static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo);
 static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta);
+static int update_heap_code_pointers(uint64_t base, int64_t delta);
 
 #endif
