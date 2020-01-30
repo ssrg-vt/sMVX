@@ -50,7 +50,7 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	mvx_parent_pid = getpid();
 
 	setup_ipc();
-	log_info("Trampoline library instantiated\n");
+	log_info("Trampoline library instantiated");
 }
 
 void associate_all_pkeys()
@@ -98,35 +98,35 @@ void setup_ipc()
 
 	/* Create shared memory */
 	if ((fd_shm = shm_open (MONITOR_SHARED_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
-		log_error("Failed to create semaphore\n");
+		log_error("Failed to create semaphore");
 		assert(false);
 	}
 
 	if (ftruncate (fd_shm, sizeof (struct call_data)) == -1){
-		log_error("Failed to ftruncate\n");
+		log_error("Failed to ftruncate");
 		assert(false);
 	}
 
 	if ((calldata_ptr = mmap (NULL, sizeof (struct call_data), PROT_READ | PROT_WRITE, MAP_SHARED,
 	        fd_shm, 0)) == MAP_FAILED){
-		log_error("Failed to mmap\n");
+		log_error("Failed to mmap");
 		assert(false);
 	}
 
 	/* Create synchronization shared memory */
 	if ((fd_shm_sync = shm_open (MONITOR_SYNC_MEM_NAME, O_RDWR | O_CREAT, 0660)) == -1){
-		log_error("Failed to create semaphore\n");
+		log_error("Failed to create semaphore");
 		assert(false);
 	}
 
 	if (ftruncate (fd_shm_sync, sizeof (struct sync_data)) == -1){
-		log_error("Failed to ftruncate\n");
+		log_error("Failed to ftruncate");
 		assert(false);
 	}
 
 	if ((syncdata_ptr = mmap (NULL, sizeof (struct sync_data), PROT_READ | PROT_WRITE, MAP_SHARED,
 	        fd_shm_sync, 0)) == MAP_FAILED){
-		log_error("Failed to mmap\n");
+		log_error("Failed to mmap");
 		assert(false);
 	}
 
