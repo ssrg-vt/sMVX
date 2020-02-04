@@ -761,8 +761,15 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 			log_debug("Child called %s", __func__);
 			while(!calldata_ptr->ready_for_check)
 				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			/* Errno emulation */
+			errno =  calldata_ptr->em_data.err;
 			/* Perform retval emulation */
 			retval = calldata_ptr->em_data.retval;
+			/* Perform sockaddr emulation */
+			real_memcpy(addr, calldata_ptr->em_data.buf, sizeof(struct
+									  sockaddr));
+			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
+									 sockaddr));
 			log_debug("Child is done with %s ", __func__);
 			calldata_ptr->ready_for_check = false;
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
@@ -775,6 +782,10 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 			retval = real_accept4(fd, addr, len, flg);
 			/* Copy retval to shared memory */
 			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy system errno */
+			calldata_ptr->em_data.err = errno;
+			real_memcpy(calldata_ptr->em_data.buf, addr, sizeof(struct
+									  sockaddr));
 			calldata_ptr->ready_for_check = true;
 			pthread_cond_signal(&(syncdata_ptr->master_done));
 			log_debug("Master is done with %s, signalling child",

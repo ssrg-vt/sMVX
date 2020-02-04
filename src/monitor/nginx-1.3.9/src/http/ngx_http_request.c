@@ -524,9 +524,9 @@ ngx_http_init_request(ngx_event_t *rev)
     (void) ngx_atomic_fetch_add(ngx_stat_requests, 1);
 #endif
 
-    lmvx_start("ngx_http_process_request_line", 1, rev);
+    //lmvx_start("ngx_http_process_request_line", 1, rev);
     rev->handler(rev);
-    lmvx_end();
+    //lmvx_end();
 }
 
 
