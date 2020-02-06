@@ -154,11 +154,8 @@ void lmvx_start(const char *func_name, int argc, ...)
 	/* Synchronize over the bss and data */
 	copy_data_bss();
 
-	/* update code pointers */
+	/* update code and data pointers */
 	update_pointers_self();
-
-	/* update .data to .data pointers*/
-	update_data_pointers_self();
 
 	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	DEACTIVATE();
