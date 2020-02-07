@@ -154,7 +154,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	/* Synchronize over the bss and data */
 	copy_data_bss();
 
-	/* update code pointers */
+	/* update code and data pointers */
 	update_pointers_self();
 
 	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
@@ -163,7 +163,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	flag_lmvx = 0;
 	set_mvx_active();
 	// different address space, share files
-	ret = clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+	ret = clone(_lmvx_thread_shim, stackTop, SIGCHLD, (void *)p);
 	DEACTIVATE();
 	flag_lmvx = 1;
 	log_info("clone ret (child pid) %d", ret);

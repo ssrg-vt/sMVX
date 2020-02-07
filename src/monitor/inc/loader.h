@@ -56,6 +56,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo);
 void copy_data_bss();
 void update_pointers_self();
 void update_heap_pointers_self();
+void update_data_pointers_self();
 void update_vma_permission();
 static int read_binary_info(binary_info_t *binfo);
 static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo);

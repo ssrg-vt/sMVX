@@ -128,6 +128,8 @@ int read_proc_line(const char *bin_name, uint64_t *start, uint64_t *end)
 				&file_offset, &dev_major, &dev_minor, &inode);
 		if (strstr(line, bin_name)) return 1;
 	}
+
+	fclose(fproc);
 	return 0;
 }
 
@@ -290,6 +292,49 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 }
 
 /**
+ * Search and update pointers in new .data and .bss pointing to old .data or
+ * .bss  from the process space.
+ * This is to account for the case where a .data/.bss struct in memory has a
+ * pointer to old .data/.bss which has a code pointer in it (nginx has such occurrences).
+ **/
+static int update_data_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
+{
+	int cnt = 0, offset;
+	uint64_t data_start, match_end;
+	uint64_t new_data_start, scan_end;
+	uint64_t base, new_base, i, *p;
+
+	if (!pinfo || !binfo) {
+		log_error("pinfo or binfo cannot be null!");
+		abort();
+	}
+
+	/* pinfo->code_start should be equivalent to old_text_base */
+	base = pinfo->code_start;
+	data_start = base + binfo->data_start;
+	match_end = base + binfo->bss_start + binfo->bss_size;
+
+	/* new data area */
+	new_base = pinfo->code_start + delta;
+	new_data_start = new_base + binfo->data_start;
+	scan_end = new_base + binfo->bss_start + binfo->bss_size;
+
+	/* search code pointers in .data and .bss */
+	for (i = new_data_start; i <= scan_end-8; i+=8) {
+		p = (uint64_t *)i;
+		if (*p >= data_start && *p <= match_end - 8) {
+			*p += delta;
+			log_debug("update data pointer %p. original loc %p, new"
+				  " loc %p (.data + .bss)",
+					(void*)i, *(uint64_t *)i, *p);
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
+/**
  * Search and update code pointers on heap.
  * */
 static int update_heap_code_pointers(uint64_t base, int64_t delta)
@@ -323,9 +368,13 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
  * */
 void update_pointers_self()
 {
-	int pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
-	//update_heap_code_pointers();
-	log_info("%s: # of code pointers %d", __func__, pointer_cnt);
+	uint64_t offset = new_text_base - old_text_base;
+	int code_pointer_cnt, data_pointer_cnt;
+	code_pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	log_info("%s: # of code pointers %d", __func__, code_pointer_cnt);
+	data_pointer_cnt = update_data_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	log_info("%s: # of old data pointers on *data+bss* %d", __func__,
+		 data_pointer_cnt);
 }
 
 /**
