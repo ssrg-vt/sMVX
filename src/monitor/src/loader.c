@@ -312,12 +312,12 @@ static int update_data_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 	/* pinfo->code_start should be equivalent to old_text_base */
 	base = pinfo->code_start;
 	data_start = base + binfo->data_start;
-	match_end = data_start + binfo->data_size + binfo->bss_size;
+	match_end = base + binfo->bss_start + binfo->bss_size;
 
 	/* new data area */
 	new_base = pinfo->code_start + delta;
 	new_data_start = new_base + binfo->data_start;
-	scan_end = new_data_start + binfo->data_size + binfo->bss_size;
+	scan_end = new_base + binfo->bss_start + binfo->bss_size;
 
 	/* search code pointers in .data and .bss */
 	for (i = new_data_start; i <= scan_end-8; i+=8) {

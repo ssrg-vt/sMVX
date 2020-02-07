@@ -1099,6 +1099,7 @@ int setsockopt(int fd, int level, int optname, const void *optval, socklen_t opt
 	return retval;
 }
 
+#if 0
 int gettimeofday(struct timeval *restrict tv, void *restrict tz)
 {
 	DEACTIVATE();
@@ -1150,6 +1151,7 @@ int gettimeofday(struct timeval *restrict tv, void *restrict tz)
 	ACTIVATE();
 	return retval;
 }
+#endif
 
 struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
 {
