@@ -6,5 +6,9 @@
 #define _DEBUG 1
 #endif
 
+/* Time performance */
+#ifndef _TIME_LMVX
+#define _TIME_LMVX 0
+#endif
 
 #endif
