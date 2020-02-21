@@ -10,9 +10,27 @@
 #include <sys/types.h>
 #include <sys/wait.h>		// wait
 
+
 #include "lmvx.h"
 #include "libmonitor.h"
 #include "pkey.h"			// DEACTIVATE()/ACTIVATE()
+#include <config.h>
+
+#if _TIME_LMVX
+#include <time.h>
+struct timespec copy_start_time = {0};
+struct timespec copy_end_time = {0};
+uint64_t diff_copy_time = 0;
+
+struct timespec scan_start_time = {0};
+struct timespec scan_end_time = {0};
+uint64_t diff_scan_time = 0;
+
+struct timespec start_total_time = {0};
+struct timespec end_total_time = {0};
+uint64_t diff_total_time = 0;
+
+#endif
 
 /* Global memory to store thread function call arguments. */
 shim_args_t args;
@@ -26,6 +44,26 @@ extern void *new_text_base;
 
 /* A global variable used for executing critical function once. */
 int flag_lmvx = 1;
+
+#if _TIME_LMVX
+struct timespec diff(struct timespec start, struct timespec end)
+{
+	struct timespec temp;
+	if ((end.tv_nsec-start.tv_nsec)<0) {
+		temp.tv_sec = end.tv_sec-start.tv_sec-1;
+		temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+	} else {
+		temp.tv_sec = end.tv_sec-start.tv_sec;
+		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+	}
+	return temp;
+}
+
+uint64_t as_ns(struct timespec* ts) {
+	    return ts->tv_sec * (uint64_t)1000000000L + ts->tv_nsec;
+}
+
+#endif
 
 static int _lmvx_thread_shim(void *p)
 {
@@ -129,6 +167,9 @@ void lmvx_start(const char *func_name, int argc, ...)
 	u64 *p = (u64 *)&args;	/* jmp addr, n args, arg0, ..., arg5 */
 	int i = 0, ret = 0;
 
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &start_total_time);
+#endif
 	assert(argc <= 6);		// TODO: handle functions with 6+ params
 	DEACTIVATE();
 
@@ -151,11 +192,27 @@ void lmvx_start(const char *func_name, int argc, ...)
 	log_debug("fun name %s. offset %x. jmp to 0x%lx", func_name, offset, *p);
 	DEACTIVATE();
 
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &copy_start_time);
+#endif
 	/* Synchronize over the bss and data */
 	copy_data_bss();
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &copy_end_time);
+	diff_copy_time += as_ns(&copy_end_time) - as_ns(&copy_start_time);
+	log_info("[TIMING] Copying bss and data takes: %luns", diff_copy_time);
+#endif
 
-	/* update code pointers */
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &scan_start_time);
+#endif
+	/* update code and data pointers */
 	update_pointers_self();
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &scan_end_time);
+	diff_scan_time += as_ns(&scan_end_time) - as_ns(&scan_start_time);
+	log_info("[TIMING] Scanning and ptr update takes: %luns", diff_scan_time);
+#endif
 
 	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	DEACTIVATE();
@@ -163,10 +220,16 @@ void lmvx_start(const char *func_name, int argc, ...)
 	flag_lmvx = 0;
 	set_mvx_active();
 	// different address space, share files
-	ret = clone(_lmvx_thread_shim, stackTop, CLONE_FILES | SIGCHLD, (void *)p);
+	ret = clone(_lmvx_thread_shim, stackTop, SIGCHLD, (void *)p);
 	DEACTIVATE();
 	flag_lmvx = 1;
 	log_info("clone ret (child pid) %d", ret);
+
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &end_total_time);
+	diff_total_time += as_ns(&end_total_time) - as_ns(&start_total_time);
+	log_info("[TIMING] lmvx_start takes: %luns", diff_total_time);
+#endif
 	ACTIVATE();
 }
 
@@ -188,3 +251,12 @@ void lmvx_end(void)
 
 	ACTIVATE();
 }
+
+#if _TIME_LMVX
+
+void __attribute__ ((destructor)) end_timing()
+{
+	log_info("[TIMING] lmvx_start takes: %luns", diff_total_time);
+}
+
+#endif

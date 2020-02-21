@@ -20,11 +20,12 @@ struct emulation_data
 
 struct call_data
 {
-	uint64_t retval;
-	bool is_emulated;
-	bool ready_for_check;
-	bool check_done;
-	bool mvx_active;
+	uint64_t retval; /* Unused for now, we use em_data's retval */
+	bool is_emulated; /* Unused for now */
+	bool ready_for_check; /* Used for lockstep libc execution */
+	bool check_done; /* Unused for now */
+	bool mvx_active; /* Shared memory flag to indicate if we're splitting execution*/
+	char func_name[256]; /* Used to compare function names between master/child*/
 	struct emulation_data em_data;
 };
 

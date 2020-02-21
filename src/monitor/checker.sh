@@ -37,6 +37,12 @@ echo $result >> $tmpfile
 result=$(readelf -SW $bin | grep " .bss"  | python elf-section.py)
 echo " .bss:" $result
 echo $result >> $tmpfile
+result=$(readelf -SW $bin | grep " .plt "  | python elf-section.py)
+echo " .plt:" $result
+echo $result >> $tmpfile
+result=$(readelf -SW $bin | grep " .got.plt"  | python elf-section.py)
+echo " .got.plt:" $result
+echo $result >> $tmpfile
 
 ## dump function symbol and name
 nm $bin | grep " T " >> $tmpfile

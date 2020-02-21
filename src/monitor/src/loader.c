@@ -25,6 +25,11 @@
 
 #define USAGE 		 "Use: $ BIN=<binary name> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
 
+#define MAX_GOTPLT_SLOTS (1024)
+#define GOTPLT_PREAMBLE_SIZE	 (24) /* Size of area before actual gotplt slots
+				      starts in bytes */
+#define PLT_PREAMBLE_SIZE        (16)
+#define PLT_SLOT_SIZE		 (16)
 /** Global variables inside libmonitor.so **/
 /* describe the proc info and binary info. */
 proc_info_t pinfo;
@@ -37,6 +42,9 @@ void *old_text_base = NULL;
 hash_table_t *g_ht_fun;
 rev_hash_table_t *g_ht_offset;
 
+/* Array to store the gotplt entry addresses */
+uint64_t gotplt_address[MAX_GOTPLT_SLOTS];
+uint64_t num_gotplt_slots;
 /**
  * Entry function of the LD_PRELOAD library.
  * */
@@ -47,7 +55,7 @@ int init_loader(int argc, char** argv, char** env)
 
 	/* init the LOG_LEVEL env to enable logging (log_xxx printf) */
 	init_env();
-	log_debug("LD_PRELOAD argc 0x%x. LOG_LEVEL %s", argc, getenv("LOG_LEVEL"));
+	log_debug("[LOADER]: LD_PRELOAD argc 0x%x. LOG_LEVEL %s", argc, getenv("LOG_LEVEL"));
 
 	/* check whether BIN has been set. */
 	if (bin_name == NULL) {
@@ -67,6 +75,13 @@ int init_loader(int argc, char** argv, char** env)
 	log_info("old_text_base %p, new_text_base %p. delta %lx",
 			old_text_base, new_text_base, new_text_base - old_text_base);
 
+	/* Get the gotplt pointers */
+	read_gotplt();
+
+	/* Patch the plt with absolute jumps since musl doesn't support lazy
+	 * binding*/
+	patch_plt();
+
 	return 0;
 }
 
@@ -81,7 +96,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	uint64_t start, end;
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
-	log_debug("%s: VMA name: %s", __func__, bin_name);
+	log_debug("[LOADER]: %s: VMA name: %s", __func__, bin_name);
 	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
@@ -119,7 +134,7 @@ int read_proc_line(const char *bin_name, uint64_t *start, uint64_t *end)
 	char flag[8];
 	uint32_t file_offset, dev_major, dev_minor, inode;
 
-	log_debug("%s: VMA name: %s", __func__, bin_name);
+	log_debug("[LOADER]: %s: VMA name: %s", __func__, bin_name);
 	assert(bin_name != NULL);
 
 	fproc = fopen("/proc/self/maps", "r");
@@ -128,6 +143,8 @@ int read_proc_line(const char *bin_name, uint64_t *start, uint64_t *end)
 				&file_offset, &dev_major, &dev_minor, &inode);
 		if (strstr(line, bin_name)) return 1;
 	}
+
+	fclose(fproc);
 	return 0;
 }
 
@@ -144,10 +161,12 @@ static int read_binary_info(binary_info_t *binfo)
 
 	fbin = fopen("/tmp/dec.info", "r");
 
-	fscanf(fbin, "%lx %lx %lx %lx %lx %lx", 
-		&(binfo->code_start), &(binfo->code_size), 
+	fscanf(fbin, "%lx %lx %lx %lx %lx %lx %lx %lx %lx %lx",
+		&(binfo->code_start), &(binfo->code_size),
 		&(binfo->data_start), &(binfo->data_size),
-		&(binfo->bss_start), &(binfo->bss_size));
+		&(binfo->bss_start), &(binfo->bss_size),
+		&(binfo->plt_start), &(binfo->plt_size),
+		&(binfo->gotplt_start), &(binfo->gotplt_size));
 
 	log_info(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]", 
 		binfo->code_start, binfo->code_size, 
@@ -200,7 +219,7 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 	if (code_sz+rodata_sz+data_sz != total_sz) {
 		log_warn("mem space has gap");
 	}
-	log_debug("code sz 0x%lx, rodata sz 0x%lx, data sz 0x%lx, total sz 0x%lx",
+	log_debug("[LOADER]: code sz 0x%lx, rodata sz 0x%lx, data sz 0x%lx, total sz 0x%lx",
 			code_sz, rodata_sz, data_sz, total_sz);
 
 	// allocate memory
@@ -210,7 +229,7 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 		log_error("mmap failed %d: %s", errno, strerror(errno));
 		return mem;
 	}
-	log_debug("new mem %p, total sz 0x%lx", mem, total_sz);
+	log_debug("[LOADER]: new mem %p, total sz 0x%lx", mem, total_sz);
 
 	// code memory content
 	memcpy(mem, (void *)(pinfo->code_start), code_sz);
@@ -220,13 +239,13 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 	// unmap any memory gaps in those 3 mem segments
 	if (pinfo->rodata_start - pinfo->code_end > 0) {
 		munmap(mem + code_sz, pinfo->rodata_start - pinfo->code_end);
-		log_debug("gap after code end. unmap size %lx",
+		log_debug("[LOADER]: gap after code end. unmap size %lx",
 				pinfo->rodata_start - pinfo->code_end);
 	}
 	if (pinfo->data_start - pinfo->rodata_end > 0) {
 		munmap(mem + pinfo->rodata_end - pinfo->code_start,
 				pinfo->data_start - pinfo->rodata_end);
-		log_debug("gap after rodata end. unmap size %lx",
+		log_debug("[LOADER]: gap after rodata end. unmap size %lx",
 				pinfo->data_start - pinfo->rodata_end);
 	}
 
@@ -268,7 +287,7 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("update %p @offset 0x%lx. new loc %p (.data) [%s]",
+			log_debug("[LOADER]: update %p @offset 0x%lx. new loc %p (.data) [%s]",
 					p, offset, *p, entry->name);
 			cnt++;
 		}
@@ -280,8 +299,51 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("update %p @offset 0x%lx. new loc %p (.bss) [%s]",
+			log_debug("[LOADER]: update %p @offset 0x%lx. new loc %p (.bss) [%s]",
 					p, offset, *p, entry->name);
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
+/**
+ * Search and update pointers in new .data and .bss pointing to old .data or
+ * .bss  from the process space.
+ * This is to account for the case where a .data/.bss struct in memory has a
+ * pointer to old .data/.bss which has a code pointer in it (nginx has such occurrences).
+ **/
+static int update_data_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
+{
+	int cnt = 0, offset;
+	uint64_t data_start, match_end;
+	uint64_t new_data_start, scan_end;
+	uint64_t base, new_base, i, *p;
+
+	if (!pinfo || !binfo) {
+		log_error("pinfo or binfo cannot be null!");
+		abort();
+	}
+
+	/* pinfo->code_start should be equivalent to old_text_base */
+	base = pinfo->code_start;
+	data_start = base + binfo->data_start;
+	match_end = base + binfo->bss_start + binfo->bss_size;
+
+	/* new data area */
+	new_base = pinfo->code_start + delta;
+	new_data_start = new_base + binfo->data_start;
+	scan_end = new_base + binfo->bss_start + binfo->bss_size;
+
+	/* search code pointers in .data and .bss */
+	for (i = new_data_start; i <= scan_end-8; i+=8) {
+		p = (uint64_t *)i;
+		if (*p >= data_start && *p <= match_end - 8) {
+			*p += delta;
+			log_debug("[LOADER]: update data pointer %p. original loc %p, new"
+				  " loc %p (.data + .bss)",
+					(void*)i, *(uint64_t *)i, *p);
 			cnt++;
 		}
 	}
@@ -300,7 +362,7 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
 	rev_hash_table_t *entry = NULL;
 
 	read_proc_line("[heap]", &heap_start, &heap_end);
-	log_debug("%s: heap [0x%lx,0x%lx]. size 0x%lx", __func__,
+	log_debug("[LOADER]: %s: heap [0x%lx,0x%lx]. size 0x%lx", __func__,
 			heap_start, heap_end, heap_end - heap_start);
 
 	for (i = heap_start; i <= heap_end-8; i+=8) {
@@ -309,7 +371,7 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("update %p @offset 0x%lx. new loc %p (.heap) [%s]",
+			log_debug("[LOADER]: update %p @offset 0x%lx. new loc %p (.heap) [%s]",
 					p, offset, *p, entry->name);
 			cnt++;
 		}
@@ -323,9 +385,13 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
  * */
 void update_pointers_self()
 {
-	int pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
-	//update_heap_code_pointers();
-	log_info("%s: # of code pointers %d", __func__, pointer_cnt);
+	uint64_t offset = new_text_base - old_text_base;
+	int code_pointer_cnt, data_pointer_cnt;
+	code_pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	log_info("%s: # of code pointers %d", __func__, code_pointer_cnt);
+	data_pointer_cnt = update_data_pointers(&pinfo, &binfo, new_text_base - old_text_base);
+	log_info("%s: # of old data pointers on *data+bss* %d", __func__,
+		 data_pointer_cnt);
 }
 
 /**
@@ -389,4 +455,75 @@ void copy_data_bss()
 	       binfo.bss_start, binfo.bss_size);
 	memcpy(new_text_base + binfo.data_start, old_text_base +
 	       binfo.data_start, binfo.data_size);
+}
+
+void read_gotplt()
+{
+	uint64_t gotplt_start, gotplt_end;
+	uint64_t text_base, i;
+	uint64_t *p;
+	text_base = pinfo.code_start;
+	gotplt_start = text_base + binfo.gotplt_start;
+	gotplt_end = gotplt_start + binfo.gotplt_size;
+
+	/* Add the preamble size to get to the slots */
+	gotplt_start += GOTPLT_PREAMBLE_SIZE;
+
+	log_debug("[LOADER]: GOTPLT SLOT ADDRESS POINTERS ----------");
+	for (i = gotplt_start, num_gotplt_slots = 0; i <= gotplt_end-8; i+=8,
+	     ++num_gotplt_slots) {
+		p = (uint64_t *)i;
+		if (num_gotplt_slots >= MAX_GOTPLT_SLOTS){
+			log_error("[LOADER]: Max number of gotplt slots in our"
+				  " memory overshot, increase number");
+			assert(0);
+		}
+		gotplt_address[num_gotplt_slots] = *p;
+		log_debug("[LOADER]: %p, slot number: %lu", *p, num_gotplt_slots);
+	}
+
+}
+
+void patch_plt()
+{
+	uint64_t plt_start, plt_end;
+	uint64_t text_base, i, j;
+	jump_patch_t *p;
+	text_base = pinfo.code_start;
+	plt_start = text_base + binfo.plt_start;
+	plt_end = plt_start + binfo.plt_size;
+	/* patch_data is a packed struct, with instructions:
+	 *
+	 *  movabs 0xXXXXXXXXXXXX, $rax
+	 *  jmpq $rax
+	 *  nop
+	 *  nop
+	 *  nop
+	 *  nop
+	 *  // opcode+values for the instructions is
+	 *  0xxxxxxxxxxxxxb848
+	 *  0x90909090e0ff0000
+	 */
+	jump_patch_t patch_data = {0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90, 0x90, 0x90,
+	0x90};
+
+	/* Disable protections for writing */
+	mprotect((void*)plt_start, binfo.plt_size, PROT_READ | PROT_WRITE);
+
+	/* Add the preamble size to get to the slots */
+	plt_start += PLT_PREAMBLE_SIZE;
+	for (i = plt_start, j = 0; i <= plt_end-PLT_SLOT_SIZE; i+=PLT_SLOT_SIZE,
+	     ++j) {
+		p = (jump_patch_t*)i;
+		if (j > num_gotplt_slots){
+			log_error("[LOADER]: Plt has more slots than we have"
+				  " gotplt entries!");
+			assert(0);
+		}
+		patch_data.address = gotplt_address[j];
+		*p = patch_data;
+	}
+
+	/* Set .plt to only executable state for .text segment */
+	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
 }
