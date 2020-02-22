@@ -1,0 +1,102 @@
+[
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/libmonitor.o src/libmonitor.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/libmonitor.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/libmonitor.o -specs /usr/local/musl/lib/musl-gcc.specs src/libmonitor.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/libmonitor.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/monitor_overrides.o src/monitor_overrides.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/monitor_overrides.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/monitor_overrides.o -specs /usr/local/musl/lib/musl-gcc.specs src/monitor_overrides.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/monitor_overrides.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/pkey.o src/pkey.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/pkey.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/pkey.o -specs /usr/local/musl/lib/musl-gcc.specs src/pkey.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/pkey.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/env.o src/env.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/env.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/env.o -specs /usr/local/musl/lib/musl-gcc.specs src/env.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/env.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/syscall_blocking.o src/syscall_blocking.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/syscall_blocking.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/syscall_blocking.o -specs /usr/local/musl/lib/musl-gcc.specs src/syscall_blocking.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/syscall_blocking.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/loader.o src/loader.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/loader.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/loader.o -specs /usr/local/musl/lib/musl-gcc.specs src/loader.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/loader.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/log.o src/log.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/log.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/log.o -specs /usr/local/musl/lib/musl-gcc.specs src/log.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/log.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/lmvx.o src/lmvx.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/lmvx.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/lmvx.o -specs /usr/local/musl/lib/musl-gcc.specs src/lmvx.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/src/lmvx.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/lib/liblmvx.o lib/liblmvx.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/lib/liblmvx.c"
+    },
+    {
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -o obj/lib/liblmvx.o -specs /usr/local/musl/lib/musl-gcc.specs lib/liblmvx.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/lib/liblmvx.c"
+    },
+    {
+        "command": "cc -c -Wall -fPIC -pie -g liblmvx.so -O0 -o test.bin test/test.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/test/test.c"
+    },
+    {
+        "command": "cc -c -Wall -fPIC -pie -g liblmvx.so -O0 -o test.bin -specs /usr/local/musl/lib/musl-gcc.specs test/test.c",
+        "directory": "/home/sengming/research/deC/src/workshop_paper",
+        "file": "/home/sengming/research/deC/src/workshop_paper/test/test.c"
+    }
+]
