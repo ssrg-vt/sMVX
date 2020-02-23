@@ -10,6 +10,11 @@
 #include <sys/stat.h>
 #include <setjmp.h>
 #include <errno.h>
+#include <signal.h>
+#include <sys/resource.h>
+#include <sys/utsname.h>
+#include <syscall.h>
+#include <fcntl.h>
 
 /* Local headers */
 #include <debug.h>
@@ -112,6 +117,47 @@ char *(*real_strcat)(char *restrict dest, const char *restrict src);
 double (*real_difftime)(time_t t1, time_t t0);
 char *(*real_stpcpy)(char *restrict d, const char *restrict s);
 void (*real_exit)(int code);
+void (*real_sincos)(double x, double *sin, double *cos);
+off_t (*real_lseek)(int fd, off_t offset, int whence);
+double (*real_log10)(double x);
+void (*real_qsort)(void *base, size_t nel, size_t width, int (*compar)(const
+								       void *,
+								       const
+								       void *));
+int (*real_fseek)(FILE *f, long off, int whence);
+int (*real_posix_memalign)(void **res, size_t align, size_t len);
+char *(*real_strerror)(int e);
+int (*real_sigaction)(int sig, const struct sigaction *restrict sa, struct
+		      sigaction *restrict old);
+int (*real_sigemptyset)(sigset_t *set);
+char *(*real_strstr)(const char *h, const char *n);
+int (*real_sscanf)(const char *restrict s, const char *restrict fmt, ...);
+int (*real_mkdir)(const char *path, mode_t mode);
+int (*real_unlink)(const char *path);
+ssize_t (*real_pread)(int fd, void *buf, size_t size, off_t ofs);
+struct group *(*real_getgrnam)(const char *name);
+struct passwd *(*real_getpwnam)(const char *name);
+int (*real_epoll_create)(int size);
+int (*real_getrlimit)(int resource, struct rlimit *rlim);
+int (*real_listen)(int fd, int backlog);
+uint16_t (*real_ntohs)(uint16_t n);
+ssize_t (*real_pwrite)(int fd, const void *buf, size_t size, off_t ofs);
+int (*real_dup2)(int old, int new);
+int (*real_socket)(int domain, int type, int protocol);
+int (*real_uname)(struct utsname *uts);
+long (*real_sysconf)(int name);
+int (*real_gethostname)(char *name, size_t len);
+int (*real_bind)(int fd, const struct sockaddr *addr, socklen_t len);
+pid_t (*real_getpid)(void);
+uid_t (*real_geteuid)(void);
+void (*real_srandom)(unsigned seed);
+size_t (*real_strftime)(char *restrict s, size_t n, const char *restrict f,
+			const struct tm *restrict tm);
+uint16_t (*real_htons)(uint16_t n);
+time_t (*real_time)(time_t *t);
+char *(*real_strpbrk)(const char *s, const char *b);
+char *(*real_strchrnul)(const char *s, int c);
+struct tm *(*real_localtime)(const time_t *t);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
@@ -278,6 +324,78 @@ void store_original_functions()
 		log_error("stpcpy symbol not found ");
 	if (!(real_exit= dlsym(RTLD_NEXT, "exit")))
 		log_error("exit symbol not found ");
+	if (!(real_sincos= dlsym(RTLD_NEXT, "sincos")))
+		log_error("sincos symbol not found ");
+	if (!(real_lseek= dlsym(RTLD_NEXT, "lseek")))
+		log_error("lseek symbol not found ");
+	if (!(real_log10= dlsym(RTLD_NEXT, "log10")))
+		log_error("log10 symbol not found ");
+	if (!(real_qsort= dlsym(RTLD_NEXT, "qsort")))
+		log_error("qsort symbol not found ");
+	if (!(real_fseek= dlsym(RTLD_NEXT, "fseek")))
+		log_error("fseek symbol not found ");
+	if (!(real_posix_memalign= dlsym(RTLD_NEXT, "posix_memalign")))
+		log_error("posix_memalign symbol not found ");
+	if (!(real_strerror= dlsym(RTLD_NEXT, "strerror")))
+		log_error("strerror symbol not found ");
+	if (!(real_sigaction= dlsym(RTLD_NEXT, "sigaction")))
+		log_error("sigaction symbol not found ");
+	if (!(real_sigemptyset= dlsym(RTLD_NEXT, "sigemptyset")))
+		log_error("sigemptyset symbol not found ");
+	if (!(real_strstr= dlsym(RTLD_NEXT, "strstr")))
+		log_error("strstr symbol not found ");
+	if (!(real_sscanf= dlsym(RTLD_NEXT, "sscanf")))
+		log_error("sscanf symbol not found ");
+	if (!(real_mkdir= dlsym(RTLD_NEXT, "mkdir")))
+		log_error("mkdir symbol not found ");
+	if (!(real_unlink= dlsym(RTLD_NEXT, "unlink")))
+		log_error("unlink symbol not found ");
+	if (!(real_pread= dlsym(RTLD_NEXT, "pread")))
+		log_error("pread symbol not found ");
+	if (!(real_getgrnam= dlsym(RTLD_NEXT, "getgrnam")))
+		log_error("getgrnam symbol not found ");
+	if (!(real_getpwnam= dlsym(RTLD_NEXT, "getpwnam")))
+		log_error("getpwnam symbol not found ");
+	if (!(real_epoll_create= dlsym(RTLD_NEXT, "epoll_create")))
+		log_error("epoll_create symbol not found ");
+	if (!(real_getrlimit= dlsym(RTLD_NEXT, "getrlimit")))
+		log_error("getrlimit symbol not found ");
+	if (!(real_listen= dlsym(RTLD_NEXT, "listen")))
+		log_error("listen symbol not found ");
+	if (!(real_ntohs= dlsym(RTLD_NEXT, "ntohs")))
+		log_error("ntohs symbol not found ");
+	if (!(real_pwrite= dlsym(RTLD_NEXT, "pwrite")))
+		log_error("pwrite symbol not found ");
+	if (!(real_dup2= dlsym(RTLD_NEXT, "dup2")))
+		log_error("dup2 symbol not found ");
+	if (!(real_socket= dlsym(RTLD_NEXT, "socket")))
+		log_error("socket symbol not found ");
+	if (!(real_uname= dlsym(RTLD_NEXT, "uname")))
+		log_error("uname symbol not found ");
+	if (!(real_sysconf= dlsym(RTLD_NEXT, "sysconf")))
+		log_error("sysconf symbol not found ");
+	if (!(real_gethostname= dlsym(RTLD_NEXT, "gethostname")))
+		log_error("gethostname symbol not found ");
+	if (!(real_bind= dlsym(RTLD_NEXT, "bind")))
+		log_error("bind symbol not found ");
+	if (!(real_getpid= dlsym(RTLD_NEXT, "getpid")))
+		log_error("getpid symbol not found ");
+	if (!(real_geteuid= dlsym(RTLD_NEXT, "geteuid")))
+		log_error("geteuid symbol not found ");
+	if (!(real_srandom= dlsym(RTLD_NEXT, "srandom")))
+		log_error("srandom symbol not found ");
+	if (!(real_strftime= dlsym(RTLD_NEXT, "strftime")))
+		log_error("strftime symbol not found ");
+	if (!(real_htons= dlsym(RTLD_NEXT, "htons")))
+		log_error("htons symbol not found ");
+	if (!(real_time= dlsym(RTLD_NEXT, "time")))
+		log_error("time symbol not found ");
+	if (!(real_strpbrk= dlsym(RTLD_NEXT, "strpbrk")))
+		log_error("strpbrk symbol not found ");
+	if (!(real_strchrnul= dlsym(RTLD_NEXT, "strchrnul")))
+		log_error("strchrnul symbol not found ");
+	if (!(real_localtime= dlsym(RTLD_NEXT, "localtime")))
+		log_error("localtime symbol not found ");
 }
 
 /* Functions we are overriding */
@@ -287,7 +405,7 @@ int printf(const char *restrict fmt, ...)
 	int retval;
 	va_list args;
 	va_start(args, fmt);
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_vprintf(fmt, args);
 	va_end(args);
 	ACTIVATE();
@@ -307,7 +425,7 @@ void *memset(void *dest, int c, size_t n)
 {
 	DEACTIVATE();
 	void* retval = real_memset(dest, c, n);
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	ACTIVATE();
 	return retval;
 }
@@ -316,7 +434,7 @@ void *memcpy(void *restrict dest, const void *restrict src, size_t n)
 {
 	DEACTIVATE();
 	void* retval = real_memcpy(dest, src, n);
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	ACTIVATE();
 	return retval;
 }
@@ -385,7 +503,7 @@ int puts(const char *s)
 	DEACTIVATE();
 	int retval;
 	retval = real_puts(s);
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	ACTIVATE();
 	return retval;
 }
@@ -468,7 +586,7 @@ void *malloc(size_t n)
 	DEACTIVATE();
 	void* retval;
 	retval = real_malloc(n);
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	ACTIVATE();
 	return retval;
 }
@@ -476,7 +594,7 @@ void *malloc(size_t n)
 void free(void* p)
 {
 	DEACTIVATE();
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	real_free(p);
 	ACTIVATE();
 }
@@ -529,7 +647,7 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)
 {
 	DEACTIVATE();
 	ssize_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_sendfile(out_fd, in_fd, ofs, count);
 	ACTIVATE();
 	return retval;
@@ -539,7 +657,7 @@ ssize_t writev(int fd, const struct iovec *iov, int count)
 {
 	DEACTIVATE();
 	ssize_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_writev(fd, iov, count);
 	ACTIVATE();
 	return retval;
@@ -549,7 +667,7 @@ ssize_t write(int fd, const void *buf, size_t count)
 {
 	DEACTIVATE();
 	ssize_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_write(fd, buf, count);
 	ACTIVATE();
 	return retval;
@@ -560,7 +678,7 @@ int open(const char *filename, int flags, ...)
 	DEACTIVATE();
 	unsigned mode = 0;
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_open(filename, flags);
 	ACTIVATE();
 	return retval;
@@ -570,7 +688,7 @@ int close(int fd)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_close(fd);
 	ACTIVATE();
 	return retval;
@@ -580,7 +698,7 @@ int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t 
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_epoll_pwait(fd, ev, cnt, to, sigs);
 	ACTIVATE();
 	return retval;
@@ -590,7 +708,7 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_epoll_wait(fd, ev, cnt, to);
 	ACTIVATE();
 	return retval;
@@ -600,7 +718,7 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_accept4(fd, addr, len, flg);
 	ACTIVATE();
 	return retval;
@@ -610,7 +728,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_epoll_ctl(fd, op ,fd2, ev);
 	ACTIVATE();
 	return retval;
@@ -620,7 +738,7 @@ int fstat(int fd, struct stat *st)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_fstat(fd, st);
 	ACTIVATE();
 	return retval;
@@ -630,7 +748,7 @@ ssize_t recv(int fd, void *buf, size_t len, int flags)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_recv(fd, buf, len, flags);
 	ACTIVATE();
 	return retval;
@@ -640,7 +758,7 @@ int shutdown(int fd, int how)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_shutdown(fd, how);
 	ACTIVATE();
 	return retval;
@@ -650,72 +768,28 @@ int setsockopt(int fd, int level, int optname, const void *optval, socklen_t opt
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_setsockopt(fd, level, optname, optval,
 						 optlen);
 	ACTIVATE();
 	return retval;
 }
 
-#if 0
 int gettimeofday(struct timeval *restrict tv, void *restrict tz)
 {
 	DEACTIVATE();
 	int retval;
-	if(calldata_ptr->mvx_active){
-		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
-		/* Have child check */
-		if (is_child()){
-			log_debug("Child called %s", __func__);
-			while(!calldata_ptr->ready_for_check)
-				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
-
-			/* Perform function name check to ensure sequence */
-			check_function_names(__func__);
-			/* Perform retval emulation */
-			retval = calldata_ptr->em_data.retval;
-			/* Perform buf emulation */
-			real_memcpy(tv, calldata_ptr->em_data.buf, sizeof(struct
-									  timeval));
-			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
-									 timeval));
-			log_debug("Child is done with %s, retval: %u", __func__, retval);
-			calldata_ptr->ready_for_check = false;
-			pthread_cond_signal(&(syncdata_ptr->follower_done));
-		}
-		else{
-			log_debug("Master called %s", __func__);
-			while(calldata_ptr->ready_for_check )
-				pthread_cond_wait(&(syncdata_ptr->follower_done),
-						  &(syncdata_ptr->monitor_mutex));
-			store_function_name(__func__);
-			retval = real_gettimeofday(tv, tz);
-			/* Copy retval to shared memory */
-			calldata_ptr->em_data.retval = (uint64_t)retval;
-			/* Copy buffer data to shared memory */
-			real_memcpy(calldata_ptr->em_data.buf, tv, sizeof(struct
-									  timeval));
-
-			calldata_ptr->ready_for_check = true;
-			pthread_cond_signal(&(syncdata_ptr->master_done));
-			log_debug("Master is done with %s, signalling child, retval: %u", __func__, retval);
-		}
-		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
-	}
-	else{
-		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
-		retval = real_gettimeofday(tv, tz);
-	}
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_gettimeofday(tv, tz);
 	ACTIVATE();
 	return retval;
 }
-#endif
 
 struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
 {
 	DEACTIVATE();
 	struct tm* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_localtime_r(t, tm);
 	ACTIVATE();
 	return retval;
@@ -725,7 +799,7 @@ int atoi(const char *s)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_atoi(s);
 	ACTIVATE();
 	return retval;
@@ -735,7 +809,7 @@ double atof(const char *s)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_atof(s);
 	ACTIVATE();
 	return retval;
@@ -745,7 +819,7 @@ int putc(int c, FILE *f)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_putc(c, f);
 	ACTIVATE();
 	return retval;
@@ -755,7 +829,7 @@ unsigned long strtoul(const char *restrict s, char **restrict p, int base)
 {
 	DEACTIVATE();
 	unsigned long retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strtoul(s, p, base);
 	ACTIVATE();
 	return retval;
@@ -765,7 +839,7 @@ void *calloc(size_t m, size_t n)
 {
 	DEACTIVATE();
 	void* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_calloc(m,n);
 	ACTIVATE();
 	return retval;
@@ -775,7 +849,7 @@ int fputs(const char *restrict s, FILE *restrict f)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_fputs(s,f);
 	ACTIVATE();
 	return retval;
@@ -785,7 +859,7 @@ size_t strlen(const char *s)
 {
 	DEACTIVATE();
 	size_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strlen(s);
 	ACTIVATE();
 	return retval;
@@ -795,7 +869,7 @@ int strcmp(const char *l, const char *r)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strcmp(l, r);
 	ACTIVATE();
 	return retval;
@@ -805,7 +879,7 @@ char *strchr(const char *s, int c)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strchr(s, c);
 	ACTIVATE();
 	return retval;
@@ -815,7 +889,7 @@ size_t fwrite(const void *restrict src, size_t size, size_t nmemb, FILE *restric
 {
 	DEACTIVATE();
 	size_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_fwrite(src, size, nmemb, f);
 	ACTIVATE();
 	return retval;
@@ -825,7 +899,7 @@ void *realloc(void *p, size_t n)
 {
 	DEACTIVATE();
 	void* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_realloc(p, n);
 	ACTIVATE();
 	return retval;
@@ -835,7 +909,7 @@ int strncmp(const char *_l, const char *_r, size_t n)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strncmp(_l, _r, n);
 	ACTIVATE();
 	return retval;
@@ -845,7 +919,7 @@ int setjmp(jmp_buf env)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_setjmp(env);
 	ACTIVATE();
 	return retval;
@@ -864,7 +938,7 @@ char *strcpy(char *restrict dest, const char *restrict src)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strcpy(dest, src);
 	ACTIVATE();
 	return retval;
@@ -874,7 +948,7 @@ char *getenv(const char *name)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_getenv(name);
 	ACTIVATE();
 	return retval;
@@ -884,7 +958,7 @@ int *__errno_location(void)
 {
 	DEACTIVATE();
 	int* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_errno_location();
 	ACTIVATE();
 	return retval;
@@ -894,7 +968,7 @@ int stat(const char *restrict path, struct stat *restrict buf)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_stat(path, buf);
 	ACTIVATE();
 	return retval;
@@ -904,7 +978,7 @@ int getpagesize(void)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_getpagesize();
 	ACTIVATE();
 	return retval;
@@ -914,7 +988,7 @@ int ferror(FILE *f)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_ferror(f);
 	ACTIVATE();
 	return retval;
@@ -938,7 +1012,7 @@ char *fgets(char *restrict s, int n, FILE *restrict f)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_fgets(s,n, f);
 	ACTIVATE();
 	return retval;
@@ -948,7 +1022,7 @@ int putchar(int c)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_putchar(c);
 	ACTIVATE();
 	return retval;
@@ -958,7 +1032,7 @@ int getc(FILE *f)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_getc(f);
 	ACTIVATE();
 	return retval;
@@ -968,7 +1042,7 @@ double pow(double x, double y)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_pow(x, y);
 	ACTIVATE();
 	return retval;
@@ -978,7 +1052,7 @@ int toupper(int c)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_toupper(c);
 	ACTIVATE();
 	return retval;
@@ -988,7 +1062,7 @@ int tolower(int c)
 {
 	DEACTIVATE();
 	int retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_tolower(c);
 	ACTIVATE();
 	return retval;
@@ -998,7 +1072,7 @@ double floor(double x)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_floor(x);
 	ACTIVATE();
 	return retval;
@@ -1008,7 +1082,7 @@ float floorf(float x)
 {
 	DEACTIVATE();
 	float retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_floorf(x);
 	ACTIVATE();
 	return retval;
@@ -1018,7 +1092,7 @@ double ceil(double x)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_ceil(x);
 	ACTIVATE();
 	return retval;
@@ -1062,7 +1136,7 @@ double exp(double x)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_exp(x);
 	ACTIVATE();
 	return retval;
@@ -1072,7 +1146,7 @@ char *strtok(char *restrict s, const char *restrict sep)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strtok(s, sep);
 	ACTIVATE();
 	return retval;
@@ -1082,7 +1156,7 @@ char *strncpy(char *restrict d, const char *restrict s, size_t n)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strncpy(d, s, n);
 	ACTIVATE();
 	return retval;
@@ -1092,7 +1166,7 @@ double log(double x)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_log(x);
 	ACTIVATE();
 	return retval;
@@ -1109,7 +1183,7 @@ long ftell(FILE *f)
 {
 	DEACTIVATE();
 	long retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_ftell(f);
 	ACTIVATE();
 	return retval;
@@ -1119,7 +1193,7 @@ void *memmove(void *dest, const void *src, size_t n)
 {
 	DEACTIVATE();
 	void* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_memmove(dest, src, n);
 	ACTIVATE();
 	return retval;
@@ -1129,7 +1203,7 @@ size_t strcspn(const char *s, const char *c)
 {
 	DEACTIVATE();
 	size_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strcspn(s, c);
 	ACTIVATE();
 	return retval;
@@ -1139,7 +1213,7 @@ size_t fread(void *restrict destv, size_t size, size_t nmemb, FILE *restrict f)
 {
 	DEACTIVATE();
 	size_t retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_fread(destv, size, nmemb, f);
 	ACTIVATE();
 	return retval;
@@ -1149,7 +1223,7 @@ char *strcat(char *restrict dest, const char *restrict src)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_strcat(dest, src);
 	ACTIVATE();
 	return retval;
@@ -1159,7 +1233,7 @@ double difftime(time_t t1, time_t t0)
 {
 	DEACTIVATE();
 	double retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_difftime(t1, t0);
 	ACTIVATE();
 	return retval;
@@ -1169,7 +1243,7 @@ char *stpcpy(char *restrict d, const char *restrict s)
 {
 	DEACTIVATE();
 	char* retval;
-	log_debug("Called %s PID:%u", __func__, getpid());
+	log_debug("Called %s PID:%u", __func__, real_getpid());
 	retval = real_stpcpy(d, s);
 	ACTIVATE();
 	return retval;
@@ -1181,4 +1255,362 @@ void exit(int code)
 	real_exit(code);
 	// Should never hit here
 	while(1){}
+}
+
+void sincos(double x, double *sin, double *cos)
+{
+	DEACTIVATE();
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	real_sincos(x, sin, cos);
+	ACTIVATE();
+}
+
+off_t lseek(int fd, off_t offset, int whence)
+{
+	DEACTIVATE();
+	off_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_lseek(fd, offset, whence);
+	ACTIVATE();
+	return retval;
+}
+
+double log10(double x)
+{
+	DEACTIVATE();
+	double retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_log10(x);
+	ACTIVATE();
+	return retval;
+}
+
+void qsort(void *base, size_t nel, size_t width, int (*compar)(const void *, const void *))
+{
+	DEACTIVATE();
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	real_qsort(base, nel, width, compar);
+	ACTIVATE();
+}
+
+int fseek(FILE *f, long off, int whence)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_fseek(f, off, whence);
+	ACTIVATE();
+	return retval;
+}
+
+int posix_memalign(void **res, size_t align, size_t len)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_posix_memalign(res,align,len);
+	ACTIVATE();
+	return retval;
+}
+
+char *strerror(int e)
+{
+	DEACTIVATE();
+	char* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_strerror(e);
+	ACTIVATE();
+	return retval;
+}
+
+int sigaction(int sig, const struct sigaction *restrict sa, struct sigaction *restrict old)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_sigaction(sig, sa, old);
+	ACTIVATE();
+	return retval;
+}
+
+int sigemptyset(sigset_t *set)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_sigemptyset(set);
+	ACTIVATE();
+	return retval;
+}
+
+char *strstr(const char *h, const char *n)
+{
+	DEACTIVATE();
+	char* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_strstr(h, n);
+	ACTIVATE();
+	return retval;
+}
+
+int mkdir(const char *path, mode_t mode)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_mkdir(path, mode);
+	ACTIVATE();
+	return retval;
+}
+
+int unlink(const char *path)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_unlink(path);
+	ACTIVATE();
+	return retval;
+}
+
+ssize_t pread(int fd, void *buf, size_t size, off_t ofs)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_pread(fd, buf, size, ofs);
+	ACTIVATE();
+	return retval;
+}
+
+struct group *getgrnam(const char *name)
+{
+	DEACTIVATE();
+	struct group* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_getgrnam(name);
+	ACTIVATE();
+	return retval;
+}
+
+struct passwd *getpwnam(const char *name)
+{
+	DEACTIVATE();
+	struct passwd* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_getpwnam(name);
+	ACTIVATE();
+	return retval;
+}
+
+int epoll_create(int size)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_epoll_create(size);
+	ACTIVATE();
+	return retval;
+}
+
+int getrlimit(int resource, struct rlimit *rlim)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_getrlimit(resource, rlim);
+	ACTIVATE();
+	return retval;
+}
+
+int listen(int fd, int backlog)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_listen(fd, backlog);
+	ACTIVATE();
+	return retval;
+}
+
+uint16_t ntohs(uint16_t n)
+{
+	DEACTIVATE();
+	uint16_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_ntohs(n);
+	ACTIVATE();
+	return retval;
+}
+
+ssize_t pwrite(int fd, const void *buf, size_t size, off_t ofs)
+{
+	DEACTIVATE();
+	ssize_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_pwrite(fd, buf, size, ofs);
+	ACTIVATE();
+	return retval;
+}
+
+int dup2(int old, int new)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_dup2(old, new);
+	ACTIVATE();
+	return retval;
+}
+
+int socket(int domain, int type, int protocol)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_socket(domain, type, protocol);
+	ACTIVATE();
+	return retval;
+}
+
+int uname(struct utsname *uts)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_uname(uts);
+	ACTIVATE();
+	return retval;
+}
+
+long sysconf(int name)
+{
+	DEACTIVATE();
+	long retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_sysconf(name);
+	ACTIVATE();
+	return retval;
+}
+
+int gethostname(char *name, size_t len)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_gethostname(name, len);
+	ACTIVATE();
+	return retval;
+}
+
+int bind(int fd, const struct sockaddr *addr, socklen_t len)
+{
+	DEACTIVATE();
+	int retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_bind(fd, addr, len);
+	ACTIVATE();
+	return retval;
+}
+
+pid_t getpid(void)
+{
+	DEACTIVATE();
+	pid_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_getpid();
+	ACTIVATE();
+	return retval;
+}
+
+int ioctl(int fd, int req, ...)
+{
+	DEACTIVATE();
+	int retval;
+	void *arg;
+	va_list ap;
+	va_start(ap, req);
+	arg = va_arg(ap, void *);
+	retval = syscall(SYS_ioctl, fd, req, arg);
+	va_end(ap);
+	ACTIVATE();
+	return retval;
+}
+
+uid_t geteuid(void)
+{
+	DEACTIVATE();
+	uid_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_geteuid();
+	ACTIVATE();
+	return retval;
+}
+
+void srandom(unsigned seed)
+{
+	DEACTIVATE();
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	real_srandom(seed);
+	ACTIVATE();
+}
+
+size_t strftime(char *restrict s, size_t n, const char *restrict f, const struct tm *restrict tm)
+{
+	DEACTIVATE();
+	size_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_strftime(s, n, f, tm);
+	ACTIVATE();
+	return retval;
+}
+
+uint16_t htons(uint16_t n)
+{
+	DEACTIVATE();
+	uint16_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_htons(n);
+	ACTIVATE();
+	return retval;
+}
+
+time_t time(time_t *t)
+{
+	DEACTIVATE();
+	time_t retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_time(t);
+	ACTIVATE();
+	return retval;
+}
+
+char *strpbrk(const char *s, const char *b)
+{
+	DEACTIVATE();
+	char* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_strpbrk(s, b);
+	ACTIVATE();
+	return retval;
+}
+
+char *strchrnul(const char *s, int c)
+{
+	DEACTIVATE();
+	char* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_strchrnul(s, c);
+	ACTIVATE();
+	return retval;
+}
+
+struct tm *localtime(const time_t *t)
+{
+	DEACTIVATE();
+	struct tm* retval;
+	log_debug("Called %s PID:%u", __func__, real_getpid());
+	retval = real_localtime(t);
+	ACTIVATE();
+	return retval;
 }

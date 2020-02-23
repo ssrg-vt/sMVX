@@ -92,11 +92,11 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 	log_debug("[LOADER]: %s: VMA name: %s", __func__, bin_name);
 	assert(bin_name != NULL);
 
-	fproc = fopen("/proc/self/maps", "r");
-	while (fgets(line, 511, fproc) != NULL) {
-		sscanf(line, "%lx-%lx %31s %x %x:%x %u", &start, &end, flag, 
+	fproc = real_fopen("/proc/self/maps", "r");
+	while (real_fgets(line, 511, fproc) != NULL) {
+		real_sscanf(line, "%lx-%lx %31s %x %x:%x %u", &start, &end, flag, 
 				&file_offset, &dev_major, &dev_minor, &inode);
-		if (strstr(line, bin_name)) {
+		if (real_strstr(line, bin_name)) {
 			if (!real_strcmp(flag, "r-xp")) {
 				pinfo->code_start = start;
 				pinfo->code_end = end;
@@ -111,7 +111,7 @@ int read_proc(const char *bin_name, proc_info_t *pinfo)
 			}
 		}
 	}
-	fclose(fproc);
+	real_fclose(fproc);
 
 	return 0;
 }
@@ -130,14 +130,14 @@ int read_proc_line(const char *bin_name, uint64_t *start, uint64_t *end)
 	log_debug("[LOADER]: %s: VMA name: %s", __func__, bin_name);
 	assert(bin_name != NULL);
 
-	fproc = fopen("/proc/self/maps", "r");
-	while (fgets(line, 511, fproc) != NULL) {
-		sscanf(line, "%lx-%lx %31s %x %x:%x %u", start, end, flag,
+	fproc = real_fopen("/proc/self/maps", "r");
+	while (real_fgets(line, 511, fproc) != NULL) {
+		real_sscanf(line, "%lx-%lx %31s %x %x:%x %u", start, end, flag,
 				&file_offset, &dev_major, &dev_minor, &inode);
-		if (strstr(line, bin_name)) return 1;
+		if (real_strstr(line, bin_name)) return 1;
 	}
 
-	fclose(fproc);
+	real_fclose(fproc);
 	return 0;
 }
 
@@ -150,7 +150,7 @@ static int read_binary_info(binary_info_t *binfo)
 	char t, name[128];
 	uint64_t offset;
 
-	fbin = fopen("/tmp/dec.info", "r");
+	fbin = real_fopen("/tmp/dec.info", "r");
 
 	fscanf(fbin, "%lx %lx %lx %lx %lx %lx %lx %lx %lx %lx",
 		&(binfo->code_start), &(binfo->code_size),
@@ -164,7 +164,7 @@ static int read_binary_info(binary_info_t *binfo)
 		binfo->data_start, binfo->data_size,
 		binfo->bss_start, binfo->bss_size);
 
-	fclose(fbin);
+	real_fclose(fbin);
 
 	return 0;
 }

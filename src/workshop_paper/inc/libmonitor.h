@@ -13,5 +13,11 @@ extern int (*real_strcmp)(const char *l, const char *r);
 extern int (*real_fprintf)(FILE *restrict f, const char *restrict fmt, ...);
 extern int (*real_vfprintf)(FILE *restrict, const char *restrict, va_list);
 extern int (*real_fflush)(FILE *f);
+extern char *(*real_strstr)(const char *h, const char *n);
+extern int (*real_sscanf)(const char *restrict s, const char *restrict fmt, ...);
+extern FILE *(*real_fopen)(const char *restrict filename, const char *restrict mode);
+extern int (*real_fclose)(FILE *f);
+extern char *(*real_fgets)(char *restrict s, int n, FILE *restrict f);
+extern pid_t (*real_getpid)(void);
 
 #endif

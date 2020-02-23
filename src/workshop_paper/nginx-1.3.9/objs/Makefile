@@ -307,8 +307,8 @@ objs/nginx:	objs/src/core/nginx.o \
 	objs/src/http/modules/ngx_http_upstream_ip_hash_module.o \
 	objs/src/http/modules/ngx_http_upstream_least_conn_module.o \
 	objs/src/http/modules/ngx_http_upstream_keepalive_module.o \
-	objs/ngx_modules.o \
-	-L /usr/local/lib -llmvx
+	objs/ngx_modules.o
+	#-L /usr/local/lib -llmvx
 	
 objs/ngx_modules.o:	$(CORE_DEPS) \
 	objs/ngx_modules.c
