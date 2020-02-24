@@ -44,7 +44,7 @@ pre: clean
 	$(MKDIR) -p $(OBJ_DIR)
 	$(MKDIR) $(OBJ_DIR)/$(LIB_DIR)
 
-monitor: $(OBJ)
+monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
@@ -99,6 +99,9 @@ $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/trampoline.o: $(SRC_DIR)/trampoline.s
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 .PHONY: all clean install monitor_trampoline pre test_run debug rebuild

@@ -397,7 +397,7 @@ void store_original_functions()
 	if (!(real_localtime= dlsym(RTLD_NEXT, "localtime")))
 		log_error("localtime symbol not found ");
 }
-
+#if 0
 /* Functions we are overriding */
 int printf(const char *restrict fmt, ...)
 {
@@ -1614,3 +1614,4 @@ struct tm *localtime(const time_t *t)
 	ACTIVATE();
 	return retval;
 }
+#endif

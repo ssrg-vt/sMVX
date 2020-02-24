@@ -38,6 +38,8 @@ binary_info_t binfo;
 /* base address of the both new and old memory */
 void *old_text_base = NULL;
 
+extern void mpk_trampoline();
+
 /* Array to store the gotplt entry addresses */
 uint64_t gotplt_address[MAX_GOTPLT_SLOTS];
 uint64_t num_gotplt_slots;
@@ -212,6 +214,7 @@ void patch_plt()
 {
 	uint64_t plt_start, plt_end;
 	uint64_t text_base, i, j;
+	volatile int hold = 1;
 	jump_patch_t *p;
 	text_base = pinfo.code_start;
 	plt_start = text_base + binfo.plt_start;
@@ -228,12 +231,11 @@ void patch_plt()
 	 *  0xxxxxxxxxxxxxb848
 	 *  0x90909090e0ff0000
 	 */
-	jump_patch_t patch_data = {0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90, 0x90, 0x90,
-	0x90};
+	jump_patch_t patch_data = {0x6a, 0x0, 0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90,
+		0x90};
 
 	/* Disable protections for writing */
 	mprotect((void*)plt_start, binfo.plt_size, PROT_READ | PROT_WRITE);
-
 	/* Add the preamble size to get to the slots */
 	plt_start += PLT_PREAMBLE_SIZE;
 	for (i = plt_start, j = 0; i <= plt_end-PLT_SLOT_SIZE; i+=PLT_SLOT_SIZE,
@@ -244,10 +246,12 @@ void patch_plt()
 				  " gotplt entries!");
 			assert(0);
 		}
-		patch_data.address = gotplt_address[j];
+		//patch_data.address = gotplt_address[j];
+		patch_data.address = (uint64_t)mpk_trampoline;
+		patch_data.slot = j;
 		*p = patch_data;
 	}
-
+	//while (hold){}
 	/* Set .plt to only executable state for .text segment */
 	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
 }
