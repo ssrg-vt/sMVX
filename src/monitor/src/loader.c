@@ -30,6 +30,10 @@
 				      starts in bytes */
 #define PLT_PREAMBLE_SIZE        (16)
 #define PLT_SLOT_SIZE		 (16)
+
+/* Declaration of mpk_trampoline only used in this file */
+extern void mpk_trampoline();
+
 /** Global variables inside libmonitor.so **/
 /* describe the proc info and binary info. */
 proc_info_t pinfo;
@@ -494,22 +498,20 @@ void patch_plt()
 	plt_end = plt_start + binfo.plt_size;
 	/* patch_data is a packed struct, with instructions:
 	 *
-	 *  movabs 0xXXXXXXXXXXXX, $rax
+	 *  push SLOT_NUMBER
+	 *  movabs TRAMPOLINE_LOCATION, $rax
 	 *  jmpq $rax
-	 *  nop
-	 *  nop
 	 *  nop
 	 *  nop
 	 *  // opcode+values for the instructions is
 	 *  0xxxxxxxxxxxxxb848
 	 *  0x90909090e0ff0000
 	 */
-	jump_patch_t patch_data = {0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90, 0x90, 0x90,
-	0x90};
+	jump_patch_t patch_data = {0x6a, 0x0, 0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90,
+		0x90};
 
 	/* Disable protections for writing */
 	mprotect((void*)plt_start, binfo.plt_size, PROT_READ | PROT_WRITE);
-
 	/* Add the preamble size to get to the slots */
 	plt_start += PLT_PREAMBLE_SIZE;
 	for (i = plt_start, j = 0; i <= plt_end-PLT_SLOT_SIZE; i+=PLT_SLOT_SIZE,
@@ -520,10 +522,11 @@ void patch_plt()
 				  " gotplt entries!");
 			assert(0);
 		}
-		patch_data.address = gotplt_address[j];
+		//patch_data.address = gotplt_address[j];
+		patch_data.address = (uint64_t)mpk_trampoline;
+		patch_data.slot = j;
 		*p = patch_data;
 	}
-
 	/* Set .plt to only executable state for .text segment */
 	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
 }
