@@ -1512,7 +1512,6 @@ int bind(int fd, const struct sockaddr *addr, socklen_t len)
 	ACTIVATE();
 	return retval;
 }
-
 pid_t getpid(void)
 {
 	DEACTIVATE();
@@ -1522,7 +1521,6 @@ pid_t getpid(void)
 	ACTIVATE();
 	return retval;
 }
-
 int ioctl(int fd, int req, ...)
 {
 	DEACTIVATE();

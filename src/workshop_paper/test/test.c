@@ -5,9 +5,6 @@
 #include <unistd.h>
 #include <string.h>
 
-/** lmvx library **/
-#include "../inc/lmvx.h"
-
 #ifdef SYS_gettid
 #define gettid()		syscall(SYS_gettid)
 #endif
@@ -19,12 +16,20 @@ void simple_func(int pid)
 	char* localstring = "Test localstring\n";
 	void* to;
 
+	char* name = "name";
+	int p_pid = 0;
+	int cnt = 0x1010;
+	int moredata= 0xdeadbeef;
+
 	to = malloc(4096);
 	memcpy(to, localstring, 10);
 
 	printf("%s: Local pid: %ld\n", __func__, gettid());
 	sprintf(cmd, "cat /proc/%d/maps", pid);
 	printf("%s\n", cmd);
+
+	printf("(%d) Enter %s. Str: %s! Parent pid %d. Local pid %d. Cnt %d, Moredata: %d.\n",
+			getpid(), __func__, name, p_pid, getpid(), cnt, moredata);
 }
 
 int recursive_func(int p_pid, char *name, int cnt)
@@ -47,19 +52,12 @@ int recursive_func(int p_pid, char *name, int cnt)
 int main()
 {
 	/** lmvx library **/
-	lmvx_init();
-
-	/** lmvx library **/
-	lmvx_start("simple_func", 1, getpid());
 	simple_func(getpid());
 	/** lmvx library **/
-	lmvx_end();
 
 	/** lmvx library **/
-	lmvx_start("recursive_func", 3, getpid(), "tom", 3);
 	recursive_func(getpid(), "tom", 3);
 	/** lmvx library **/
-	lmvx_end();
 
 	while(1) usleep(5000);
 

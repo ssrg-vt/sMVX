@@ -15,6 +15,8 @@
 
 /* Instruction patching */
 typedef struct{
+	uint8_t push_rbx;
+	uint8_t push_rax;
 	uint8_t push;
 	uint8_t slot;
 	uint8_t mov;
@@ -22,8 +24,6 @@ typedef struct{
 	uint64_t address;
 	uint8_t jmp0;
 	uint8_t jmp1;
-	uint8_t noop2;
-	uint8_t noop3;
 }__attribute__((__packed__)) jump_patch_t;
 
 /* Runtime "/proc/<pid>/maps" info */
@@ -55,6 +55,7 @@ int init_loader();
 int read_proc(const char *bin_name, proc_info_t *pinfo);
 void read_gotplt();
 void patch_plt();
+void* create_safestack();
 static int read_binary_info(binary_info_t *binfo);
 
 #endif
