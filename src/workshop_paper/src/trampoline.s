@@ -23,7 +23,7 @@ mpk_trampoline:
   #########
 
 # Setup safestack and store unsafestack
-    int3
+    #int3
 # Dereference unsafe stack address and store unsafestack pointer
     mov unsafestack@GOTPCREL(%rip), %rax
     mov %rsp, (%rax)
@@ -43,16 +43,12 @@ mpk_trampoline:
     push %rbx
     mov 0x20(%rax), %rbx # Push arg7
     push %rbx
-    mov 0x18(%rax), %rbx # Push old %rip
-    push %rbx
-    mov 0x10(%rax), %rbx # Push old %rbx
-    push %rbx
     mov 0x8(%rax), %rbx  # Push old %rax
     push %rbx
     mov (%rax), %rbx     # Push slot number
     push %rbx
 
-    add $0x18, %rax
+    add $0x10, %rax
     mov unsafestack@GOTPCREL(%rip), %rbx
     mov %rax, (%rbx)
 
