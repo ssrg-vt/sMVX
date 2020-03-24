@@ -25,12 +25,13 @@
 #include <libmonitor.h>
 
 #define USAGE 		 "Use: $ BIN=<binary name> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
-
+#define STACK_SIZE		 (4096)
 #define MAX_GOTPLT_SLOTS (1024)
 #define GOTPLT_PREAMBLE_SIZE	 (24) /* Size of area before actual gotplt slots
 				      starts in bytes */
 #define PLT_PREAMBLE_SIZE        (16)
 #define PLT_SLOT_SIZE		 (16)
+
 /** Global variables inside libmonitor.so **/
 /* describe the proc info and binary info. */
 proc_info_t pinfo;
@@ -38,9 +39,19 @@ binary_info_t binfo;
 /* base address of the both new and old memory */
 void *old_text_base = NULL;
 
+extern void mpk_trampoline();
+
 /* Array to store the gotplt entry addresses */
 uint64_t gotplt_address[MAX_GOTPLT_SLOTS];
 uint64_t num_gotplt_slots;
+
+/* Safestack base */
+#define NUM_ARGS_ON_STACK  (4)
+uint64_t* safestack_base = NULL;
+uint64_t unsafestack;
+uint64_t* safestack_realbase = NULL;
+uint64_t num_stackargs = NUM_ARGS_ON_STACK;
+
 /**
  * Entry function of the LD_PRELOAD library.
  * */
@@ -74,6 +85,10 @@ int init_loader(int argc, char** argv, char** env)
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
 	 * binding*/
 	patch_plt();
+
+	/* Allocate safestack */
+	safestack_realbase = (uint64_t*)create_safestack();
+	safestack_base = safestack_realbase - NUM_ARGS_ON_STACK;
 
 	return 0;
 }
@@ -149,9 +164,7 @@ static int read_binary_info(binary_info_t *binfo)
 	FILE *fbin = 0;
 	char t, name[128];
 	uint64_t offset;
-
 	fbin = real_fopen("/tmp/dec.info", "r");
-
 	fscanf(fbin, "%lx %lx %lx %lx %lx %lx %lx %lx %lx %lx",
 		&(binfo->code_start), &(binfo->code_size),
 		&(binfo->data_start), &(binfo->data_size),
@@ -211,13 +224,15 @@ void read_gotplt()
 void patch_plt()
 {
 	uint64_t plt_start, plt_end;
-	uint64_t text_base, i, j;
+	uint64_t text_base, i;
+	uint8_t j;
 	jump_patch_t *p;
+	jump_patch_general_t *pg;
 	text_base = pinfo.code_start;
 	plt_start = text_base + binfo.plt_start;
 	plt_end = plt_start + binfo.plt_size;
-	/* patch_data is a packed struct, with instructions:
-	 *
+	/* general_patch_data and patch_data are packed structs:
+	 *  Instructions in general_patch_data:
 	 *  movabs 0xXXXXXXXXXXXX, $rax
 	 *  jmpq $rax
 	 *  nop
@@ -227,14 +242,34 @@ void patch_plt()
 	 *  // opcode+values for the instructions is
 	 *  0xxxxxxxxxxxxxb848
 	 *  0x90909090e0ff0000
+	 *  Instructions in patch_data:
+	 *  push $rbx
+	 *  push $rax
+	 *  nop
+	 *  nop
+	 *  nop
+	 *  nop
+	 *  The next two instructions are not in patch_data, as we reuse
+	 *  existing instructions already in the .plt slots:
+	 *  push slot_number
+	 *  jmp plt_resolver_addr (first slot of plt, patched with
+	 *  general_patch_data)
 	 */
-	jump_patch_t patch_data = {0x48, 0xb8, 0x0, 0xff, 0xe0, 0x90, 0x90, 0x90,
-	0x90};
+	jump_patch_general_t general_patch_data = {0x48, 0xb8, 0x0, 0xff, 0xe0,
+	0x90, 0x90, 0x90, 0x90};
+	jump_patch_t patch_data = {0x53, 0x50, 0x90, 0x90, 0x90, 0x90};
 
 	/* Disable protections for writing */
 	mprotect((void*)plt_start, binfo.plt_size, PROT_READ | PROT_WRITE);
 
-	/* Add the preamble size to get to the slots */
+	/* Write the common slot first, this is usually used for lazy binding
+	 * but musl doesn't support it. This means we can take advantage of this
+	 * space and the existing plt instructions that redirects here.*/
+	pg = (jump_patch_general_t*)plt_start;
+	general_patch_data.address = (uint64_t)mpk_trampoline;
+	*pg = general_patch_data;
+
+	/* Individual PLT slot patches */
 	plt_start += PLT_PREAMBLE_SIZE;
 	for (i = plt_start, j = 0; i <= plt_end-PLT_SLOT_SIZE; i+=PLT_SLOT_SIZE,
 	     ++j) {
@@ -244,10 +279,24 @@ void patch_plt()
 				  " gotplt entries!");
 			assert(0);
 		}
-		patch_data.address = gotplt_address[j];
+
 		*p = patch_data;
 	}
 
 	/* Set .plt to only executable state for .text segment */
 	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
+}
+
+void* create_safestack()
+{
+	void* stack = malloc(STACK_SIZE);
+	void* stack_top = NULL;
+
+	if (stack == NULL) {
+		log_error("malloc failed.");
+		exit(EXIT_FAILURE);
+	}
+	stack_top = stack + STACK_SIZE;
+	// TODO, add mprotect
+	return stack_top;
 }

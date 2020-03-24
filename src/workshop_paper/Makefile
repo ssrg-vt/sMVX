@@ -44,7 +44,7 @@ pre: clean
 	$(MKDIR) -p $(OBJ_DIR)
 	$(MKDIR) $(OBJ_DIR)/$(LIB_DIR)
 
-monitor: $(OBJ)
+monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
@@ -62,7 +62,7 @@ liblmvx.so: $(LIB_OBJ_FILES)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o liblmvx.so
 
 ## Two binaries, from (mostly) same source code
-test.bin: $(TEST_DIR)/test.c liblmvx.so
+test.bin: $(TEST_DIR)/test.c
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
@@ -74,20 +74,31 @@ pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
+# Loop getpid test case
+getpid_loop.bin: $(TEST_DIR)/getpid.c
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
+
 pointer_test:
 	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=libmonitor.so ./pointer.bin
+
+getpid_loop_test:
+	LOG_LEVEL=ERROR BIN=getpid_loop.bin LD_PRELOAD=libmonitor.so ./getpid_loop.bin
+
+getpid_debug:
+	gdb getpid_loop.bin -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=getpid_loop.bin"
 
 nginx_run:
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 debug:
-	gdb test.bin -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+	gdb test.bin -ex "set environment LOG_LEVEL=ERROR" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
 
 nginx_debug:
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
 clean:
-	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin
+	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin getpid_loop.bin
 
 rebuild:
 	make clean; make all
@@ -99,6 +110,9 @@ $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/trampoline.o: $(SRC_DIR)/trampoline.s
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 .PHONY: all clean install monitor_trampoline pre test_run debug rebuild

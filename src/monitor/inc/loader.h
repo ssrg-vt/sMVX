@@ -15,13 +15,13 @@
 
 /* Instruction patching */
 typedef struct{
+	uint8_t push;
+	uint8_t slot;
 	uint8_t mov;
 	uint8_t eax;
 	uint64_t address;
 	uint8_t jmp0;
 	uint8_t jmp1;
-	uint8_t noop0;
-	uint8_t noop1;
 	uint8_t noop2;
 	uint8_t noop3;
 }__attribute__((__packed__)) jump_patch_t;

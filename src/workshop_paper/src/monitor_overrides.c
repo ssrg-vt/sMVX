@@ -397,7 +397,7 @@ void store_original_functions()
 	if (!(real_localtime= dlsym(RTLD_NEXT, "localtime")))
 		log_error("localtime symbol not found ");
 }
-
+#if 0
 /* Functions we are overriding */
 int printf(const char *restrict fmt, ...)
 {
@@ -1512,7 +1512,6 @@ int bind(int fd, const struct sockaddr *addr, socklen_t len)
 	ACTIVATE();
 	return retval;
 }
-
 pid_t getpid(void)
 {
 	DEACTIVATE();
@@ -1522,7 +1521,6 @@ pid_t getpid(void)
 	ACTIVATE();
 	return retval;
 }
-
 int ioctl(int fd, int req, ...)
 {
 	DEACTIVATE();
@@ -1614,3 +1612,4 @@ struct tm *localtime(const time_t *t)
 	ACTIVATE();
 	return retval;
 }
+#endif

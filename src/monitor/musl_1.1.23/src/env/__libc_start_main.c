@@ -9,16 +9,18 @@
 
 #define PKEY_NO_ACCESS  (0x1)
 #define PKEY_ALL_ACCESS (0x0)
+#define KEY_NUM         (2)
 #define ACTIVATE()    \
 	do {          \
-	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS << (2*1))),\
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS <<         \
+						     (2*KEY_NUM))),\
 		"c" (0), "d" (0));                                             \
 	}while(0)
 
 #define DEACTIVATE()                                                           \
 	do {                                                                   \
 	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_ALL_ACCESS <<        \
-						      (2*1))), "c" (0), "d"    \
+						      (2*KEY_NUM))), "c" (0), "d"\
 		 (0));                                                         \
 	} while(0)
 

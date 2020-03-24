@@ -61,6 +61,7 @@ void associate_all_pkeys()
 	/* Allocate pkey */
 	pkey = syscall(SYS_pkey_alloc, 0, 0);
 
+	log_debug("Pkey allocated is: %lu", pkey);
 	/* Associate keys with both the monitor and libc */
 	read_proc("libmonitor", &monitor_info);
 	read_proc("libc", &libc_info);

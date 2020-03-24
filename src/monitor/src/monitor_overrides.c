@@ -1151,7 +1151,6 @@ int gettimeofday(struct timeval *restrict tv, void *restrict tz)
 	ACTIVATE();
 	return retval;
 }
-#endif
 
 struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
 {
@@ -1204,3 +1203,4 @@ struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
 	ACTIVATE();
 	return retval;
 }
+#endif
