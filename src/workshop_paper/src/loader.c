@@ -45,12 +45,8 @@ extern void mpk_trampoline();
 uint64_t gotplt_address[MAX_GOTPLT_SLOTS];
 uint64_t num_gotplt_slots;
 
-/* Safestack base */
-#define NUM_ARGS_ON_STACK  (4)
-uint64_t* safestack_base = NULL;
-uint64_t unsafestack;
-uint64_t* safestack_realbase = NULL;
-uint64_t num_stackargs = NUM_ARGS_ON_STACK;
+__thread char tls_safestack[STACK_SIZE];
+__thread void* tls_unsafestack;
 
 /**
  * Entry function of the LD_PRELOAD library.
@@ -85,10 +81,6 @@ int init_loader(int argc, char** argv, char** env)
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
 	 * binding*/
 	patch_plt();
-
-	/* Allocate safestack */
-	safestack_realbase = (uint64_t*)create_safestack();
-	safestack_base = safestack_realbase - NUM_ARGS_ON_STACK;
 
 	return 0;
 }
@@ -285,18 +277,4 @@ void patch_plt()
 
 	/* Set .plt to only executable state for .text segment */
 	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
-}
-
-void* create_safestack()
-{
-	void* stack = malloc(STACK_SIZE);
-	void* stack_top = NULL;
-
-	if (stack == NULL) {
-		log_error("malloc failed.");
-		exit(EXIT_FAILURE);
-	}
-	stack_top = stack + STACK_SIZE;
-	// TODO, add mprotect
-	return stack_top;
 }
