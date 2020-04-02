@@ -33,9 +33,9 @@ endif
 
 BIN := test.bin
 
-all: pre monitor liblmvx.so test.bin
+all: pre monitor libthreadtest.so test.bin thread_test.bin
 
-nginx: pre monitor liblmvx.so
+nginx: pre monitor
 
 pre: clean
 	@echo $(SRC)
@@ -48,18 +48,25 @@ monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
-install: libmonitor.so liblmvx.so
+install: libmonitor.so
 	install -C libmonitor.so /usr/local/lib/
 	install -C libmonitor.so /usr/lib/x86_64-linux-gnu/
-	install -C liblmvx.so /usr/local/lib/
-	install -C liblmvx.so /usr/lib/x86_64-linux-gnu/
 	install -D $(INC_DIR)/libmonitor.h /usr/local/dec/inc
-	install -D $(INC_DIR)/lmvx.h /usr/local/dec/inc
 
-### liblmvx.so
-liblmvx.so: $(LIB_OBJ_FILES)
+## For multithreaded testing
+libthreadtest.so: $(LIB_OBJ_FILES)
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o liblmvx.so
+	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libthreadtest.so
+
+thread_test.bin: $(TEST_DIR)/thread_test.c libthreadtest.so
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
+
+thread_test_run:
+	LD_LIBRARY_PATH=. LOG_LEVEL=ERROR BIN=thread_test.bin LD_PRELOAD=libmonitor.so ./thread_test.bin
+
+thread_test_debug:
+	gdb thread_test.bin -ex "set environment LD_LIBRARY_PATH=." -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=thread_test.bin"
 
 ## Two binaries, from (mostly) same source code
 test.bin: $(TEST_DIR)/test.c
@@ -69,18 +76,10 @@ test.bin: $(TEST_DIR)/test.c
 test_run:
 	LOG_LEVEL=TRACE BIN=test.bin LD_PRELOAD=libmonitor.so ./test.bin
 
-## Pointer test case --> pointer.bin
-pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
-	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
-
 # Loop getpid test case
 getpid_loop.bin: $(TEST_DIR)/getpid.c
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
-
-pointer_test:
-	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=libmonitor.so ./pointer.bin
 
 getpid_loop_test:
 	LOG_LEVEL=ERROR BIN=getpid_loop.bin LD_PRELOAD=libmonitor.so ./getpid_loop.bin
@@ -98,7 +97,7 @@ nginx_debug:
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
 clean:
-	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin getpid_loop.bin
+	rm -rf $(OBJ_DIR) libmonitor.so libthreadtest.so test.bin getpid_loop.bin thread_test.bin
 
 rebuild:
 	make clean; make all
@@ -107,7 +106,7 @@ nginx_rebuild:
 	make clean; make nginx
 
 $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
-	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
+	$(HUSH_CC) $(CC) $(CFLAGS) -I$(LIB_DIR) $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@

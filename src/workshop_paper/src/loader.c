@@ -45,7 +45,7 @@ extern void mpk_trampoline();
 uint64_t gotplt_address[MAX_GOTPLT_SLOTS];
 uint64_t num_gotplt_slots;
 
-__thread char tls_safestack[STACK_SIZE];
+__thread uint8_t tls_safestack[STACK_SIZE];
 __thread void* tls_unsafestack;
 
 /**
