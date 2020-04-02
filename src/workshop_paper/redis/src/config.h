@@ -35,7 +35,7 @@
 #endif
 
 #ifdef __linux__
-#include <linux/version.h>
+//#include <linux/version.h>
 #include <features.h>
 #endif
 

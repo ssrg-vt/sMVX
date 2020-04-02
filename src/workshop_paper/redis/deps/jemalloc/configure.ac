@@ -180,6 +180,7 @@ AC_SUBST([XSLROOT])
 dnl If CFLAGS isn't defined, set CFLAGS to something reasonable.  Otherwise,
 dnl just prevent autoconf from molesting CFLAGS.
 CFLAGS=$CFLAGS
+CC=${CC-/usr/local/musl/bin/musl-gcc}
 AC_PROG_CC
 
 if test "x$GCC" != "xyes" ; then

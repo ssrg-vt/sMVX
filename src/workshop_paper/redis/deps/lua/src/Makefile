@@ -7,14 +7,14 @@
 # Your platform. See PLATS for possible values.
 PLAT= none
 
-CC?= gcc
-CFLAGS= -O2 -Wall $(MYCFLAGS)
+CC:= /usr/local/musl/bin/musl-gcc
+CFLAGS= -O0 -g -Wall $(MYCFLAGS)
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f
 LIBS= -lm $(MYLIBS)
 
-MYCFLAGS=
+MYCFLAGS= -g -nostdinc
 MYLDFLAGS=
 MYLIBS=
 
