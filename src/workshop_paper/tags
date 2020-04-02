@@ -46,7 +46,7 @@ ACORE	musl_1.1.23/include/sys/acct.h	62;"	d
 ACTION	musl_1.1.23/include/search.h	/^typedef enum { FIND, ENTER } ACTION;$/;"	t	typeref:enum:__anon249
 ACTIVATE	inc/pkey.h	13;"	d
 ACTIVATE	inc/pkey.h	27;"	d
-ACTIVATE	musl_1.1.23/src/env/__libc_start_main.c	12;"	d	file:
+ACTIVATE	musl_1.1.23/src/env/__libc_start_main.c	13;"	d	file:
 ACTIVATE	musl_1.1.23/src/stdio/__fdopen.c	11;"	d	file:
 ADD	musl_1.1.23/include/arpa/nameser.h	395;"	d
 ADDEND_LIMIT	musl_1.1.23/ldso/dynlink.c	117;"	d	file:
@@ -345,7 +345,7 @@ AUTH_HOW_ONE_WAY	musl_1.1.23/include/arpa/telnet.h	190;"	d
 AUTH_WHO_CLIENT	musl_1.1.23/include/arpa/telnet.h	186;"	d
 AUTH_WHO_MASK	musl_1.1.23/include/arpa/telnet.h	188;"	d
 AUTH_WHO_SERVER	musl_1.1.23/include/arpa/telnet.h	187;"	d
-AUX_CNT	musl_1.1.23/src/env/__libc_start_main.c	33;"	d	file:
+AUX_CNT	musl_1.1.23/src/env/__libc_start_main.c	35;"	d	file:
 AUX_CNT	musl_1.1.23/src/internal/dynlink.h	94;"	d
 AUX_CNT	musl_1.1.23/src/ldso/dl_iterate_phdr.c	5;"	d	file:
 AXSIG	musl_1.1.23/include/sys/acct.h	63;"	d
@@ -876,7 +876,6 @@ COMPLETE	musl_1.1.23/include/arpa/ftp.h	4;"	d
 CONCAT	musl_1.1.23/src/internal/floatscan.c	37;"	d	file:
 CONCAT2	musl_1.1.23/src/internal/floatscan.c	36;"	d	file:
 CONDITION_GOOD	musl_1.1.23/include/scsi/scsi.h	75;"	d
-CONF_TAB_ADDR_FILE	inc/lmvx.h	9;"	d
 CONTINUE	musl_1.1.23/include/arpa/ftp.h	5;"	d
 CONTTYPE	musl_1.1.23/include/tar.h	25;"	d
 COPY	musl_1.1.23/include/scsi/scsi.h	21;"	d
@@ -1116,7 +1115,7 @@ DBL_TRUE_MIN	musl_1.1.23/include/float.h	28;"	d
 DCACHE	musl_1.1.23/include/sys/cachectl.h	9;"	d
 DEACTIVATE	inc/pkey.h	19;"	d
 DEACTIVATE	inc/pkey.h	30;"	d
-DEACTIVATE	musl_1.1.23/src/env/__libc_start_main.c	18;"	d	file:
+DEACTIVATE	musl_1.1.23/src/env/__libc_start_main.c	20;"	d	file:
 DEACTIVATE	musl_1.1.23/src/stdio/__fdopen.c	17;"	d	file:
 DEAD_PROCESS	musl_1.1.23/include/utmpx.h	56;"	d
 DEBUG_H	inc/log.h	2;"	d
@@ -5297,6 +5296,7 @@ KERN_RTSIGNR	nginx-1.3.9/src/event/modules/ngx_rtsig_module.c	32;"	d	file:
 KEY_MAX	musl_1.1.23/src/crypt/crypt_md5.c	182;"	d	file:
 KEY_MAX	musl_1.1.23/src/crypt/crypt_sha256.c	171;"	d	file:
 KEY_MAX	musl_1.1.23/src/crypt/crypt_sha512.c	192;"	d	file:
+KEY_NUM	musl_1.1.23/src/env/__libc_start_main.c	12;"	d	file:
 KMAX	musl_1.1.23/src/internal/floatscan.c	16;"	d	file:
 KMAX	musl_1.1.23/src/internal/floatscan.c	22;"	d	file:
 KMAX	musl_1.1.23/src/internal/floatscan.c	28;"	d	file:
@@ -7608,6 +7608,8 @@ NULL	musl_1.1.23/include/unistd.h	21;"	d
 NULL	musl_1.1.23/include/wchar.h	42;"	d
 NULL	musl_1.1.23/include/wchar.h	44;"	d
 NUM	musl_1.1.23/src/passwd/putspent.c	4;"	d	file:
+NUM_ITERATIONS	test/getpid.c	5;"	d	file:
+NUM_LOOPS	lib/libthreadtest.c	6;"	d	file:
 NX	musl_1.1.23/src/math/__rem_pio2l.c	31;"	d	file:
 NX	musl_1.1.23/src/math/__rem_pio2l.c	57;"	d	file:
 NXDOMAIN	musl_1.1.23/include/arpa/nameser.h	385;"	d
@@ -12815,7 +12817,7 @@ SS_ONSTACK	musl_1.1.23/include/signal.h	243;"	d
 STACK_PUSH	musl_1.1.23/src/regex/regcomp.c	265;"	d	file:
 STACK_PUSHR	musl_1.1.23/src/regex/regcomp.c	279;"	d	file:
 STACK_PUSHX	musl_1.1.23/src/regex/regcomp.c	272;"	d	file:
-STACK_SIZE	inc/lmvx.h	7;"	d
+STACK_SIZE	src/loader.c	28;"	d	file:
 STAR	musl_1.1.23/src/regex/fnmatch.c	27;"	d	file:
 START	musl_1.1.23/crt/crt1.c	4;"	d	file:
 START	musl_1.1.23/crt/rcrt1.c	1;"	d	file:
@@ -13578,7 +13580,6 @@ TABDLY	musl_1.1.23/arch/mips64/bits/termios.h	64;"	d
 TABDLY	musl_1.1.23/arch/mipsn32/bits/termios.h	64;"	d
 TABDLY	musl_1.1.23/arch/powerpc/bits/termios.h	62;"	d
 TABDLY	musl_1.1.23/arch/powerpc64/bits/termios.h	62;"	d
-TAB_SIZE	inc/lmvx.h	8;"	d
 TAG	musl_1.1.23/src/regex/regcomp.c	74;"	d	file:
 TBLBITS	musl_1.1.23/src/math/exp2l.c	255;"	d	file:
 TBLBITS	musl_1.1.23/src/math/exp2l.c	36;"	d	file:
@@ -15111,7 +15112,7 @@ _FNMATCH_H	musl_1.1.23/include/fnmatch.h	2;"	d
 _FTW_H	musl_1.1.23/include/ftw.h	2;"	d
 _GETOPT_H	musl_1.1.23/include/getopt.h	2;"	d
 _GLOB_H	musl_1.1.23/include/glob.h	2;"	d
-_GNU_SOURCE	lib/liblmvx.c	1;"	d	file:
+_GNU_SOURCE	lib/libthreadtest.c	1;"	d	file:
 _GNU_SOURCE	musl_1.1.23/arch/mips64/reloc.h	4;"	d
 _GNU_SOURCE	musl_1.1.23/include/features.h	5;"	d
 _GNU_SOURCE	musl_1.1.23/ldso/dynlink.c	1;"	d	file:
@@ -15258,7 +15259,6 @@ _GNU_SOURCE	musl_1.1.23/src/unistd/ualarm.c	1;"	d	file:
 _GNU_SOURCE	musl_1.1.23/src/unistd/usleep.c	1;"	d	file:
 _GNU_SOURCE	nginx-1.3.9/src/os/unix/ngx_linux_config.h	13;"	d
 _GNU_SOURCE	src/libmonitor.c	1;"	d	file:
-_GNU_SOURCE	src/lmvx.c	5;"	d	file:
 _GNU_SOURCE	src/monitor_overrides.c	2;"	d	file:
 _GRP_H	musl_1.1.23/include/grp.h	2;"	d
 _G_fpos64_t	musl_1.1.23/include/stdio.h	/^typedef union _G_fpos64_t {$/;"	u
@@ -15350,7 +15350,6 @@ _LIBM_H	musl_1.1.23/src/internal/libm.h	2;"	d
 _LIMITS_H	musl_1.1.23/include/limits.h	2;"	d
 _LINK_H	musl_1.1.23/include/link.h	2;"	d
 _LINUX_QUOTA_VERSION	musl_1.1.23/include/sys/quota.h	10;"	d
-_LMVX_H	inc/lmvx.h	2;"	d
 _LOCALE_H	musl_1.1.23/include/locale.h	2;"	d
 _LOCALE_IMPL_H	musl_1.1.23/src/internal/locale_impl.h	2;"	d
 _LOG2F_DATA_H	musl_1.1.23/src/math/log2f_data.h	6;"	d
@@ -16049,6 +16048,7 @@ __IS_REAL	musl_1.1.23/include/tgmath.h	18;"	d
 __LDBL	musl_1.1.23/include/tgmath.h	21;"	d
 __LDBLCX	musl_1.1.23/include/tgmath.h	25;"	d
 __LIBMONITOR_H__	inc/libmonitor.h	2;"	d
+__LIBTHREADTEST_H__	lib/libthreadtest.h	2;"	d
 __LITTLE_ENDIAN	musl_1.1.23/include/endian.h	6;"	d
 __LOADER_H	inc/loader.h	2;"	d
 __MHDR_END	musl_1.1.23/include/sys/socket.h	301;"	d
@@ -17053,7 +17053,6 @@ __env_rm_add	musl_1.1.23/src/env/setenv.c	/^void __env_rm_add(char *old, char *n
 __environ	musl_1.1.23/src/env/__environ.c	/^char **__environ = 0;$/;"	v
 __err	musl_1.1.23/include/aio.h	/^	volatile int __err;$/;"	m	struct:aiocb
 __errno_location	musl_1.1.23/src/errno/__errno_location.c	/^int *__errno_location(void)$/;"	f
-__errno_location	src/monitor_overrides.c	/^int *__errno_location(void)$/;"	f
 __error	nginx-1.3.9/src/os/unix/ngx_freebsd_rfork_thread.c	/^__error()$/;"	f
 __esh	musl_1.1.23/arch/i386/bits/signal.h	/^	unsigned short gs, __gsh, fs, __fsh, es, __esh, ds, __dsh;$/;"	m	struct:sigcontext
 __execvpe	musl_1.1.23/src/process/execvp.c	/^int __execvpe(const char *file, char *const argv[], char *const envp[])$/;"	f
@@ -18405,7 +18404,6 @@ _setjmp	musl_1.1.23/src/setjmp/s390x/setjmp.s	/^_setjmp:$/;"	l
 _setjmp	musl_1.1.23/src/setjmp/sh/setjmp.S	/^_setjmp:$/;"	l
 _setjmp	musl_1.1.23/src/setjmp/x32/setjmp.s	/^_setjmp:$/;"	l
 _setjmp	musl_1.1.23/src/setjmp/x86_64/setjmp.s	/^_setjmp:$/;"	l
-_shim_args	inc/lmvx.h	/^typedef struct _shim_args {$/;"	s
 _sigaddset	musl_1.1.23/src/thread/pthread_cancel.c	/^static void _sigaddset(sigset_t *set, int sig)$/;"	f	file:
 _spinlock	nginx-1.3.9/src/os/unix/ngx_freebsd_rfork_thread.c	/^_spinlock(ngx_atomic_t *lock)$/;"	f
 _spinunlock	nginx-1.3.9/src/os/unix/ngx_freebsd_rfork_thread.c	/^_spinunlock(ngx_atomic_t *lock)$/;"	f
@@ -18804,7 +18802,6 @@ accept	musl_1.1.23/src/network/accept.c	/^int accept(int fd, struct sockaddr *re
 accept	nginx-1.3.9/src/event/ngx_event.h	/^    unsigned         accept:1;$/;"	m	struct:ngx_event_s
 accept	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_table_elt_t                  *accept;$/;"	m	struct:__anon340
 accept4	musl_1.1.23/src/network/accept4.c	/^int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int flg)$/;"	f
-accept4	src/monitor_overrides.c	/^int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int flg)$/;"	f
 accept_context_updated	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            accept_context_updated:1;$/;"	m	struct:ngx_connection_s
 accept_context_updated	nginx-1.3.9/src/event/ngx_event.h	/^    unsigned         accept_context_updated:1;$/;"	m	struct:ngx_event_s
 accept_encoding	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_table_elt_t                  *accept_encoding;$/;"	m	struct:__anon340
@@ -18906,7 +18903,7 @@ addr_text	nginx-1.3.9/src/mail/ngx_mail.h	/^    ngx_str_t               addr_tex
 addr_text	nginx-1.3.9/src/mail/ngx_mail.h	/^    ngx_str_t              *addr_text;$/;"	m	struct:__anon659
 addr_text_max_len	nginx-1.3.9/src/core/ngx_connection.h	/^    size_t              addr_text_max_len;$/;"	m	struct:ngx_listening_s
 addrcmp	musl_1.1.23/src/network/lookup_name.c	/^static int addrcmp(const void *_a, const void *_b)$/;"	f	file:
-address	inc/loader.h	/^	uint64_t address;$/;"	m	struct:__anon669
+address	inc/loader.h	/^	uint64_t address;$/;"	m	struct:__anon670
 address	musl_1.1.23/arch/s390x/bits/user.h	/^	unsigned long address;$/;"	m	struct:_user_per_struct
 address	musl_1.1.23/include/netinet/tcp.h	/^	uint64_t address;$/;"	m	struct:tcp_zerocopy_receive
 address	musl_1.1.23/src/network/lookup.h	/^struct address {$/;"	s
@@ -19041,12 +19038,6 @@ aregs	musl_1.1.23/arch/s390x/bits/signal.h	/^	unsigned aregs[16];$/;"	m	struct:_
 arg	musl_1.1.23/src/regex/regcomp.c	/^  tre_ast_node_t *arg;$/;"	m	struct:__anon197	file:
 arg	musl_1.1.23/src/stdio/vfprintf.c	/^union arg$/;"	u	file:
 arg	musl_1.1.23/src/stdio/vfwprintf.c	/^union arg$/;"	u	file:
-arg0	inc/lmvx.h	/^	u64 arg0;$/;"	m	struct:_shim_args
-arg1	inc/lmvx.h	/^	u64 arg1;$/;"	m	struct:_shim_args
-arg2	inc/lmvx.h	/^	u64 arg2;$/;"	m	struct:_shim_args
-arg3	inc/lmvx.h	/^	u64 arg3;$/;"	m	struct:_shim_args
-arg4	inc/lmvx.h	/^	u64 arg4;$/;"	m	struct:_shim_args
-arg5	inc/lmvx.h	/^	u64 arg5;$/;"	m	struct:_shim_args
 arg_end	musl_1.1.23/include/sys/prctl.h	/^	uint64_t arg_end;$/;"	m	struct:prctl_mm_map
 arg_end	nginx-1.3.9/src/mail/ngx_mail.h	/^    u_char                 *arg_end;$/;"	m	struct:__anon659
 arg_n	musl_1.1.23/src/stdio/vfscanf.c	/^static void *arg_n(va_list ap, unsigned int n)$/;"	f	file:
@@ -19178,9 +19169,7 @@ atanlo	musl_1.1.23/src/math/atanl.c	/^static const long double atanlo[] = {$/;"	
 atexit	musl_1.1.23/src/exit/atexit.c	/^int atexit(void (*func)(void))$/;"	f
 atfork_funcs	musl_1.1.23/src/thread/pthread_atfork.c	/^static struct atfork_funcs {$/;"	s	file:
 atof	musl_1.1.23/src/stdlib/atof.c	/^double atof(const char *s)$/;"	f
-atof	src/monitor_overrides.c	/^double atof(const char *s)$/;"	f
 atoi	musl_1.1.23/src/stdlib/atoi.c	/^int atoi(const char *s)$/;"	f
-atoi	src/monitor_overrides.c	/^int atoi(const char *s)$/;"	f
 atol	musl_1.1.23/src/stdlib/atol.c	/^long atol(const char *s)$/;"	f
 atoll	musl_1.1.23/src/stdlib/atoll.c	/^long long atoll(const char *s)$/;"	f
 atou	musl_1.1.23/src/passwd/getgrent_a.c	/^static unsigned atou(char **s)$/;"	f	file:
@@ -19258,12 +19247,11 @@ bin_index	musl_1.1.23/src/malloc/malloc.c	/^static int bin_index(size_t x)$/;"	f
 bin_index_up	musl_1.1.23/src/malloc/malloc.c	/^static int bin_index_up(size_t x)$/;"	f	file:
 bin_tab	musl_1.1.23/src/malloc/malloc.c	/^static const unsigned char bin_tab[60] = {$/;"	v	file:
 binary_include	nginx-1.3.9/src/http/modules/ngx_http_geo_module.c	/^    unsigned                         binary_include:1;$/;"	m	struct:__anon392	file:
-binary_info_t	inc/loader.h	/^} binary_info_t;$/;"	t	typeref:struct:__anon671
+binary_info_t	inc/loader.h	/^} binary_info_t;$/;"	t	typeref:struct:__anon672
 bind	musl_1.1.23/src/network/bind.c	/^int bind(int fd, const struct sockaddr *addr, socklen_t len)$/;"	f
 bind	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    unsigned                   bind:1;$/;"	m	struct:__anon533
 bind	nginx-1.3.9/src/mail/ngx_mail.h	/^    unsigned                bind:1;$/;"	m	struct:__anon646
 bind	nginx-1.3.9/src/mail/ngx_mail.h	/^    unsigned                bind:1;$/;"	m	struct:__anon652
-bind	src/monitor_overrides.c	/^int bind(int fd, const struct sockaddr *addr, socklen_t len)$/;"	f
 bind_textdomain_codeset	musl_1.1.23/src/locale/bind_textdomain_codeset.c	/^char *bind_textdomain_codeset(const char *domainname, const char *codeset)$/;"	f
 binding	musl_1.1.23/src/locale/dcngettext.c	/^	struct binding *binding;$/;"	m	struct:msgcat	typeref:struct:msgcat::binding	file:
 binding	musl_1.1.23/src/locale/dcngettext.c	/^struct binding {$/;"	s	file:
@@ -19318,8 +19306,8 @@ brk	musl_1.1.23/src/linux/brk.c	/^int brk(void *end)$/;"	f
 browser	nginx-1.3.9/src/http/modules/ngx_http_browser_module.c	/^    u_char                      browser[12];$/;"	m	struct:__anon404	file:
 bsearch	musl_1.1.23/src/stdlib/bsearch.c	/^void *bsearch(const void *key, const void *base, size_t nel, size_t width, int (*cmp)(const void *, const void *))$/;"	f
 bsize	nginx-1.3.9/src/http/ngx_http_cache.h	/^    size_t                           bsize;$/;"	m	struct:ngx_http_file_cache_s
-bss_size	inc/loader.h	/^	uint64_t bss_size;$/;"	m	struct:__anon671
-bss_start	inc/loader.h	/^	uint64_t bss_start;$/;"	m	struct:__anon671
+bss_size	inc/loader.h	/^	uint64_t bss_size;$/;"	m	struct:__anon672
+bss_start	inc/loader.h	/^	uint64_t bss_start;$/;"	m	struct:__anon672
 bswap_16	musl_1.1.23/include/byteswap.h	22;"	d
 bswap_32	musl_1.1.23/include/byteswap.h	23;"	d
 bswap_64	musl_1.1.23/include/byteswap.h	24;"	d
@@ -19534,7 +19522,6 @@ callback	musl_1.1.23/src/thread/synccall.c	/^static void (*callback)(void *), *c
 calldata_ptr	src/monitor_overrides.c	/^struct call_data* calldata_ptr;$/;"	v	typeref:struct:call_data
 caller_sem	musl_1.1.23/src/thread/synccall.c	/^static sem_t target_sem, caller_sem;$/;"	v	file:
 calloc	musl_1.1.23/src/malloc/malloc.c	/^void *calloc(size_t m, size_t n)$/;"	f
-calloc	src/monitor_overrides.c	/^void *calloc(size_t m, size_t n)$/;"	f
 can_do_threads	musl_1.1.23/src/internal/libc.h	/^	int can_do_threads;$/;"	m	struct:__libc
 canary	musl_1.1.23/src/internal/pthread_impl.h	/^	uintptr_t canary, canary2;$/;"	m	struct:pthread
 canary2	musl_1.1.23/src/internal/pthread_impl.h	/^	uintptr_t canary, canary2;$/;"	m	struct:pthread
@@ -19617,7 +19604,6 @@ ceil	musl_1.1.23/src/math/ceil.c	/^double ceil(double x)$/;"	f
 ceil	musl_1.1.23/src/math/i386/floor.s	/^ceil:$/;"	l
 ceil	musl_1.1.23/src/math/powerpc64/ceil.c	/^double ceil(double x)$/;"	f
 ceil	musl_1.1.23/src/math/s390x/ceil.c	/^double ceil(double x)$/;"	f
-ceil	src/monitor_overrides.c	/^double ceil(double x)$/;"	f
 ceilf	musl_1.1.23/src/math/aarch64/ceilf.c	/^float ceilf(float x)$/;"	f
 ceilf	musl_1.1.23/src/math/ceilf.c	/^float ceilf(float x)$/;"	f
 ceilf	musl_1.1.23/src/math/i386/floor.s	/^ceilf:$/;"	l
@@ -19798,7 +19784,6 @@ close	musl_1.1.23/src/internal/stdio_impl.h	/^	int (*close)(FILE *);$/;"	m	struc
 close	musl_1.1.23/src/unistd/close.c	/^int close(int fd)$/;"	f
 close	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            close:1;$/;"	m	struct:ngx_connection_s
 close	nginx-1.3.9/src/core/ngx_open_file_cache.h	/^    unsigned                 close:1;$/;"	m	struct:ngx_cached_open_file_s
-close	src/monitor_overrides.c	/^int close(int fd)$/;"	f
 close_file	musl_1.1.23/src/stdio/__stdio_exit.c	/^static void close_file(FILE *f)$/;"	f	file:
 closed	nginx-1.3.9/src/event/ngx_event.h	/^    unsigned         closed:1;$/;"	m	struct:ngx_event_s
 closedir	musl_1.1.23/src/dirent/closedir.c	/^int closedir(DIR *dir)$/;"	f
@@ -19807,6 +19792,7 @@ clrbit	musl_1.1.23/include/sys/param.h	23;"	d
 clrrwi	musl_1.1.23/src/thread/powerpc/clone.s	/^clrrwi 4, 4, 4$/;"	l
 cmd	musl_1.1.23/src/process/fdop.h	/^	int cmd, fd, srcfd, oflag;$/;"	m	struct:fdop
 cmd	test/test.c	/^char cmd[128];$/;"	v
+cmd	test/thread_test.c	/^char cmd[128];$/;"	v
 cmd_len	musl_1.1.23/include/scsi/sg.h	/^	unsigned char cmd_len;$/;"	m	struct:sg_io_hdr
 cmd_start	nginx-1.3.9/src/mail/ngx_mail.h	/^    u_char                 *cmd_start;$/;"	m	struct:__anon659
 cmd_type	nginx-1.3.9/src/core/ngx_conf_file.h	/^    ngx_uint_t            cmd_type;$/;"	m	struct:ngx_conf_s
@@ -19888,16 +19874,16 @@ code	nginx-1.3.9/src/http/ngx_http_script.h	/^    ngx_http_script_code_pt     co
 code	nginx-1.3.9/src/http/ngx_http_script.h	/^    ngx_http_script_code_pt     code;$/;"	m	struct:__anon361
 code	nginx-1.3.9/src/http/ngx_http_script.h	/^    ngx_http_script_code_pt     code;$/;"	m	struct:__anon362
 code	nginx-1.3.9/src/http/ngx_http_script.h	/^    ngx_http_script_code_pt     code;$/;"	m	struct:__anon363
-code_end	inc/loader.h	/^	uint64_t code_end;$/;"	m	struct:__anon670
+code_end	inc/loader.h	/^	uint64_t code_end;$/;"	m	struct:__anon671
 code_max	musl_1.1.23/src/regex/regcomp.c	/^  int code_max;$/;"	m	struct:__anon192	file:
 code_max	musl_1.1.23/src/regex/regcomp.c	/^  long code_max;$/;"	m	struct:__anon195	file:
 code_max	musl_1.1.23/src/regex/tre.h	/^  tre_cint_t code_max;$/;"	m	struct:tnfa_transition
 code_min	musl_1.1.23/src/regex/regcomp.c	/^  int code_min;$/;"	m	struct:__anon192	file:
 code_min	musl_1.1.23/src/regex/regcomp.c	/^  long code_min;$/;"	m	struct:__anon195	file:
 code_min	musl_1.1.23/src/regex/tre.h	/^  tre_cint_t code_min;$/;"	m	struct:tnfa_transition
-code_size	inc/loader.h	/^	uint64_t code_size;$/;"	m	struct:__anon671
-code_start	inc/loader.h	/^	uint64_t code_start;$/;"	m	struct:__anon670
+code_size	inc/loader.h	/^	uint64_t code_size;$/;"	m	struct:__anon672
 code_start	inc/loader.h	/^	uint64_t code_start;$/;"	m	struct:__anon671
+code_start	inc/loader.h	/^	uint64_t code_start;$/;"	m	struct:__anon672
 codes	nginx-1.3.9/src/http/modules/ngx_http_rewrite_module.c	/^    ngx_array_t  *codes;        \/* uintptr_t *\/$/;"	m	struct:__anon415	file:
 cold	nginx-1.3.9/src/http/ngx_http_cache.h	/^    ngx_atomic_t                     cold;$/;"	m	struct:__anon336
 color	nginx-1.3.9/src/core/ngx_rbtree.h	/^    u_char                 color;$/;"	m	struct:ngx_rbtree_node_s
@@ -20037,13 +20023,11 @@ copy_addr	musl_1.1.23/src/network/getifaddrs.c	/^static void copy_addr(struct so
 copy_buf	nginx-1.3.9/src/http/modules/ngx_http_gzip_filter_module.c	/^    ngx_chain_t         *copy_buf;$/;"	m	struct:__anon426	file:
 copy_end	nginx-1.3.9/src/http/modules/ngx_http_ssi_filter_module.h	/^    u_char                   *copy_end;$/;"	m	struct:__anon511
 copy_end	nginx-1.3.9/src/http/modules/ngx_http_sub_filter_module.c	/^    u_char                    *copy_end;$/;"	m	struct:__anon377	file:
-copy_end_time	src/lmvx.c	/^struct timespec copy_end_time = {0};$/;"	v	typeref:struct:timespec
 copy_handler	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_http_header_handler_pt       copy_handler;$/;"	m	struct:__anon523
 copy_last_3_and_return	musl_1.1.23/src/string/arm/memcpy_le.S	/^copy_last_3_and_return:$/;"	l
 copy_lladdr	musl_1.1.23/src/network/getifaddrs.c	/^static void copy_lladdr(struct sockaddr **r, union sockany *sa, void *addr, size_t addrlen, int ifindex, unsigned short hatype)$/;"	f	file:
 copy_start	nginx-1.3.9/src/http/modules/ngx_http_ssi_filter_module.h	/^    u_char                   *copy_start;$/;"	m	struct:__anon511
 copy_start	nginx-1.3.9/src/http/modules/ngx_http_sub_filter_module.c	/^    u_char                    *copy_start;$/;"	m	struct:__anon377	file:
-copy_start_time	src/lmvx.c	/^struct timespec copy_start_time = {0};$/;"	v	typeref:struct:timespec
 copysign	musl_1.1.23/include/tgmath.h	158;"	d
 copysign	musl_1.1.23/include/tgmath.h	221;"	d
 copysign	musl_1.1.23/src/math/copysign.c	/^double copysign(double x, double y) {$/;"	f
@@ -20297,11 +20281,11 @@ data	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    void                        
 data	nginx-1.3.9/src/http/ngx_http_upstream_round_robin.h	/^    uintptr_t                       data;$/;"	m	struct:__anon366
 data	nginx-1.3.9/src/http/ngx_http_variables.h	/^    uintptr_t                     data;$/;"	m	struct:ngx_http_variable_s
 data	nginx-1.3.9/src/os/unix/ngx_process.h	/^    void               *data;$/;"	m	struct:__anon574
-data_end	inc/loader.h	/^	uint64_t data_end;$/;"	m	struct:__anon670
-data_size	inc/loader.h	/^	uint64_t data_size;$/;"	m	struct:__anon671
+data_end	inc/loader.h	/^	uint64_t data_end;$/;"	m	struct:__anon671
+data_size	inc/loader.h	/^	uint64_t data_size;$/;"	m	struct:__anon672
 data_size	nginx-1.3.9/src/http/modules/ngx_http_geo_module.c	/^    size_t                           data_size;$/;"	m	struct:__anon392	file:
-data_start	inc/loader.h	/^	uint64_t data_start;$/;"	m	struct:__anon670
 data_start	inc/loader.h	/^	uint64_t data_start;$/;"	m	struct:__anon671
+data_start	inc/loader.h	/^	uint64_t data_start;$/;"	m	struct:__anon672
 databuf	musl_1.1.23/include/stropts.h	/^	struct strbuf databuf;$/;"	m	struct:strfdinsert	typeref:struct:strfdinsert::strbuf
 databuf	musl_1.1.23/include/stropts.h	/^	struct strbuf databuf;$/;"	m	struct:strpeek	typeref:struct:strpeek::strbuf
 dataoff	musl_1.1.23/arch/i386/bits/signal.h	/^	unsigned long cw, sw, tag, ipoff, cssel, dataoff, datasel;$/;"	m	struct:_fpstate
@@ -20384,11 +20368,7 @@ devpoll_name	nginx-1.3.9/src/event/modules/ngx_devpoll_module.c	/^static ngx_str
 dgettext	musl_1.1.23/src/locale/dcngettext.c	/^char *dgettext(const char *domainname, const char *msgid)$/;"	f
 dhparam	nginx-1.3.9/src/http/modules/ngx_http_ssl_module.h	/^    ngx_str_t                       dhparam;$/;"	m	struct:__anon457
 dhparam	nginx-1.3.9/src/mail/ngx_mail_ssl_module.h	/^    ngx_str_t        dhparam;$/;"	m	struct:__anon662
-diff_copy_time	src/lmvx.c	/^uint64_t diff_copy_time = 0;$/;"	v
-diff_scan_time	src/lmvx.c	/^uint64_t diff_scan_time = 0;$/;"	v
-diff_total_time	src/lmvx.c	/^uint64_t diff_total_time = 0;$/;"	v
 difftime	musl_1.1.23/src/time/difftime.c	/^double difftime(time_t t1, time_t t0)$/;"	f
-difftime	src/monitor_overrides.c	/^double difftime(time_t t1, time_t t0)$/;"	f
 digits	musl_1.1.23/src/misc/a64l.c	/^static const char digits[] =$/;"	v	file:
 dinf_atom_buf	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    ngx_buf_t             dinf_atom_buf;$/;"	m	struct:__anon487	file:
 dinf_size	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    size_t                dinf_size;$/;"	m	struct:__anon487	file:
@@ -20605,7 +20585,6 @@ dummy_lock	musl_1.1.23/src/signal/sigaction.c	/^volatile int dummy_lock[1] = { 0
 dummy_tsd	musl_1.1.23/src/thread/pthread_create.c	/^static void *dummy_tsd[1] = { 0 };$/;"	v	file:
 dup	musl_1.1.23/src/unistd/dup.c	/^int dup(int fd)$/;"	f
 dup2	musl_1.1.23/src/unistd/dup2.c	/^int dup2(int old, int new)$/;"	f
-dup2	src/monitor_overrides.c	/^int dup2(int old, int new)$/;"	f
 dup_capture	nginx-1.3.9/src/http/ngx_http_script.h	/^    unsigned                    dup_capture:1;$/;"	m	struct:__anon348
 duration	musl_1.1.23/include/scsi/sg.h	/^	unsigned duration; $/;"	m	struct:sg_req_info
 duration	musl_1.1.23/include/scsi/sg.h	/^	unsigned int duration;$/;"	m	struct:sg_io_hdr
@@ -20657,7 +20636,7 @@ e_version	musl_1.1.23/include/elf.h	/^  Elf64_Word	e_version;$/;"	m	struct:__ano
 ea_hdr	musl_1.1.23/include/netinet/if_ether.h	/^	struct	arphdr ea_hdr;$/;"	m	struct:ether_arp	typeref:struct:ether_arp::arphdr
 ear	musl_1.1.23/arch/microblaze/bits/signal.h	/^		unsigned long pc, msr, ear, esr, fsr;$/;"	m	struct:sigcontext::__anon136
 ear	musl_1.1.23/arch/microblaze/bits/user.h	/^	unsigned grp[32], pc, msr, ear, esr, fsr, btr, pvr[12];$/;"	m	struct:user_regs_struct
-eax	inc/loader.h	/^	uint8_t eax;$/;"	m	struct:__anon669
+eax	inc/loader.h	/^	uint8_t eax;$/;"	m	struct:__anon670
 eax	musl_1.1.23/arch/i386/bits/signal.h	/^	unsigned long edi, esi, ebp, esp, ebx, edx, ecx, eax;$/;"	m	struct:sigcontext
 eax	musl_1.1.23/arch/i386/bits/user.h	/^	long ebx, ecx, edx, esi, edi, ebp, eax, xds, xes, xfs, xgs;$/;"	m	struct:user_regs_struct
 ebp	musl_1.1.23/arch/i386/bits/signal.h	/^	unsigned long edi, esi, ebp, esp, ebx, edx, ecx, eax;$/;"	m	struct:sigcontext
@@ -20777,7 +20756,6 @@ end	nginx-1.3.9/src/http/ngx_http.h	/^    u_char              *end;$/;"	m	struct
 end_code	musl_1.1.23/include/sys/prctl.h	/^	uint64_t end_code;$/;"	m	struct:prctl_mm_map
 end_data	musl_1.1.23/include/sys/prctl.h	/^	uint64_t end_data;$/;"	m	struct:prctl_mm_map
 end_tag	musl_1.1.23/src/regex/tre.h	/^  int end_tag;$/;"	m	struct:tnfa
-end_total_time	src/lmvx.c	/^struct timespec end_total_time = {0};$/;"	v	typeref:struct:timespec
 endhostent	musl_1.1.23/src/network/ent.c	/^void endhostent(void)$/;"	f
 endianness	nginx-1.3.9/src/http/modules/ngx_http_geo_module.c	/^    uint32_t  endianness;$/;"	m	struct:__anon395	file:
 ending_addr	musl_1.1.23/arch/s390x/bits/user.h	/^	unsigned long starting_addr, ending_addr;$/;"	m	struct:_user_per_struct
@@ -20802,7 +20780,7 @@ entries	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char    entri
 entry	musl_1.1.23/include/search.h	/^typedef struct entry {$/;"	s
 env	nginx-1.3.9/src/core/ngx_cycle.h	/^     ngx_array_t              env;$/;"	m	struct:__anon598
 env_end	musl_1.1.23/include/sys/prctl.h	/^	uint64_t env_end;$/;"	m	struct:prctl_mm_map
-env_g	inc/env.h	/^} env_g;$/;"	v	typeref:struct:__anon672
+env_g	inc/env.h	/^} env_g;$/;"	v	typeref:struct:__anon673
 env_path	musl_1.1.23/ldso/dynlink.c	/^static char *env_path, *sys_path;$/;"	v	file:
 env_start	musl_1.1.23/include/sys/prctl.h	/^	uint64_t env_start;$/;"	m	struct:prctl_mm_map
 environment	nginx-1.3.9/src/core/ngx_cycle.h	/^     char                   **environment;$/;"	m	struct:__anon598
@@ -20815,11 +20793,9 @@ ep	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^static int                
 ep	nginx-1.3.9/src/event/modules/ngx_eventport_module.c	/^static int            ep = -1;$/;"	v	file:
 epoll_create	musl_1.1.23/src/linux/epoll.c	/^int epoll_create(int size)$/;"	f
 epoll_create	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^int epoll_create(int size)$/;"	f
-epoll_create	src/monitor_overrides.c	/^int epoll_create(int size)$/;"	f
 epoll_create1	musl_1.1.23/src/linux/epoll.c	/^int epoll_create1(int flags)$/;"	f
 epoll_ctl	musl_1.1.23/src/linux/epoll.c	/^int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)$/;"	f
 epoll_ctl	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)$/;"	f
-epoll_ctl	src/monitor_overrides.c	/^int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)$/;"	f
 epoll_data	musl_1.1.23/include/sys/epoll.h	/^typedef union epoll_data {$/;"	u
 epoll_data	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^typedef union epoll_data {$/;"	u	file:
 epoll_data_t	musl_1.1.23/include/sys/epoll.h	/^} epoll_data_t;$/;"	t	typeref:union:epoll_data
@@ -20828,10 +20804,8 @@ epoll_event	musl_1.1.23/include/sys/epoll.h	/^struct epoll_event {$/;"	s
 epoll_event	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^struct epoll_event {$/;"	s	file:
 epoll_name	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^static ngx_str_t      epoll_name = ngx_string("epoll");$/;"	v	file:
 epoll_pwait	musl_1.1.23/src/linux/epoll.c	/^int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t *sigs)$/;"	f
-epoll_pwait	src/monitor_overrides.c	/^int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t *sigs)$/;"	f
 epoll_wait	musl_1.1.23/src/linux/epoll.c	/^int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)$/;"	f
 epoll_wait	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^int epoll_wait(int epfd, struct epoll_event *events, int nevents, int timeout)$/;"	f
-epoll_wait	src/monitor_overrides.c	/^int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)$/;"	f
 eps	musl_1.1.23/src/math/exp2l.c	/^static const float eps[TBLSIZE] = {$/;"	v	file:
 erand48	musl_1.1.23/src/prng/drand48.c	/^double erand48(unsigned short s[3])$/;"	f
 erf	musl_1.1.23/include/tgmath.h	163;"	d
@@ -20993,7 +20967,6 @@ exists	nginx-1.3.9/src/os/unix/ngx_darwin_init.c	/^    ngx_uint_t   exists;$/;"	
 exists	nginx-1.3.9/src/os/unix/ngx_freebsd_init.c	/^    ngx_uint_t   exists;$/;"	m	struct:__anon572	file:
 exists	nginx-1.3.9/src/os/unix/ngx_shmem.h	/^    ngx_uint_t   exists;   \/* unsigned  exists:1;  *\/$/;"	m	struct:__anon567
 exit	musl_1.1.23/src/exit/exit.c	/^_Noreturn void exit(int code)$/;"	f
-exit	src/monitor_overrides.c	/^void exit(int code)$/;"	f
 exit_master	nginx-1.3.9/src/core/ngx_conf_file.h	/^    void                (*exit_master)(ngx_cycle_t *cycle);$/;"	m	struct:ngx_module_s
 exit_process	nginx-1.3.9/src/core/ngx_conf_file.h	/^    void                (*exit_process)(ngx_cycle_t *cycle);$/;"	m	struct:ngx_module_s
 exit_thread	nginx-1.3.9/src/core/ngx_conf_file.h	/^    void                (*exit_thread)(ngx_cycle_t *cycle);$/;"	m	struct:ngx_module_s
@@ -21003,7 +20976,6 @@ exp	musl_1.1.23/include/tgmath.h	165;"	d
 exp	musl_1.1.23/include/tgmath.h	228;"	d
 exp	musl_1.1.23/src/math/exp.c	/^double exp(double x)$/;"	f
 exp	musl_1.1.23/src/math/i386/exp.s	/^exp:$/;"	l
-exp	src/monitor_overrides.c	/^double exp(double x)$/;"	f
 exp10	musl_1.1.23/src/math/exp10.c	/^double exp10(double x)$/;"	f
 exp10f	musl_1.1.23/src/math/exp10f.c	/^float exp10f(float x)$/;"	f
 exp10l	musl_1.1.23/src/math/exp10l.c	/^long double exp10l(long double x)$/;"	f
@@ -21245,7 +21217,6 @@ fchmodat	musl_1.1.23/src/stat/fchmodat.c	/^int fchmodat(int fd, const char *path
 fchown	musl_1.1.23/src/unistd/fchown.c	/^int fchown(int fd, uid_t uid, gid_t gid)$/;"	f
 fchownat	musl_1.1.23/src/unistd/fchownat.c	/^int fchownat(int fd, const char *path, uid_t uid, gid_t gid, int flag)$/;"	f
 fclose	musl_1.1.23/src/stdio/fclose.c	/^int fclose(FILE *f)$/;"	f
-fclose	src/monitor_overrides.c	/^int fclose(FILE *f)$/;"	f
 fcntl	musl_1.1.23/src/fcntl/fcntl.c	/^int fcntl(int fd, int cmd, ...)$/;"	f
 fcookie	musl_1.1.23/src/stdio/fopencookie.c	/^struct fcookie {$/;"	s	file:
 fcs	musl_1.1.23/arch/i386/bits/user.h	/^	long cwd, swd, twd, fip, fcs, foo, fos, st_space[20];$/;"	m	struct:user_fpregs_struct
@@ -21358,7 +21329,6 @@ fenv_t	musl_1.1.23/arch/x86_64/bits/fenv.h	/^} fenv_t;$/;"	t	typeref:struct:__an
 feof	musl_1.1.23/src/internal/stdio_impl.h	99;"	d
 feof	musl_1.1.23/src/stdio/feof.c	/^int feof(FILE *f)$/;"	f
 feof	musl_1.1.23/src/stdio/feof.c	3;"	d	file:
-feof	src/monitor_overrides.c	/^int feof(FILE *f)$/;"	f
 feraiseexcept	musl_1.1.23/src/fenv/aarch64/fenv.s	/^feraiseexcept:$/;"	l
 feraiseexcept	musl_1.1.23/src/fenv/arm/fenv-hf.S	/^feraiseexcept:$/;"	l
 feraiseexcept	musl_1.1.23/src/fenv/fenv.c	/^int feraiseexcept(int mask)$/;"	f
@@ -21377,7 +21347,6 @@ feraiseexcept	musl_1.1.23/src/fenv/x86_64/fenv.s	/^feraiseexcept:$/;"	l
 ferror	musl_1.1.23/src/internal/stdio_impl.h	100;"	d
 ferror	musl_1.1.23/src/stdio/ferror.c	/^int ferror(FILE *f)$/;"	f
 ferror	musl_1.1.23/src/stdio/ferror.c	3;"	d	file:
-ferror	src/monitor_overrides.c	/^int ferror(FILE *f)$/;"	f
 fesetenv	musl_1.1.23/src/fenv/aarch64/fenv.s	/^fesetenv:$/;"	l
 fesetenv	musl_1.1.23/src/fenv/arm/fenv-hf.S	/^fesetenv:$/;"	l
 fesetenv	musl_1.1.23/src/fenv/fenv.c	/^int fesetenv(const fenv_t *envp)$/;"	f
@@ -21428,7 +21397,6 @@ fexcept_t	musl_1.1.23/arch/x32/bits/fenv.h	/^typedef unsigned short fexcept_t;$/
 fexcept_t	musl_1.1.23/arch/x86_64/bits/fenv.h	/^typedef unsigned short fexcept_t;$/;"	t
 fexecve	musl_1.1.23/src/process/fexecve.c	/^int fexecve(int fd, char *const argv[], char *const envp[])$/;"	f
 fflush	musl_1.1.23/src/stdio/fflush.c	/^int fflush(FILE *f)$/;"	f
-fflush	src/monitor_overrides.c	/^int fflush(FILE *f)$/;"	f
 ffs	musl_1.1.23/src/misc/ffs.c	/^int ffs(int i)$/;"	f
 ffsl	musl_1.1.23/src/misc/ffsl.c	/^int ffsl(long i)$/;"	f
 ffsll	musl_1.1.23/src/misc/ffsll.c	/^int ffsll(long long i)$/;"	f
@@ -21439,7 +21407,6 @@ fgetpos	musl_1.1.23/src/stdio/fgetpos.c	/^int fgetpos(FILE *restrict f, fpos_t *
 fgetpos64	musl_1.1.23/include/stdio.h	212;"	d
 fgetpwent	musl_1.1.23/src/passwd/fgetpwent.c	/^struct passwd *fgetpwent(FILE *f)$/;"	f
 fgets	musl_1.1.23/src/stdio/fgets.c	/^char *fgets(char *restrict s, int n, FILE *restrict f)$/;"	f
-fgets	src/monitor_overrides.c	/^char *fgets(char *restrict s, int n, FILE *restrict f)$/;"	f
 fgetspent	musl_1.1.23/src/passwd/fgetspent.c	/^struct spwd *fgetspent(FILE *f)$/;"	f
 fgetwc	musl_1.1.23/src/stdio/fgetwc.c	/^wint_t fgetwc(FILE *f)$/;"	f
 fgetws	musl_1.1.23/src/stdio/fgetws.c	/^wchar_t *fgetws(wchar_t *restrict s, int n, FILE *restrict f)$/;"	f
@@ -21502,7 +21469,6 @@ fixup	musl_1.1.23/src/stat/statvfs.c	/^static void fixup(struct statvfs *out, co
 fixup_rpath	musl_1.1.23/ldso/dynlink.c	/^static int fixup_rpath(struct dso *p, char *buf, size_t buf_size)$/;"	f	file:
 fl	musl_1.1.23/src/exit/atexit.c	/^static struct fl$/;"	s	file:
 flag	musl_1.1.23/include/getopt.h	/^	int *flag;$/;"	m	struct:option
-flag_lmvx	src/lmvx.c	/^int flag_lmvx = 1;$/;"	v
 flags	musl_1.1.23/arch/mips/ksigaction.h	/^	unsigned flags;$/;"	m	struct:k_sigaction
 flags	musl_1.1.23/arch/mips64/ksigaction.h	/^	unsigned flags;$/;"	m	struct:k_sigaction
 flags	musl_1.1.23/arch/mipsn32/ksigaction.h	/^	unsigned flags;$/;"	m	struct:k_sigaction
@@ -21553,13 +21519,11 @@ floor	musl_1.1.23/src/math/floor.c	/^double floor(double x)$/;"	f
 floor	musl_1.1.23/src/math/i386/floor.s	/^floor:$/;"	l
 floor	musl_1.1.23/src/math/powerpc64/floor.c	/^double floor(double x)$/;"	f
 floor	musl_1.1.23/src/math/s390x/floor.c	/^double floor(double x)$/;"	f
-floor	src/monitor_overrides.c	/^double floor(double x)$/;"	f
 floorf	musl_1.1.23/src/math/aarch64/floorf.c	/^float floorf(float x)$/;"	f
 floorf	musl_1.1.23/src/math/floorf.c	/^float floorf(float x)$/;"	f
 floorf	musl_1.1.23/src/math/i386/floor.s	/^floorf:$/;"	l
 floorf	musl_1.1.23/src/math/powerpc64/floorf.c	/^float floorf(float x)$/;"	f
 floorf	musl_1.1.23/src/math/s390x/floorf.c	/^float floorf(float x)$/;"	f
-floorf	src/monitor_overrides.c	/^float floorf(float x)$/;"	f
 floorl	musl_1.1.23/src/math/floorl.c	/^long double floorl(long double x)$/;"	f
 floorl	musl_1.1.23/src/math/i386/floor.s	/^floorl:$/;"	l
 floorl	musl_1.1.23/src/math/s390x/floorl.c	/^long double floorl(long double x)$/;"	f
@@ -21650,7 +21614,6 @@ fop	musl_1.1.23/arch/x32/bits/user.h	/^	uint16_t cwd, swd, ftw, fop;$/;"	m	struc
 fop	musl_1.1.23/arch/x86_64/bits/signal.h	/^	unsigned short cwd, swd, ftw, fop;$/;"	m	struct:_fpstate
 fop	musl_1.1.23/arch/x86_64/bits/user.h	/^	uint16_t cwd, swd, ftw, fop;$/;"	m	struct:user_fpregs_struct
 fopen	musl_1.1.23/src/stdio/fopen.c	/^FILE *fopen(const char *restrict filename, const char *restrict mode)$/;"	f
-fopen	src/monitor_overrides.c	/^FILE *fopen(const char *restrict filename, const char *restrict mode)$/;"	f
 fopen64	musl_1.1.23/include/stdio.h	208;"	d
 fopencookie	musl_1.1.23/src/stdio/fopencookie.c	/^FILE *fopencookie(void *cookie, const char *mode, cookie_io_functions_t iofuncs)$/;"	f
 force	nginx-1.3.9/src/http/modules/ngx_http_image_filter_module.c	/^    ngx_uint_t                   force;$/;"	m	struct:__anon379	file:
@@ -21750,7 +21713,6 @@ fpregset_t	musl_1.1.23/arch/sh/bits/signal.h	/^typedef int freg_t, fpregset_t[16
 fpregset_t	musl_1.1.23/arch/x32/bits/signal.h	/^} *fpregset_t;$/;"	t	typeref:struct:_fpstate
 fpregset_t	musl_1.1.23/arch/x86_64/bits/signal.h	/^} *fpregset_t;$/;"	t	typeref:struct:_fpstate
 fprintf	musl_1.1.23/src/stdio/fprintf.c	/^int fprintf(FILE *restrict f, const char *restrict fmt, ...)$/;"	f
-fprintf	src/monitor_overrides.c	/^int fprintf(FILE *restrict f, const char *restrict fmt, ...)$/;"	f
 fprs	musl_1.1.23/arch/s390x/bits/signal.h	/^			double fprs[16];$/;"	m	struct:sigcontext::__anon91::__anon93
 fprs	musl_1.1.23/arch/s390x/bits/signal.h	/^	fpreg_t fprs[16];$/;"	m	struct:__anon89
 fprs	musl_1.1.23/arch/s390x/bits/user.h	/^	double fprs[16];$/;"	m	struct:_user_fpregs_struct
@@ -21769,16 +21731,13 @@ fpstate	musl_1.1.23/arch/x86_64/bits/signal.h	/^	struct _fpstate *fpstate;$/;"	m
 fpu	musl_1.1.23/arch/sh/bits/user.h	/^	struct user_fpu_struct fpu;$/;"	m	struct:user	typeref:struct:user::user_fpu_struct
 fpul	musl_1.1.23/arch/sh/bits/user.h	/^	unsigned long fpul;$/;"	m	struct:user_fpu_struct
 fputc	musl_1.1.23/src/stdio/fputc.c	/^int fputc(int c, FILE *f)$/;"	f
-fputc	src/monitor_overrides.c	/^int fputc(int c, FILE *f)$/;"	f
 fputs	musl_1.1.23/src/stdio/fputs.c	/^int fputs(const char *restrict s, FILE *restrict f)$/;"	f
-fputs	src/monitor_overrides.c	/^int fputs(const char *restrict s, FILE *restrict f)$/;"	f
 fputwc	musl_1.1.23/src/stdio/fputwc.c	/^wint_t fputwc(wchar_t c, FILE *f)$/;"	f
 fputws	musl_1.1.23/src/stdio/fputws.c	/^int fputws(const wchar_t *restrict ws, FILE *restrict f)$/;"	f
 frac_digits	musl_1.1.23/include/locale.h	/^	char frac_digits;$/;"	m	struct:lconv
 frag	musl_1.1.23/include/netinet/ip_icmp.h	/^		} frag;$/;"	m	union:icmphdr::__anon236	typeref:struct:icmphdr::__anon236::__anon238
 frag_off	musl_1.1.23/include/netinet/ip.h	/^	uint16_t frag_off;$/;"	m	struct:iphdr
 fread	musl_1.1.23/src/stdio/fread.c	/^size_t fread(void *restrict destv, size_t size, size_t nmemb, FILE *restrict f)$/;"	f
-fread	src/monitor_overrides.c	/^size_t fread(void *restrict destv, size_t size, size_t nmemb, FILE *restrict f)$/;"	f
 free	musl_1.1.23/src/malloc/malloc.c	/^void free(void *p)$/;"	f
 free	nginx-1.3.9/src/core/ngx_buf.h	/^    ngx_chain_t                 *free;$/;"	m	struct:ngx_output_chain_ctx_s
 free	nginx-1.3.9/src/core/ngx_radix_tree.h	/^    ngx_radix_node_t  *free;$/;"	m	struct:__anon627
@@ -21793,7 +21752,6 @@ free	nginx-1.3.9/src/http/modules/ngx_http_sub_filter_module.c	/^    ngx_chain_t
 free	nginx-1.3.9/src/http/modules/ngx_http_upstream_keepalive_module.c	/^    ngx_queue_t                        free;$/;"	m	struct:__anon412	file:
 free	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_buf_t                       **free;$/;"	m	struct:__anon343
 free	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_chain_t                      *free;$/;"	m	struct:__anon342
-free	src/monitor_overrides.c	/^void free(void* p)$/;"	f
 free_buffers	nginx-1.3.9/src/http/modules/ngx_http_charset_filter_module.c	/^    ngx_chain_t                *free_buffers;$/;"	m	struct:__anon468	file:
 free_bufs	nginx-1.3.9/src/event/ngx_event_pipe.h	/^    unsigned           free_bufs:1;$/;"	m	struct:ngx_event_pipe_s
 free_bufs	nginx-1.3.9/src/http/modules/ngx_http_charset_filter_module.c	/^    ngx_chain_t                *free_bufs;$/;"	m	struct:__anon468	file:
@@ -21847,7 +21805,6 @@ fsblkcnt64_t	musl_1.1.23/include/sys/types.h	76;"	d
 fsblkcnt_t	musl_1.1.23/obj/include/bits/alltypes.h	/^typedef unsigned _Int64 fsblkcnt_t;$/;"	t
 fscanf	musl_1.1.23/src/stdio/fscanf.c	/^int fscanf(FILE *restrict f, const char *restrict fmt, ...)$/;"	f
 fseek	musl_1.1.23/src/stdio/fseek.c	/^int fseek(FILE *f, long off, int whence)$/;"	f
-fseek	src/monitor_overrides.c	/^int fseek(FILE *f, long off, int whence)$/;"	f
 fseeko64	musl_1.1.23/include/stdio.h	210;"	d
 fsetpos	musl_1.1.23/src/stdio/fsetpos.c	/^int fsetpos(FILE *f, const fpos_t *pos)$/;"	f
 fsetpos64	musl_1.1.23/include/stdio.h	213;"	d
@@ -21862,7 +21819,6 @@ fsid_t	musl_1.1.23/include/sys/statfs.h	/^} fsid_t;$/;"	t	typeref:struct:__fsid_
 fsr	musl_1.1.23/arch/microblaze/bits/signal.h	/^		unsigned long pc, msr, ear, esr, fsr;$/;"	m	struct:sigcontext::__anon136
 fsr	musl_1.1.23/arch/microblaze/bits/user.h	/^	unsigned grp[32], pc, msr, ear, esr, fsr, btr, pvr[12];$/;"	m	struct:user_regs_struct
 fstat	musl_1.1.23/src/stat/fstat.c	/^int fstat(int fd, struct stat *st)$/;"	f
-fstat	src/monitor_overrides.c	/^int fstat(int fd, struct stat *st)$/;"	f
 fstat64	musl_1.1.23/include/sys/stat.h	103;"	d
 fstatat	musl_1.1.23/src/stat/fstatat.c	/^int fstatat(int fd, const char *restrict path, struct stat *restrict buf, int flag)$/;"	f
 fstatat64	musl_1.1.23/include/sys/stat.h	105;"	d
@@ -21871,7 +21827,6 @@ fstatvfs	musl_1.1.23/src/stat/statvfs.c	/^int fstatvfs(int fd, struct statvfs *b
 fstatvfs64	musl_1.1.23/include/sys/statvfs.h	49;"	d
 fsync	musl_1.1.23/src/unistd/fsync.c	/^int fsync(int fd)$/;"	f
 ftell	musl_1.1.23/src/stdio/ftell.c	/^long ftell(FILE *f)$/;"	f
-ftell	src/monitor_overrides.c	/^long ftell(FILE *f)$/;"	f
 ftello64	musl_1.1.23/include/stdio.h	211;"	d
 ftime	musl_1.1.23/src/time/ftime.c	/^int ftime(struct timeb *tp)$/;"	f
 ftok	musl_1.1.23/src/ipc/ftok.c	/^key_t ftok(const char *path, int id)$/;"	f
@@ -21888,7 +21843,6 @@ ftyp_atom	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    ngx_chain_t  
 ftyp_atom_buf	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    ngx_buf_t             ftyp_atom_buf;$/;"	m	struct:__anon488	file:
 ftyp_size	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    size_t                ftyp_size;$/;"	m	struct:__anon488	file:
 ftype	musl_1.1.23/arch/arm/bits/user.h	/^	unsigned char ftype[8];$/;"	m	struct:user_fpregs
-fun	test/pointer.c	/^void fun(int *p_para)$/;"	f
 funcdesc	musl_1.1.23/ldso/dynlink.c	/^	struct funcdesc {$/;"	s	struct:dso	file:
 funcdescs	musl_1.1.23/ldso/dynlink.c	/^	} *funcdescs;$/;"	m	struct:dso	typeref:struct:dso::funcdesc	file:
 funcs	musl_1.1.23/src/exit/at_quick_exit.c	/^static void (*funcs[COUNT])(void);$/;"	v	file:
@@ -21900,7 +21854,6 @@ fuzzycmp	musl_1.1.23/src/locale/iconv.c	/^static int fuzzycmp(const unsigned cha
 fwide	musl_1.1.23/src/stdio/fwide.c	/^int fwide(FILE *f, int mode)$/;"	f
 fwprintf	musl_1.1.23/src/stdio/fwprintf.c	/^int fwprintf(FILE *restrict f, const wchar_t *restrict fmt, ...)$/;"	f
 fwrite	musl_1.1.23/src/stdio/fwrite.c	/^size_t fwrite(const void *restrict src, size_t size, size_t nmemb, FILE *restrict f)$/;"	f
-fwrite	src/monitor_overrides.c	/^size_t fwrite(const void *restrict src, size_t size, size_t nmemb, FILE *restrict f)$/;"	f
 fwscanf	musl_1.1.23/src/stdio/fwscanf.c	/^int fwscanf(FILE *restrict f, const wchar_t *restrict fmt, ...)$/;"	f
 g0	musl_1.1.23/src/math/lgammal.c	/^g0 = 3.645529916721223331888305293534095553827E-18L,$/;"	v	file:
 g1	musl_1.1.23/src/math/lgammal.c	/^g1 = 5.126654642791082497002594216163574795690E3L,$/;"	v	file:
@@ -21909,8 +21862,6 @@ g3	musl_1.1.23/src/math/lgammal.c	/^g3 = 5.4641864269321170312348208865257015952
 g4	musl_1.1.23/src/math/lgammal.c	/^g4 = 1.455427403530884193180776558102868592293E3L,$/;"	v	file:
 g5	musl_1.1.23/src/math/lgammal.c	/^g5 = 1.541735456969245924860307497029155838446E2L,$/;"	v	file:
 g6	musl_1.1.23/src/math/lgammal.c	/^g6 = 4.335498275274822298341872707453445815118E0L,$/;"	v	file:
-g_a	test/pointer.c	/^int g_a = 10;$/;"	v
-g_p_fn	test/pointer.c	/^void (*g_p_fn)(int *);$/;"	v
 gai_strerror	musl_1.1.23/src/network/gai_strerror.c	/^const char *gai_strerror(int ecode)$/;"	f
 gateway	musl_1.1.23/include/netinet/ip_icmp.h	/^		uint32_t gateway;$/;"	m	union:icmphdr::__anon236
 gb18030	musl_1.1.23/src/locale/iconv.c	/^static const unsigned short gb18030[126][190] = {$/;"	v	file:
@@ -21947,7 +21898,6 @@ get_rr_peer	nginx-1.3.9/src/http/modules/ngx_http_upstream_ip_hash_module.c	/^  
 get_rr_peer	nginx-1.3.9/src/http/modules/ngx_http_upstream_least_conn_module.c	/^    ngx_event_get_peer_pt              get_rr_peer;$/;"	m	struct:__anon453	file:
 getaddrinfo	musl_1.1.23/src/network/getaddrinfo.c	/^int getaddrinfo(const char *restrict host, const char *restrict serv, const struct addrinfo *restrict hint, struct addrinfo **restrict res)$/;"	f
 getc	musl_1.1.23/src/stdio/getc.c	/^int getc(FILE *f)$/;"	f
-getc	src/monitor_overrides.c	/^int getc(FILE *f)$/;"	f
 getc_unlocked	musl_1.1.23/src/internal/stdio_impl.h	102;"	d
 getc_unlocked	musl_1.1.23/src/stdio/getc_unlocked.c	/^int (getc_unlocked)(FILE *f)$/;"	f
 getchar	musl_1.1.23/src/stdio/getchar.c	/^int getchar(void)$/;"	f
@@ -21966,16 +21916,13 @@ getdtablesize	musl_1.1.23/src/legacy/getdtablesize.c	/^int getdtablesize(void)$/
 getegid	musl_1.1.23/src/unistd/getegid.c	/^gid_t getegid(void)$/;"	f
 getentropy	musl_1.1.23/src/misc/getentropy.c	/^int getentropy(void *buffer, size_t len)$/;"	f
 getenv	musl_1.1.23/src/env/getenv.c	/^char *getenv(const char *name)$/;"	f
-getenv	src/monitor_overrides.c	/^char *getenv(const char *name)$/;"	f
 geteuid	musl_1.1.23/src/unistd/geteuid.c	/^uid_t geteuid(void)$/;"	f
-geteuid	src/monitor_overrides.c	/^uid_t geteuid(void)$/;"	f
 getgid	musl_1.1.23/src/unistd/getgid.c	/^gid_t getgid(void)$/;"	f
 getgr_r	musl_1.1.23/src/passwd/getgr_r.c	/^static int getgr_r(const char *name, gid_t gid, struct group *gr, char *buf, size_t size, struct group **res)$/;"	f	file:
 getgrent	musl_1.1.23/src/passwd/getgrent.c	/^struct group *getgrent()$/;"	f
 getgrgid	musl_1.1.23/src/passwd/getgrent.c	/^struct group *getgrgid(gid_t gid)$/;"	f
 getgrgid_r	musl_1.1.23/src/passwd/getgr_r.c	/^int getgrgid_r(gid_t gid, struct group *gr, char *buf, size_t size, struct group **res)$/;"	f
 getgrnam	musl_1.1.23/src/passwd/getgrent.c	/^struct group *getgrnam(const char *name)$/;"	f
-getgrnam	src/monitor_overrides.c	/^struct group *getgrnam(const char *name)$/;"	f
 getgrnam_r	musl_1.1.23/src/passwd/getgr_r.c	/^int getgrnam_r(const char *name, struct group *gr, char *buf, size_t size, struct group **res)$/;"	f
 getgrouplist	musl_1.1.23/src/passwd/getgrouplist.c	/^int getgrouplist(const char *user, gid_t gid, gid_t *groups, int *ngroups)$/;"	f
 getgroups	musl_1.1.23/src/unistd/getgroups.c	/^int getgroups(int count, gid_t list[])$/;"	f
@@ -21988,7 +21935,6 @@ gethostbyname_r	musl_1.1.23/src/network/gethostbyname_r.c	/^int gethostbyname_r(
 gethostent	musl_1.1.23/src/network/ent.c	/^struct hostent *gethostent()$/;"	f
 gethostid	musl_1.1.23/src/misc/gethostid.c	/^long gethostid()$/;"	f
 gethostname	musl_1.1.23/src/unistd/gethostname.c	/^int gethostname(char *name, size_t len)$/;"	f
-gethostname	src/monitor_overrides.c	/^int gethostname(char *name, size_t len)$/;"	f
 getifaddrs	musl_1.1.23/src/network/getifaddrs.c	/^int getifaddrs(struct ifaddrs **ifap)$/;"	f
 getint	musl_1.1.23/src/stdio/vfprintf.c	/^static int getint(char **s) {$/;"	f	file:
 getint	musl_1.1.23/src/stdio/vfwprintf.c	/^static int getint(wchar_t **s) {$/;"	f	file:
@@ -22014,13 +21960,11 @@ getopt	musl_1.1.23/src/misc/getopt.c	/^int getopt(int argc, char * const argv[],
 getopt_long	musl_1.1.23/src/misc/getopt_long.c	/^int getopt_long(int argc, char *const *argv, const char *optstring, const struct option *longopts, int *idx)$/;"	f
 getopt_long_only	musl_1.1.23/src/misc/getopt_long.c	/^int getopt_long_only(int argc, char *const *argv, const char *optstring, const struct option *longopts, int *idx)$/;"	f
 getpagesize	musl_1.1.23/src/legacy/getpagesize.c	/^int getpagesize(void)$/;"	f
-getpagesize	src/monitor_overrides.c	/^int getpagesize(void)$/;"	f
 getpass	musl_1.1.23/src/legacy/getpass.c	/^char *getpass(const char *prompt)$/;"	f
 getpeername	musl_1.1.23/src/network/getpeername.c	/^int getpeername(int fd, struct sockaddr *restrict addr, socklen_t *restrict len)$/;"	f
 getpgid	musl_1.1.23/src/unistd/getpgid.c	/^pid_t getpgid(pid_t pid)$/;"	f
 getpgrp	musl_1.1.23/src/unistd/getpgrp.c	/^pid_t getpgrp(void)$/;"	f
 getpid	musl_1.1.23/src/unistd/getpid.c	/^pid_t getpid(void)$/;"	f
-getpid	src/monitor_overrides.c	/^pid_t getpid(void)$/;"	f
 getppid	musl_1.1.23/src/unistd/getppid.c	/^pid_t getppid(void)$/;"	f
 getpriority	musl_1.1.23/src/misc/getpriority.c	/^int getpriority(int which, id_t who)$/;"	f
 getprotobyname	musl_1.1.23/src/network/proto.c	/^struct protoent *getprotobyname(const char *name)$/;"	f
@@ -22029,7 +21973,6 @@ getprotoent	musl_1.1.23/src/network/proto.c	/^struct protoent *getprotoent(void)
 getpw_r	musl_1.1.23/src/passwd/getpw_r.c	/^static int getpw_r(const char *name, uid_t uid, struct passwd *pw, char *buf, size_t size, struct passwd **res)$/;"	f	file:
 getpwent	musl_1.1.23/src/passwd/getpwent.c	/^struct passwd *getpwent()$/;"	f
 getpwnam	musl_1.1.23/src/passwd/getpwent.c	/^struct passwd *getpwnam(const char *name)$/;"	f
-getpwnam	src/monitor_overrides.c	/^struct passwd *getpwnam(const char *name)$/;"	f
 getpwnam_r	musl_1.1.23/src/passwd/getpw_r.c	/^int getpwnam_r(const char *name, struct passwd *pw, char *buf, size_t size, struct passwd **res)$/;"	f
 getpwuid	musl_1.1.23/src/passwd/getpwent.c	/^struct passwd *getpwuid(uid_t uid)$/;"	f
 getpwuid_r	musl_1.1.23/src/passwd/getpw_r.c	/^int getpwuid_r(uid_t uid, struct passwd *pw, char *buf, size_t size, struct passwd **res)$/;"	f
@@ -22037,7 +21980,6 @@ getrandom	musl_1.1.23/src/linux/getrandom.c	/^ssize_t getrandom(void *buf, size_
 getresgid	musl_1.1.23/src/misc/getresgid.c	/^int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid)$/;"	f
 getresuid	musl_1.1.23/src/misc/getresuid.c	/^int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid)$/;"	f
 getrlimit	musl_1.1.23/src/misc/getrlimit.c	/^int getrlimit(int resource, struct rlimit *rlim)$/;"	f
-getrlimit	src/monitor_overrides.c	/^int getrlimit(int resource, struct rlimit *rlim)$/;"	f
 getrlimit64	musl_1.1.23/include/sys/resource.h	101;"	d
 getrule	musl_1.1.23/src/time/__tz.c	/^static void getrule(const char **p, int rule[5])$/;"	f	file:
 getrusage	musl_1.1.23/src/misc/getrusage.c	/^int getrusage(int who, struct rusage *ru)$/;"	f
@@ -22057,9 +21999,8 @@ getsr	musl_1.1.23/src/fenv/m68k/fenv.c	/^static unsigned getsr()$/;"	f	file:
 getsubopt	musl_1.1.23/src/misc/getsubopt.c	/^int getsubopt(char **opt, char *const *keys, char **val)$/;"	f
 gettext	musl_1.1.23/src/locale/textdomain.c	/^char *gettext(const char *msgid)$/;"	f
 gettextdir	musl_1.1.23/src/locale/dcngettext.c	/^static char *gettextdir(const char *domainname, size_t *dirlen)$/;"	f	file:
-gettid	test/test.c	12;"	d	file:
+gettid	test/test.c	9;"	d	file:
 gettimeofday	musl_1.1.23/src/time/gettimeofday.c	/^int gettimeofday(struct timeval *restrict tv, void *restrict tz)$/;"	f
-gettimeofday	src/monitor_overrides.c	/^int gettimeofday(struct timeval *restrict tv, void *restrict tz)$/;"	f
 getuid	musl_1.1.23/src/unistd/getuid.c	/^uid_t getuid(void)$/;"	f
 getusershell	musl_1.1.23/src/legacy/getusershell.c	/^char *getusershell(void)$/;"	f
 getutxent	musl_1.1.23/src/legacy/utmpx.c	/^struct utmpx *getutxent(void)$/;"	f
@@ -22110,8 +22051,8 @@ gnu_lookup_filtered	musl_1.1.23/ldso/dynlink.c	/^static Sym *gnu_lookup_filtered
 got	musl_1.1.23/ldso/dynlink.c	/^		size_t *got;$/;"	m	struct:dso::funcdesc	file:
 got	musl_1.1.23/ldso/dynlink.c	/^	size_t *got;$/;"	m	struct:dso	file:
 gotplt_address	src/loader.c	/^uint64_t gotplt_address[MAX_GOTPLT_SLOTS];$/;"	v
-gotplt_size	inc/loader.h	/^	uint64_t gotplt_size;$/;"	m	struct:__anon671
-gotplt_start	inc/loader.h	/^	uint64_t gotplt_start;$/;"	m	struct:__anon671
+gotplt_size	inc/loader.h	/^	uint64_t gotplt_size;$/;"	m	struct:__anon672
+gotplt_start	inc/loader.h	/^	uint64_t gotplt_start;$/;"	m	struct:__anon672
 gp	musl_1.1.23/arch/riscv64/bits/user.h	/^	unsigned long gp;$/;"	m	struct:user_regs_struct
 gp_regs	musl_1.1.23/arch/powerpc64/bits/signal.h	/^	gregset_t gp_regs;$/;"	m	struct:sigcontext
 gpr	musl_1.1.23/arch/or1k/bits/signal.h	/^		unsigned long gpr[32];$/;"	m	struct:sigcontext::__anon83
@@ -22453,7 +22394,6 @@ htole64	musl_1.1.23/include/endian.h	56;"	d
 htole64	musl_1.1.23/include/endian.h	75;"	d
 htonl	musl_1.1.23/src/network/htonl.c	/^uint32_t htonl(uint32_t n)$/;"	f
 htons	musl_1.1.23/src/network/htons.c	/^uint16_t htons(uint16_t n)$/;"	f
-htons	src/monitor_overrides.c	/^uint16_t htons(uint16_t n)$/;"	f
 http_connection	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_http_connection_t            *http_connection;$/;"	m	struct:ngx_http_request_s
 http_major	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          http_major:16;$/;"	m	struct:ngx_http_request_s
 http_minor	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          http_minor:16;$/;"	m	struct:ngx_http_request_s
@@ -22941,7 +22881,6 @@ io_submit	nginx-1.3.9/src/os/unix/ngx_linux_aio_read.c	/^io_submit(aio_context_t
 io_thread_func	musl_1.1.23/src/aio/aio.c	/^static void *io_thread_func(void *ctx)$/;"	f	file:
 io_thread_stack_size	musl_1.1.23/src/aio/aio.c	/^static size_t io_thread_stack_size = MINSIGSTKSZ+2048;$/;"	v	file:
 ioctl	musl_1.1.23/src/misc/ioctl.c	/^int ioctl(int fd, int req, ...)$/;"	f
-ioctl	src/monitor_overrides.c	/^int ioctl(int fd, int req, ...)$/;"	f
 iofuncs	musl_1.1.23/src/stdio/fopencookie.c	/^	cookie_io_functions_t iofuncs;$/;"	m	struct:fcookie	file:
 ioperm	musl_1.1.23/src/linux/ioperm.c	/^int ioperm(unsigned long from, unsigned long num, int turn_on)$/;"	f
 iopl	musl_1.1.23/src/linux/iopl.c	/^int iopl(int level)$/;"	f
@@ -23197,15 +23136,15 @@ j1f	musl_1.1.23/src/math/j1f.c	/^float j1f(float x)$/;"	f
 jis0208	musl_1.1.23/src/locale/iconv.c	/^static const unsigned short jis0208[84][94] = {$/;"	v	file:
 jitcnt	musl_1.1.23/include/sys/timex.h	/^	long stabil, jitcnt, calcnt, errcnt, stbcnt;$/;"	m	struct:timex
 jitter	musl_1.1.23/include/sys/timex.h	/^	long tick, ppsfreq, jitter;$/;"	m	struct:timex
-jmp0	inc/loader.h	/^	uint8_t jmp0;$/;"	m	struct:__anon669
-jmp1	inc/loader.h	/^	uint8_t jmp1;$/;"	m	struct:__anon669
+jmp0	inc/loader.h	/^	uint8_t jmp0;$/;"	m	struct:__anon670
+jmp1	inc/loader.h	/^	uint8_t jmp1;$/;"	m	struct:__anon670
 jmp_buf	musl_1.1.23/include/setjmp.h	/^} jmp_buf[1];$/;"	t	typeref:struct:__jmp_buf_tag
 jn	musl_1.1.23/src/math/jn.c	/^double jn(int n, double x)$/;"	f
 jnf	musl_1.1.23/src/math/jnf.c	/^float jnf(int n, float x)$/;"	f
 jpeg_quality	nginx-1.3.9/src/http/modules/ngx_http_image_filter_module.c	/^    ngx_uint_t                   jpeg_quality;$/;"	m	struct:__anon378	file:
 jqcv	nginx-1.3.9/src/http/modules/ngx_http_image_filter_module.c	/^    ngx_http_complex_value_t    *jqcv;$/;"	m	struct:__anon378	file:
 jrand48	musl_1.1.23/src/prng/mrand48.c	/^long jrand48(unsigned short s[3])$/;"	f
-jump_addr	inc/lmvx.h	/^	u64 jump_addr;$/;"	m	struct:_shim_args
+jump_patch_general_t	inc/loader.h	/^}__attribute__((__packed__)) jump_patch_general_t;$/;"	t	typeref:struct:__anon670
 jump_patch_t	inc/loader.h	/^}__attribute__((__packed__)) jump_patch_t;$/;"	t	typeref:struct:__anon669
 just_spawn	nginx-1.3.9/src/os/unix/ngx_process.h	/^    unsigned            just_spawn:1;$/;"	m	struct:__anon574
 k	musl_1.1.23/src/complex/__cexp.c	/^static const uint32_t k = 1799; \/* constant for reduction *\/$/;"	v	file:
@@ -23478,6 +23417,7 @@ libc_start_main_stage2	musl_1.1.23/src/env/__libc_start_main.c	/^static int libc
 libc_start_main_stage2	musl_1.1.23/src/env/__libc_start_main.c	/^static lsm2_fn libc_start_main_stage2;$/;"	v	file:
 libdir	musl_1.1.23/Makefile	/^libdir = $(prefix)\/lib$/;"	m
 libdir	musl_1.1.23/config.mak	/^libdir = $(prefix)\/lib$/;"	m
+library_func	lib/libthreadtest.c	/^int library_func()$/;"	f
 limit	nginx-1.3.9/src/core/ngx_buf.h	/^    off_t                        limit;$/;"	m	struct:__anon589
 limit_conn_set	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          limit_conn_set:1;$/;"	m	struct:ngx_http_request_s
 limit_except	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    uint32_t      limit_except;$/;"	m	struct:ngx_http_core_loc_conf_s
@@ -23527,7 +23467,6 @@ listen	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            listen:1;
 listen	nginx-1.3.9/src/core/ngx_inet.h	/^    unsigned                  listen:1;$/;"	m	struct:__anon596
 listen	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    unsigned                    listen:1;$/;"	m	struct:__anon539
 listen	nginx-1.3.9/src/mail/ngx_mail.h	/^    ngx_array_t             listen;      \/* ngx_mail_listen_t *\/$/;"	m	struct:__anon653
-listen	src/monitor_overrides.c	/^int listen(int fd, int backlog)$/;"	f
 listening	nginx-1.3.9/src/core/ngx_connection.h	/^    ngx_listening_t    *listening;$/;"	m	struct:ngx_connection_s
 listening	nginx-1.3.9/src/core/ngx_cycle.h	/^    ngx_array_t               listening;$/;"	m	struct:ngx_cycle_s
 listxattr	musl_1.1.23/src/linux/xattr.c	/^ssize_t listxattr(const char *path, char *list, size_t size)$/;"	f
@@ -23566,9 +23505,6 @@ llroundf	musl_1.1.23/src/math/llroundf.c	/^long long llroundf(float x)$/;"	f
 llroundl	musl_1.1.23/src/math/llroundl.c	/^long long llroundl(long double x)$/;"	f
 lm	musl_1.1.23/src/locale/dcngettext.c	/^	const struct __locale_map *lm;$/;"	m	struct:msgcat	typeref:struct:msgcat::__locale_map	file:
 lmt_excpt	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    unsigned      lmt_excpt:1;$/;"	m	struct:ngx_http_core_loc_conf_s
-lmvx_end	lib/liblmvx.c	/^void lmvx_end(void)$/;"	f
-lmvx_init	lib/liblmvx.c	/^int lmvx_init(void)$/;"	f
-lmvx_start	lib/liblmvx.c	/^void lmvx_start(const char *func_name, int argc, ...)$/;"	f
 ln2	musl_1.1.23/src/math/logf_data.h	/^	double ln2;$/;"	m	struct:logf_data
 ln2_hi	musl_1.1.23/src/math/expm1.c	/^ln2_hi      = 6.93147180369123816490e-01, \/* 0x3fe62e42, 0xfee00000 *\/$/;"	v	file:
 ln2_hi	musl_1.1.23/src/math/expm1f.c	/^ln2_hi      = 6.9313812256e-01, \/* 0x3f317180 *\/$/;"	v	file:
@@ -23623,8 +23559,6 @@ locale_t	musl_1.1.23/obj/include/bits/alltypes.h	/^typedef struct __locale_struc
 localeconv	musl_1.1.23/src/locale/localeconv.c	/^struct lconv *localeconv(void)$/;"	f
 localtime	musl_1.1.23/src/time/localtime.c	/^struct tm *localtime(const time_t *t)$/;"	f
 localtime	nginx-1.3.9/src/http/modules/ngx_http_autoindex_module.c	/^    ngx_flag_t     localtime;$/;"	m	struct:__anon383	file:
-localtime	src/monitor_overrides.c	/^struct tm *localtime(const time_t *t)$/;"	f
-localtime_r	src/monitor_overrides.c	/^struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)$/;"	f
 location	nginx-1.3.9/src/http/modules/ngx_http_proxy_module.c	/^    ngx_str_t                      location;$/;"	m	struct:__anon420	file:
 location	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_table_elt_t                  *location;$/;"	m	struct:__anon341
 location	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_table_elt_t                 *location;$/;"	m	struct:__anon524
@@ -23700,12 +23634,10 @@ log	nginx-1.3.9/src/os/unix/ngx_freebsd_rfork_thread.h	/^    ngx_log_t    *log;$
 log	nginx-1.3.9/src/os/unix/ngx_shmem.h	/^    ngx_log_t   *log;$/;"	m	struct:__anon567
 log	nginx-1.3.9/src/os/unix/ngx_thread.h	/^    ngx_log_t        *log;$/;"	m	struct:__anon581
 log	nginx-1.3.9/src/os/unix/ngx_thread.h	/^    ngx_log_t        *log;$/;"	m	struct:__anon582
-log	src/monitor_overrides.c	/^double log(double x)$/;"	f
 log10	musl_1.1.23/include/tgmath.h	183;"	d
 log10	musl_1.1.23/include/tgmath.h	246;"	d
 log10	musl_1.1.23/src/math/i386/log10.s	/^log10:$/;"	l
 log10	musl_1.1.23/src/math/log10.c	/^double log10(double x)$/;"	f
-log10	src/monitor_overrides.c	/^double log10(double x)$/;"	f
 log10_2hi	musl_1.1.23/src/math/log10.c	/^log10_2hi = 3.01029995663611771306e-01, \/* 0x3FD34413, 0x509F6000 *\/$/;"	v	file:
 log10_2hi	musl_1.1.23/src/math/log10f.c	/^log10_2hi =  3.0102920532e-01, \/* 0x3e9a2080 *\/$/;"	v	file:
 log10_2lo	musl_1.1.23/src/math/log10.c	/^log10_2lo = 3.69423907715893078616e-13, \/* 0x3D59FEF3, 0x11F12B36 *\/$/;"	v	file:
@@ -23756,7 +23688,7 @@ log_handler	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_http_log_handler_p
 log_ident	musl_1.1.23/src/misc/syslog.c	/^static char log_ident[32];$/;"	v	file:
 log_info	inc/log.h	21;"	d
 log_inline	musl_1.1.23/src/math/pow.c	/^static inline double_t log_inline(uint64_t ix, double_t *tail)$/;"	f	file:
-log_level	inc/env.h	/^    log_level_t log_level;$/;"	m	struct:__anon672
+log_level	inc/env.h	/^    log_level_t log_level;$/;"	m	struct:__anon673
 log_level	nginx-1.3.9/src/core/ngx_file.h	/^    unsigned                   log_level:8;$/;"	m	struct:__anon642
 log_level	nginx-1.3.9/src/core/ngx_log.h	/^    ngx_uint_t           log_level;$/;"	m	struct:ngx_log_s
 log_level	nginx-1.3.9/src/core/ngx_resolver.h	/^    ngx_uint_t                log_level;$/;"	m	struct:__anon626
@@ -23854,7 +23786,6 @@ lroundf	musl_1.1.23/src/math/powerpc64/lroundf.c	/^long lroundf(float x)$/;"	f
 lroundl	musl_1.1.23/src/math/lroundl.c	/^long lroundl(long double x)$/;"	f
 lsearch	musl_1.1.23/src/search/lsearch.c	/^void *lsearch(const void *key, void *base, size_t *nelp, size_t width,$/;"	f
 lseek	musl_1.1.23/src/unistd/lseek.c	/^off_t lseek(int fd, off_t offset, int whence)$/;"	f
-lseek	src/monitor_overrides.c	/^off_t lseek(int fd, off_t offset, int whence)$/;"	f
 lseek64	musl_1.1.23/include/unistd.h	194;"	d
 lsetxattr	musl_1.1.23/src/linux/xattr.c	/^int lsetxattr(const char *path, const char *name, const void *value, size_t size, int flags)$/;"	f
 lsm2_fn	musl_1.1.23/src/env/__libc_start_main.c	/^typedef int lsm2_fn(int (*)(int,char **,char **), int, char **);$/;"	t	file:
@@ -23902,8 +23833,9 @@ mail_state	nginx-1.3.9/src/mail/ngx_mail.h	/^    ngx_uint_t              mail_st
 main	nginx-1.3.9/src/core/nginx.c	/^main(int argc, char *const *argv)$/;"	f
 main	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_http_request_t               *main;$/;"	m	struct:ngx_http_request_s
 main	nginx-1.3.9/src/http/ngx_http_script.h	/^    void                       *main;$/;"	m	struct:__anon348
-main	test/pointer.c	/^int main(int argc, char *argv[])$/;"	f
+main	test/getpid.c	/^int main()$/;"	f
 main	test/test.c	/^int main()$/;"	f
+main	test/thread_test.c	/^int main()$/;"	f
 main_conf	nginx-1.3.9/src/http/ngx_http_config.h	/^    void        **main_conf;$/;"	m	struct:__anon514
 main_conf	nginx-1.3.9/src/http/ngx_http_request.h	/^    void                            **main_conf;$/;"	m	struct:ngx_http_request_s
 main_conf	nginx-1.3.9/src/mail/ngx_mail.h	/^    void                  **main_conf;$/;"	m	struct:__anon645
@@ -23917,7 +23849,6 @@ makefuncdescs	musl_1.1.23/ldso/dynlink.c	/^static void makefuncdescs(struct dso 
 mal	musl_1.1.23/src/malloc/malloc.c	/^} mal;$/;"	v	typeref:struct:__anon217	file:
 mal0_clear	musl_1.1.23/src/malloc/malloc.c	/^static size_t mal0_clear(char *p, size_t pagesz, size_t n)$/;"	f	file:
 malloc	musl_1.1.23/src/malloc/malloc.c	/^void *malloc(size_t n)$/;"	f
-malloc	src/monitor_overrides.c	/^void *malloc(size_t n)$/;"	f
 malloc_usable_size	musl_1.1.23/src/malloc/malloc_usable_size.c	/^size_t malloc_usable_size(void *p)$/;"	f
 manager	nginx-1.3.9/src/core/ngx_file.h	/^    ngx_path_manager_pt        manager;$/;"	m	struct:__anon640
 mandatory	nginx-1.3.9/src/http/modules/ngx_http_ssi_filter_module.h	/^    unsigned                  mandatory:1;$/;"	m	struct:__anon512
@@ -24101,12 +24032,10 @@ mem_unit	musl_1.1.23/src/linux/x32/sysinfo.c	/^	unsigned mem_unit;$/;"	m	struct:
 memccpy	musl_1.1.23/src/string/memccpy.c	/^void *memccpy(void *restrict dest, const void *restrict src, int c, size_t n)$/;"	f
 memchr	musl_1.1.23/src/string/memchr.c	/^void *memchr(const void *src, int c, size_t n)$/;"	f
 memcmp	musl_1.1.23/src/string/memcmp.c	/^int memcmp(const void *vl, const void *vr, size_t n)$/;"	f
-memcmp	src/monitor_overrides.c	/^int memcmp(const void *vl, const void *vr, size_t n)$/;"	f
 memcpy	musl_1.1.23/src/string/arm/memcpy_le.S	/^memcpy:$/;"	l
 memcpy	musl_1.1.23/src/string/i386/memcpy.s	/^memcpy:$/;"	l
 memcpy	musl_1.1.23/src/string/memcpy.c	/^void *memcpy(void *restrict dest, const void *restrict src, size_t n)$/;"	f
 memcpy	musl_1.1.23/src/string/x86_64/memcpy.s	/^memcpy:$/;"	l
-memcpy	src/monitor_overrides.c	/^void *memcpy(void *restrict dest, const void *restrict src, size_t n)$/;"	f
 memfd_create	musl_1.1.23/src/linux/memfd_create.c	/^int memfd_create(const char *name, unsigned flags)$/;"	f
 memlevel	nginx-1.3.9/src/http/modules/ngx_http_gzip_filter_module.c	/^    int                  memlevel;$/;"	m	struct:__anon426	file:
 memlevel	nginx-1.3.9/src/http/modules/ngx_http_gzip_filter_module.c	/^    size_t               memlevel;$/;"	m	struct:__anon425	file:
@@ -24114,13 +24043,11 @@ memmem	musl_1.1.23/src/string/memmem.c	/^void *memmem(const void *h0, size_t k, 
 memmove	musl_1.1.23/src/string/i386/memmove.s	/^memmove:$/;"	l
 memmove	musl_1.1.23/src/string/memmove.c	/^void *memmove(void *dest, const void *src, size_t n)$/;"	f
 memmove	musl_1.1.23/src/string/x86_64/memmove.s	/^memmove:$/;"	l
-memmove	src/monitor_overrides.c	/^void *memmove(void *dest, const void *src, size_t n)$/;"	f
 memory	nginx-1.3.9/src/core/ngx_buf.h	/^    unsigned         memory:1;$/;"	m	struct:ngx_buf_s
 mempcpy	musl_1.1.23/src/string/mempcpy.c	/^void *mempcpy(void *dest, const void *src, size_t n)$/;"	f
 memset	musl_1.1.23/src/string/i386/memset.s	/^memset:$/;"	l
 memset	musl_1.1.23/src/string/memset.c	/^void *memset(void *dest, int c, size_t n)$/;"	f
 memset	musl_1.1.23/src/string/x86_64/memset.s	/^memset:$/;"	l
-memset	src/monitor_overrides.c	/^void *memset(void *dest, int c, size_t n)$/;"	f
 merge_loc_conf	nginx-1.3.9/src/http/ngx_http_config.h	/^    char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);$/;"	m	struct:__anon515
 merge_slashes	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    ngx_flag_t                  merge_slashes;$/;"	m	struct:__anon539
 merge_srv_conf	nginx-1.3.9/src/http/ngx_http_config.h	/^    char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf);$/;"	m	struct:__anon515
@@ -24153,7 +24080,6 @@ minimal	musl_1.1.23/src/regex/regcomp.c	/^  unsigned int minimal:1;$/;"	m	struct
 minimal_tags	musl_1.1.23/src/regex/tre.h	/^  int *minimal_tags;$/;"	m	struct:tnfa
 minor	musl_1.1.23/include/sys/sysmacros.h	6;"	d
 mkdir	musl_1.1.23/src/stat/mkdir.c	/^int mkdir(const char *path, mode_t mode)$/;"	f
-mkdir	src/monitor_overrides.c	/^int mkdir(const char *path, mode_t mode)$/;"	f
 mkdirat	musl_1.1.23/src/stat/mkdirat.c	/^int mkdirat(int fd, const char *path, mode_t mode)$/;"	f
 mkdtemp	musl_1.1.23/src/temp/mkdtemp.c	/^char *mkdtemp(char *template)$/;"	f
 mkfifo	musl_1.1.23/src/stat/mkfifo.c	/^int mkfifo(const char *path, mode_t mode)$/;"	f
@@ -24237,7 +24163,8 @@ moov_atom_buf	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    ngx_buf_t
 moov_atom_header	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char                moov_atom_header[8];$/;"	m	struct:__anon488	file:
 moov_size	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    size_t                moov_size;$/;"	m	struct:__anon488	file:
 mount	musl_1.1.23/src/linux/mount.c	/^int mount(const char *special, const char *dir, const char *fstype, unsigned long flags, const void *data)$/;"	f
-mov	inc/loader.h	/^	uint8_t mov;$/;"	m	struct:__anon669
+mov	inc/loader.h	/^	uint8_t mov;$/;"	m	struct:__anon670
+mpk_trampoline	src/trampoline.s	/^mpk_trampoline:$/;"	l
 mq	musl_1.1.23/arch/powerpc/bits/user.h	/^	unsigned long gpr[32], nip, msr, orig_gpr3, ctr, link, xer, ccr, mq;$/;"	m	struct:pt_regs
 mq_attr	musl_1.1.23/include/mqueue.h	/^struct mq_attr {$/;"	s
 mq_close	musl_1.1.23/src/mq/mq_close.c	/^int mq_close(mqd_t mqd)$/;"	f
@@ -28311,10 +28238,14 @@ noname	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    unsigned      noname:1;
 nonblocking	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            nonblocking:1;$/;"	m	struct:ngx_listening_s
 nonblocking_accept	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            nonblocking_accept:1;$/;"	m	struct:ngx_listening_s
 nonideal_items	inc/uthash.h	/^   unsigned nonideal_items;$/;"	m	struct:UT_hash_table
-noop0	inc/loader.h	/^	uint8_t noop0;$/;"	m	struct:__anon669
-noop1	inc/loader.h	/^	uint8_t noop1;$/;"	m	struct:__anon669
-noop2	inc/loader.h	/^	uint8_t noop2;$/;"	m	struct:__anon669
-noop3	inc/loader.h	/^	uint8_t noop3;$/;"	m	struct:__anon669
+nop0	inc/loader.h	/^	uint8_t nop0;$/;"	m	struct:__anon669
+nop0	inc/loader.h	/^	uint8_t nop0;$/;"	m	struct:__anon670
+nop1	inc/loader.h	/^	uint8_t nop1;$/;"	m	struct:__anon669
+nop1	inc/loader.h	/^	uint8_t nop1;$/;"	m	struct:__anon670
+nop2	inc/loader.h	/^	uint8_t nop2;$/;"	m	struct:__anon669
+nop2	inc/loader.h	/^	uint8_t nop2;$/;"	m	struct:__anon670
+nop3	inc/loader.h	/^	uint8_t nop3;$/;"	m	struct:__anon669
+nop3	inc/loader.h	/^	uint8_t nop3;$/;"	m	struct:__anon670
 noregex	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    unsigned      noregex:1;$/;"	m	struct:ngx_http_core_loc_conf_s
 noreturn	musl_1.1.23/include/stdnoreturn.h	5;"	d
 normalize	musl_1.1.23/src/math/fma.c	/^static struct num normalize(double x)$/;"	f	file:
@@ -28498,7 +28429,6 @@ nthreads	nginx-1.3.9/src/os/unix/ngx_freebsd_rfork_thread.c	/^static ngx_uint_t 
 nthreads	nginx-1.3.9/src/os/unix/ngx_pthread_thread.c	/^static ngx_uint_t   nthreads;$/;"	v	file:
 ntohl	musl_1.1.23/src/network/ntohl.c	/^uint32_t ntohl(uint32_t n)$/;"	f
 ntohs	musl_1.1.23/src/network/ntohs.c	/^uint16_t ntohs(uint16_t n)$/;"	f
-ntohs	src/monitor_overrides.c	/^uint16_t ntohs(uint16_t n)$/;"	f
 ntptimeval	musl_1.1.23/include/sys/timex.h	/^struct ntptimeval {$/;"	s
 ntz	musl_1.1.23/src/stdlib/qsort.c	32;"	d	file:
 nullable	musl_1.1.23/src/regex/regcomp.c	/^  int nullable;$/;"	m	struct:__anon194	file:
@@ -28507,7 +28437,6 @@ num	musl_1.1.23/src/network/if_nameindex.c	/^	unsigned int num, allocated, str_b
 num	nginx-1.3.9/src/core/ngx_buf.h	/^    \/* STUB *\/ int   num;$/;"	m	struct:ngx_buf_s
 num	nginx-1.3.9/src/core/ngx_buf.h	/^    ngx_int_t    num;$/;"	m	struct:__anon588
 num	nginx-1.3.9/src/event/ngx_event_pipe.h	/^    \/* STUB *\/ int     num;$/;"	m	struct:ngx_event_pipe_s
-num_args	inc/lmvx.h	/^	u64 num_args;	\/\/ unify memory size of each element$/;"	m	struct:_shim_args
 num_buckets	inc/uthash.h	/^   unsigned num_buckets, log2_num_buckets;$/;"	m	struct:UT_hash_table
 num_gotplt_slots	src/loader.c	/^uint64_t num_gotplt_slots;$/;"	v
 num_items	inc/uthash.h	/^   unsigned num_items;$/;"	m	struct:UT_hash_table
@@ -28596,7 +28525,6 @@ opcode	musl_1.1.23/include/arpa/nameser.h	/^	unsigned	opcode :4;$/;"	m	struct:__
 opcode	musl_1.1.23/include/arpa/nameser.h	/^	unsigned	opcode: 4;$/;"	m	struct:__anon222
 open	musl_1.1.23/src/fcntl/open.c	/^int open(const char *filename, int flags, ...)$/;"	f
 open	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            open:1;$/;"	m	struct:ngx_listening_s
-open	src/monitor_overrides.c	/^int open(const char *filename, int flags, ...)$/;"	f
 open64	musl_1.1.23/include/fcntl.h	198;"	d
 open_by_handle_at	musl_1.1.23/src/linux/open_by_handle_at.c	/^int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags)$/;"	f
 open_file_cache	nginx-1.3.9/src/http/modules/ngx_http_log_module.c	/^    ngx_open_file_cache_t      *open_file_cache;$/;"	m	struct:__anon439	file:
@@ -28765,7 +28693,6 @@ p_filesz	musl_1.1.23/include/elf.h	/^  Elf32_Word	p_filesz;$/;"	m	struct:__anon2
 p_filesz	musl_1.1.23/include/elf.h	/^  Elf64_Xword	p_filesz;$/;"	m	struct:__anon299
 p_flags	musl_1.1.23/include/elf.h	/^  Elf32_Word	p_flags;$/;"	m	struct:__anon298
 p_flags	musl_1.1.23/include/elf.h	/^  Elf64_Word	p_flags;$/;"	m	struct:__anon299
-p_global	test/pointer.c	/^int *p_global;$/;"	v
 p_memsz	musl_1.1.23/include/elf.h	/^  Elf32_Word	p_memsz;$/;"	m	struct:__anon298
 p_memsz	musl_1.1.23/include/elf.h	/^  Elf64_Xword	p_memsz;$/;"	m	struct:__anon299
 p_memsz	musl_1.1.23/src/internal/dynlink.h	/^	uintptr_t addr, p_vaddr, p_memsz;$/;"	m	struct:fdpic_loadseg
@@ -28994,8 +28921,8 @@ pipeline	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_uint_t               
 pipeline	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          pipeline:1;$/;"	m	struct:ngx_http_request_s
 pivot_root	musl_1.1.23/src/linux/pivot_root.c	/^int pivot_root(const char *new, const char *old)$/;"	f
 plain_http	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          plain_http:1;$/;"	m	struct:ngx_http_request_s
-plt_size	inc/loader.h	/^	uint64_t plt_size;$/;"	m	struct:__anon671
-plt_start	inc/loader.h	/^	uint64_t plt_start;$/;"	m	struct:__anon671
+plt_size	inc/loader.h	/^	uint64_t plt_size;$/;"	m	struct:__anon672
+plt_start	inc/loader.h	/^	uint64_t plt_start;$/;"	m	struct:__anon672
 plural_rule	musl_1.1.23/src/locale/dcngettext.c	/^	const char *plural_rule;$/;"	m	struct:msgcat	file:
 plus_in_uri	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          plus_in_uri:1;$/;"	m	struct:ngx_http_request_s
 pntz	musl_1.1.23/src/stdlib/qsort.c	/^static inline int pntz(size_t p[2]) {$/;"	f	file:
@@ -29100,7 +29027,6 @@ posix_fallocate64	musl_1.1.23/include/fcntl.h	203;"	d
 posix_lconv	musl_1.1.23/src/locale/localeconv.c	/^static const struct lconv posix_lconv = {$/;"	v	typeref:struct:lconv	file:
 posix_madvise	musl_1.1.23/src/mman/posix_madvise.c	/^int posix_madvise(void *addr, size_t len, int advice)$/;"	f
 posix_memalign	musl_1.1.23/src/malloc/posix_memalign.c	/^int posix_memalign(void **res, size_t align, size_t len)$/;"	f
-posix_memalign	src/monitor_overrides.c	/^int posix_memalign(void **res, size_t align, size_t len)$/;"	f
 posix_openpt	musl_1.1.23/src/misc/pty.c	/^int posix_openpt(int flags)$/;"	f
 posix_spawn	musl_1.1.23/src/process/posix_spawn.c	/^int posix_spawn(pid_t *restrict res, const char *restrict path,$/;"	f
 posix_spawn_file_actions_addclose	musl_1.1.23/src/process/posix_spawn_file_actions_addclose.c	/^int posix_spawn_file_actions_addclose(posix_spawn_file_actions_t *fa, int fd)$/;"	f
@@ -29153,7 +29079,6 @@ postponed	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_http_postponed_reque
 pow	musl_1.1.23/include/tgmath.h	192;"	d
 pow	musl_1.1.23/include/tgmath.h	255;"	d
 pow	musl_1.1.23/src/math/pow.c	/^double pow(double x, double y)$/;"	f
-pow	src/monitor_overrides.c	/^double pow(double x, double y)$/;"	f
 pow_log_data	musl_1.1.23/src/math/pow_data.h	/^extern hidden const struct pow_log_data {$/;"	s
 powerof2	musl_1.1.23/include/sys/param.h	29;"	d
 powf	musl_1.1.23/src/math/powf.c	/^float powf(float x, float y)$/;"	f
@@ -29215,7 +29140,6 @@ prctl	musl_1.1.23/src/linux/prctl.c	/^int prctl(int op, ...)$/;"	f
 prctl_mm_map	musl_1.1.23/include/sys/prctl.h	/^struct prctl_mm_map {$/;"	s
 pre_tree_handler	nginx-1.3.9/src/core/ngx_file.h	/^    ngx_tree_handler_pt        pre_tree_handler;$/;"	m	struct:ngx_tree_ctx_s
 pread	musl_1.1.23/src/unistd/pread.c	/^ssize_t pread(int fd, void *buf, size_t size, off_t ofs)$/;"	f
-pread	src/monitor_overrides.c	/^ssize_t pread(int fd, void *buf, size_t size, off_t ofs)$/;"	f
 pread64	musl_1.1.23/include/unistd.h	195;"	d
 preadv	musl_1.1.23/src/unistd/preadv.c	/^ssize_t preadv(int fd, const struct iovec *iov, int count, off_t ofs)$/;"	f
 preadv64	musl_1.1.23/include/sys/uio.h	33;"	d
@@ -29264,7 +29188,6 @@ prfpregset_t	musl_1.1.23/include/sys/procfs.h	/^typedef elf_fpregset_t prfpregse
 prgregset_t	musl_1.1.23/include/sys/procfs.h	/^typedef elf_gregset_t prgregset_t;$/;"	t
 print_subnets	nginx-1.3.9/contrib/geo2nginx.pl	/^sub  print_subnets {$/;"	s
 printf	musl_1.1.23/src/stdio/printf.c	/^int printf(const char *restrict fmt, ...)$/;"	f
-printf	src/monitor_overrides.c	/^int printf(const char *restrict fmt, ...)$/;"	f
 printf_core	musl_1.1.23/src/stdio/vfprintf.c	/^static int printf_core(FILE *f, const char *fmt, va_list *ap, union arg *nl_arg, int *nl_type)$/;"	f	file:
 priority	nginx-1.3.9/src/core/ngx_cycle.h	/^     int                      priority;$/;"	m	struct:__anon598
 prioritynames	musl_1.1.23/include/syslog.h	76;"	d
@@ -29273,7 +29196,7 @@ prlimit64	musl_1.1.23/include/sys/resource.h	58;"	d
 prlimit64	musl_1.1.23/src/linux/prlimit.c	25;"	d	file:
 problem	musl_1.1.23/include/scsi/sg.h	/^	char problem;$/;"	m	struct:sg_req_info
 proc	nginx-1.3.9/src/os/unix/ngx_process.h	/^    ngx_spawn_proc_pt   proc;$/;"	m	struct:__anon574
-proc_info_t	inc/loader.h	/^} proc_info_t;$/;"	t	typeref:struct:__anon670
+proc_info_t	inc/loader.h	/^} proc_info_t;$/;"	t	typeref:struct:__anon671
 process	nginx-1.3.9/src/event/ngx_event_openssl_stapling.c	/^    ngx_int_t                  (*process)(ngx_ssl_ocsp_ctx_t *r);$/;"	m	struct:ngx_ssl_ocsp_ctx_s	file:
 process_changes	nginx-1.3.9/src/event/ngx_event.h	/^    ngx_int_t  (*process_changes)(ngx_cycle_t *cycle, ngx_uint_t nowait);$/;"	m	struct:__anon551
 process_events	nginx-1.3.9/src/event/ngx_event.h	/^    ngx_int_t  (*process_events)(ngx_cycle_t *cycle, ngx_msec_t timer,$/;"	m	struct:__anon551
@@ -29448,20 +29371,19 @@ ptr_size	nginx-1.3.9/src/http/modules/ngx_http_geo_module.c	/^    u_char    ptr_
 ptrace	musl_1.1.23/src/linux/ptrace.c	/^long ptrace(int req, ...)$/;"	f
 ptrdiff_t	musl_1.1.23/obj/include/bits/alltypes.h	/^typedef _Addr ptrdiff_t;$/;"	t
 ptsname	musl_1.1.23/src/misc/ptsname.c	/^char *ptsname(int fd)$/;"	f
+push_rax	inc/loader.h	/^	uint8_t push_rax;$/;"	m	struct:__anon669
+push_rbx	inc/loader.h	/^	uint8_t push_rbx;$/;"	m	struct:__anon669
 put_16	musl_1.1.23/src/locale/iconv.c	/^static void put_16(unsigned char *s, unsigned c, int e)$/;"	f	file:
 put_32	musl_1.1.23/src/locale/iconv.c	/^static void put_32(unsigned char *s, unsigned c, int e)$/;"	f	file:
 putc	musl_1.1.23/src/stdio/putc.c	/^int putc(int c, FILE *f)$/;"	f
-putc	src/monitor_overrides.c	/^int putc(int c, FILE *f)$/;"	f
 putc_unlocked	musl_1.1.23/src/internal/stdio_impl.h	105;"	d
 putc_unlocked	musl_1.1.23/src/stdio/putc_unlocked.c	/^int (putc_unlocked)(int c, FILE *f)$/;"	f
 putchar	musl_1.1.23/src/stdio/putchar.c	/^int putchar(int c)$/;"	f
-putchar	src/monitor_overrides.c	/^int putchar(int c)$/;"	f
 putchar_unlocked	musl_1.1.23/src/stdio/putchar_unlocked.c	/^int putchar_unlocked(int c)$/;"	f
 putenv	musl_1.1.23/src/env/putenv.c	/^int putenv(char *s)$/;"	f
 putgrent	musl_1.1.23/src/passwd/putgrent.c	/^int putgrent(const struct group *gr, FILE *f)$/;"	f
 putpwent	musl_1.1.23/src/passwd/putpwent.c	/^int putpwent(const struct passwd *pw, FILE *f)$/;"	f
 puts	musl_1.1.23/src/stdio/puts.c	/^int puts(const char *s)$/;"	f
-puts	src/monitor_overrides.c	/^int puts(const char *s)$/;"	f
 putspent	musl_1.1.23/src/passwd/putspent.c	/^int putspent(const struct spwd *sp, FILE *f)$/;"	f
 pututxline	musl_1.1.23/src/legacy/utmpx.c	/^struct utmpx *pututxline(const struct utmpx *ut)$/;"	f
 putw	musl_1.1.23/src/stdio/putw.c	/^int putw(int x, FILE *f)$/;"	f
@@ -29477,7 +29399,6 @@ pw_passwd	musl_1.1.23/include/pwd.h	/^	char *pw_passwd;$/;"	m	struct:passwd
 pw_shell	musl_1.1.23/include/pwd.h	/^	char *pw_shell;$/;"	m	struct:passwd
 pw_uid	musl_1.1.23/include/pwd.h	/^	uid_t pw_uid;$/;"	m	struct:passwd
 pwrite	musl_1.1.23/src/unistd/pwrite.c	/^ssize_t pwrite(int fd, const void *buf, size_t size, off_t ofs)$/;"	f
-pwrite	src/monitor_overrides.c	/^ssize_t pwrite(int fd, const void *buf, size_t size, off_t ofs)$/;"	f
 pwrite64	musl_1.1.23/include/unistd.h	196;"	d
 pwritev	musl_1.1.23/src/unistd/pwritev.c	/^ssize_t pwritev(int fd, const struct iovec *iov, int count, off_t ofs)$/;"	f
 pwritev64	musl_1.1.23/include/sys/uio.h	34;"	d
@@ -29578,7 +29499,6 @@ qs5	musl_1.1.23/src/math/j1f.c	/^static const float qs5[6] = {$/;"	v	file:
 qs8	musl_1.1.23/src/math/j1.c	/^static const double qs8[6] = {$/;"	v	file:
 qs8	musl_1.1.23/src/math/j1f.c	/^static const float qs8[6] = {$/;"	v	file:
 qsort	musl_1.1.23/src/stdlib/qsort.c	/^void qsort(void *base, size_t nel, size_t width, cmpfun cmp)$/;"	f
-qsort	src/monitor_overrides.c	/^void qsort(void *base, size_t nel, size_t width, int (*compar)(const void *, const void *))$/;"	f
 quad_t	musl_1.1.23/include/sys/types.h	/^typedef long long quad_t;$/;"	t
 quality	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char    quality[2];$/;"	m	struct:__anon496	file:
 quality	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char    quality[2];$/;"	m	struct:__anon497	file:
@@ -29957,7 +29877,6 @@ real_vsscanf	src/monitor_overrides.c	/^int (*real_vsscanf)(const char *restrict 
 real_write	src/monitor_overrides.c	/^ssize_t (*real_write)(int fd, const void *buf, size_t count);$/;"	v
 real_writev	src/monitor_overrides.c	/^ssize_t (*real_writev)(int fd, const struct iovec *iov, int count);$/;"	v
 realloc	musl_1.1.23/src/malloc/malloc.c	/^void *realloc(void *p, size_t n)$/;"	f
-realloc	src/monitor_overrides.c	/^void *realloc(void *p, size_t n)$/;"	f
 realm	nginx-1.3.9/src/http/modules/ngx_http_auth_basic_module.c	/^    ngx_str_t                 realm;$/;"	m	struct:__anon402	file:
 realpath	musl_1.1.23/src/misc/realpath.c	/^char *realpath(const char *restrict filename, char *restrict resolved)$/;"	f
 reap	musl_1.1.23/src/misc/wordexp.c	/^static void reap(pid_t pid)$/;"	f	file:
@@ -29972,7 +29891,6 @@ recursive_func	test/test.c	/^int recursive_func(int p_pid, char *name, int cnt)$
 recv	musl_1.1.23/src/network/recv.c	/^ssize_t recv(int fd, void *buf, size_t len, int flags)$/;"	f
 recv	nginx-1.3.9/src/core/ngx_connection.h	/^    ngx_recv_pt         recv;$/;"	m	struct:ngx_connection_s
 recv	nginx-1.3.9/src/os/unix/ngx_os.h	/^    ngx_recv_pt        recv;$/;"	m	struct:__anon569
-recv	src/monitor_overrides.c	/^ssize_t recv(int fd, void *buf, size_t len, int flags)$/;"	f
 recv_chain	nginx-1.3.9/src/core/ngx_connection.h	/^    ngx_recv_chain_pt   recv_chain;$/;"	m	struct:ngx_connection_s
 recv_chain	nginx-1.3.9/src/os/unix/ngx_os.h	/^    ngx_recv_chain_pt  recv_chain;$/;"	m	struct:__anon569
 recv_skip_hint	musl_1.1.23/include/netinet/tcp.h	/^	uint32_t recv_skip_hint;$/;"	m	struct:tcp_zerocopy_receive
@@ -30206,7 +30124,6 @@ revert_syms	musl_1.1.23/ldso/dynlink.c	/^static void revert_syms(struct dso *old
 reverved3	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char    reverved3[2];$/;"	m	struct:__anon494	file:
 reverved3	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    u_char    reverved3[2];$/;"	m	struct:__anon495	file:
 rewind	musl_1.1.23/src/stdio/rewind.c	/^void rewind(FILE *f)$/;"	f
-rewind	src/monitor_overrides.c	/^void rewind(FILE *f)$/;"	f
 rewinddir	musl_1.1.23/src/dirent/rewinddir.c	/^void rewinddir(DIR *dir)$/;"	f
 rewrite_cookie	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_int_t                      (*rewrite_cookie)(ngx_http_request_t *r,$/;"	m	struct:ngx_http_upstream_s
 rewrite_redirect	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_int_t                      (*rewrite_redirect)(ngx_http_request_t *r,$/;"	m	struct:ngx_http_upstream_s
@@ -30259,8 +30176,8 @@ rm_eo	musl_1.1.23/include/regex.h	/^	regoff_t rm_eo;$/;"	m	struct:__anon283
 rm_so	musl_1.1.23/include/regex.h	/^	regoff_t rm_so;$/;"	m	struct:__anon283
 rmdir	musl_1.1.23/src/unistd/rmdir.c	/^int rmdir(const char *path)$/;"	f
 robust_list	musl_1.1.23/src/internal/pthread_impl.h	/^	} robust_list;$/;"	m	struct:pthread	typeref:struct:pthread::__anon176
-rodata_end	inc/loader.h	/^	uint64_t rodata_end;$/;"	m	struct:__anon670
-rodata_start	inc/loader.h	/^	uint64_t rodata_start;$/;"	m	struct:__anon670
+rodata_end	inc/loader.h	/^	uint64_t rodata_end;$/;"	m	struct:__anon671
+rodata_start	inc/loader.h	/^	uint64_t rodata_start;$/;"	m	struct:__anon671
 rol	musl_1.1.23/src/crypt/crypt_md5.c	/^static uint32_t rol(uint32_t n, int k) { return (n << k) | (n >> (32-k)); }$/;"	f	file:
 role_hi	nginx-1.3.9/src/http/modules/ngx_http_fastcgi_module.c	/^    u_char  role_hi;$/;"	m	struct:__anon432	file:
 role_lo	nginx-1.3.9/src/http/modules/ngx_http_fastcgi_module.c	/^    u_char  role_lo;$/;"	m	struct:__anon432	file:
@@ -30617,8 +30534,6 @@ scalbnf	musl_1.1.23/src/math/i386/scalbnf.s	/^scalbnf:$/;"	l
 scalbnf	musl_1.1.23/src/math/scalbnf.c	/^float scalbnf(float x, int n)$/;"	f
 scalbnl	musl_1.1.23/src/math/i386/scalbnl.s	/^scalbnl:$/;"	l
 scalbnl	musl_1.1.23/src/math/scalbnl.c	/^long double scalbnl(long double x, int n)$/;"	f
-scan_end_time	src/lmvx.c	/^struct timespec scan_end_time = {0};$/;"	v	typeref:struct:timespec
-scan_start_time	src/lmvx.c	/^struct timespec scan_start_time = {0};$/;"	v	typeref:struct:timespec
 scan_trans	musl_1.1.23/src/time/__tz.c	/^static size_t scan_trans(long long t, int local, size_t *alt)$/;"	f	file:
 scandir	musl_1.1.23/src/dirent/scandir.c	/^int scandir(const char *path, struct dirent ***res,$/;"	f
 scandir64	musl_1.1.23/include/dirent.h	73;"	d
@@ -30778,7 +30693,6 @@ sendfile	musl_1.1.23/src/linux/sendfile.c	/^ssize_t sendfile(int out_fd, int in_
 sendfile	nginx-1.3.9/src/core/ngx_buf.h	/^    unsigned                     sendfile:1;$/;"	m	struct:ngx_output_chain_ctx_s
 sendfile	nginx-1.3.9/src/core/ngx_connection.h	/^    unsigned            sendfile:1;$/;"	m	struct:ngx_connection_s
 sendfile	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    ngx_flag_t    sendfile;                \/* sendfile *\/$/;"	m	struct:ngx_http_core_loc_conf_s
-sendfile	src/monitor_overrides.c	/^ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)$/;"	f
 sendfile64	musl_1.1.23/include/sys/sendfile.h	14;"	d
 sendfile_max_chunk	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    size_t        sendfile_max_chunk;      \/* sendfile_max_chunk *\/$/;"	m	struct:ngx_http_core_loc_conf_s
 sendfilev	nginx-1.3.9/src/os/unix/ngx_solaris_sendfilev_chain.c	/^static ssize_t sendfilev(int fd, const struct sendfilevec *vec,$/;"	f	file:
@@ -30837,7 +30751,6 @@ set_handler	nginx-1.3.9/src/http/ngx_http_variables.h	/^    ngx_http_set_variabl
 set_session	nginx-1.3.9/src/event/ngx_event_connect.h	/^    ngx_event_set_peer_session_pt    set_session;$/;"	m	struct:ngx_peer_connection_s
 setbit	musl_1.1.23/include/sys/param.h	22;"	d
 setbuf	musl_1.1.23/src/stdio/setbuf.c	/^void setbuf(FILE *restrict f, char *restrict buf)$/;"	f
-setbuf	src/monitor_overrides.c	/^void setbuf(FILE *restrict f, char *restrict buf)$/;"	f
 setbuffer	musl_1.1.23/src/stdio/setbuffer.c	/^void setbuffer(FILE *f, char *buf, size_t size)$/;"	f
 setcr	musl_1.1.23/src/fenv/m68k/fenv.c	/^static void setcr(unsigned v)$/;"	f	file:
 setdomainname	musl_1.1.23/src/misc/setdomainname.c	/^int setdomainname(const char *name, size_t len)$/;"	f
@@ -30871,7 +30784,6 @@ setjmp	musl_1.1.23/src/setjmp/s390x/setjmp.s	/^setjmp:$/;"	l
 setjmp	musl_1.1.23/src/setjmp/sh/setjmp.S	/^setjmp:$/;"	l
 setjmp	musl_1.1.23/src/setjmp/x32/setjmp.s	/^setjmp:$/;"	l
 setjmp	musl_1.1.23/src/setjmp/x86_64/setjmp.s	/^setjmp:$/;"	l
-setjmp	src/monitor_overrides.c	/^int setjmp(jmp_buf env)$/;"	f
 setkey	musl_1.1.23/src/crypt/encrypt.c	/^void setkey(const char *key)$/;"	f
 setlinebuf	musl_1.1.23/src/stdio/setlinebuf.c	/^void setlinebuf(FILE *f)$/;"	f
 setlocale	musl_1.1.23/src/locale/setlocale.c	/^char *setlocale(int cat, const char *name)$/;"	f
@@ -30892,7 +30804,6 @@ setrlimit64	musl_1.1.23/include/sys/resource.h	102;"	d
 setservent	musl_1.1.23/src/network/serv.c	/^void setservent(int stayopen)$/;"	f
 setsid	musl_1.1.23/src/unistd/setsid.c	/^pid_t setsid(void)$/;"	f
 setsockopt	musl_1.1.23/src/network/setsockopt.c	/^int setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen)$/;"	f
-setsockopt	src/monitor_overrides.c	/^int setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen)$/;"	f
 setspent	musl_1.1.23/src/passwd/getspent.c	/^void setspent()$/;"	f
 setsr	musl_1.1.23/src/fenv/m68k/fenv.c	/^static void setsr(unsigned v)$/;"	f	file:
 setstate	musl_1.1.23/src/prng/random.c	/^char *setstate(char *state) {$/;"	f
@@ -30902,7 +30813,6 @@ setup_salt	musl_1.1.23/src/crypt/crypt_des.c	/^static uint32_t setup_salt(uint32
 setusershell	musl_1.1.23/src/legacy/getusershell.c	/^void setusershell(void)$/;"	f
 setutxent	musl_1.1.23/src/legacy/utmpx.c	/^void setutxent(void)$/;"	f
 setvbuf	musl_1.1.23/src/stdio/setvbuf.c	/^int setvbuf(FILE *restrict f, char *restrict buf, int type, size_t size)$/;"	f
-setvbuf	src/monitor_overrides.c	/^int setvbuf(FILE *restrict f, char *restrict buf, int type, size_t size)$/;"	f
 setxattr	musl_1.1.23/src/linux/xattr.c	/^int setxattr(const char *path, const char *name, const void *value, size_t size, int flags)$/;"	f
 sev	musl_1.1.23/src/aio/lio_listio.c	/^	struct sigevent *sev;$/;"	m	struct:lio_state	typeref:struct:lio_state::sigevent	file:
 sev	musl_1.1.23/src/mq/mq_notify.c	/^	const struct sigevent *sev;$/;"	m	struct:args	typeref:struct:args::sigevent	file:
@@ -30972,7 +30882,6 @@ shift	musl_1.1.23/include/sys/timex.h	/^	int shift;$/;"	m	struct:timex
 shift	musl_1.1.23/src/math/exp2f_data.h	/^	double shift;$/;"	m	struct:exp2f_data
 shift	musl_1.1.23/src/math/exp_data.h	/^	double shift;$/;"	m	struct:exp_data
 shift_scaled	musl_1.1.23/src/math/exp2f_data.h	/^	double shift_scaled;$/;"	m	struct:exp2f_data
-shim_args_t	inc/lmvx.h	/^} shim_args_t;$/;"	t	typeref:struct:_shim_args
 shl	musl_1.1.23/src/stdlib/qsort.c	/^static inline void shl(size_t p[2], int n)$/;"	f	file:
 shlim	musl_1.1.23/src/internal/shgetc.h	27;"	d
 shlim	musl_1.1.23/src/internal/stdio_impl.h	/^	off_t shlim, shcnt;$/;"	m	struct:_IO_FILE
@@ -31224,7 +31133,6 @@ shpool	nginx-1.3.9/src/http/ngx_http_cache.h	/^    ngx_slab_pool_t              
 shr	musl_1.1.23/src/stdlib/qsort.c	/^static inline void shr(size_t p[2], int n)$/;"	f	file:
 shunget	musl_1.1.23/src/internal/shgetc.h	29;"	d
 shutdown	musl_1.1.23/src/network/shutdown.c	/^int shutdown(int fd, int how)$/;"	f
-shutdown	src/monitor_overrides.c	/^int shutdown(int fd, int how)$/;"	f
 shutting_down	musl_1.1.23/ldso/dynlink.c	/^static int shutting_down;$/;"	v	file:
 si_addr	musl_1.1.23/include/signal.h	/^			void *si_addr;$/;"	m	struct:__anon259::__anon260::__anon267
 si_addr	musl_1.1.23/include/signal.h	152;"	d
@@ -31284,7 +31192,6 @@ sig_atomic_t	musl_1.1.23/include/signal.h	/^typedef int sig_atomic_t;$/;"	t
 sig_mask	musl_1.1.23/src/thread/pthread_create.c	/^	unsigned long sig_mask[_NSIG\/8\/sizeof(long)];$/;"	m	struct:start_args	file:
 sig_t	musl_1.1.23/include/signal.h	/^typedef void (*sig_t)(int);$/;"	t
 sigaction	musl_1.1.23/include/signal.h	/^struct sigaction {$/;"	s
-sigaction	src/monitor_overrides.c	/^int sigaction(int sig, const struct sigaction *restrict sa, struct sigaction *restrict old)$/;"	f
 sigaddset	musl_1.1.23/src/signal/sigaddset.c	/^int sigaddset(sigset_t *set, int sig)$/;"	f
 sigaltstack	musl_1.1.23/arch/aarch64/bits/signal.h	/^struct sigaltstack {$/;"	s
 sigaltstack	musl_1.1.23/arch/arm/bits/signal.h	/^struct sigaltstack {$/;"	s
@@ -31322,7 +31229,6 @@ sigcontext	musl_1.1.23/arch/x32/bits/signal.h	/^struct sigcontext {$/;"	s
 sigcontext	musl_1.1.23/arch/x86_64/bits/signal.h	/^struct sigcontext {$/;"	s
 sigdelset	musl_1.1.23/src/signal/sigdelset.c	/^int sigdelset(sigset_t *set, int sig)$/;"	f
 sigemptyset	musl_1.1.23/src/signal/sigemptyset.c	/^int sigemptyset(sigset_t *set)$/;"	f
-sigemptyset	src/monitor_overrides.c	/^int sigemptyset(sigset_t *set)$/;"	f
 sigev_notify	musl_1.1.23/include/signal.h	/^	int sigev_notify;$/;"	m	struct:sigevent
 sigev_notify	musl_1.1.23/src/time/timer_create.c	/^	int sigev_notify;$/;"	m	struct:ksigevent	file:
 sigev_notify_attributes	musl_1.1.23/include/signal.h	/^	pthread_attr_t *sigev_notify_attributes;$/;"	m	struct:sigevent
@@ -31431,7 +31337,6 @@ sin_pi	musl_1.1.23/src/math/lgammal.c	/^static long double sin_pi(long double x)
 sin_port	musl_1.1.23/include/netinet/in.h	/^	in_port_t sin_port;$/;"	m	struct:sockaddr_in
 sin_zero	musl_1.1.23/include/netinet/in.h	/^	uint8_t sin_zero[8];$/;"	m	struct:sockaddr_in
 sincos	musl_1.1.23/src/math/sincos.c	/^void sincos(double x, double *sin, double *cos)$/;"	f
-sincos	src/monitor_overrides.c	/^void sincos(double x, double *sin, double *cos)$/;"	f
 sincosf	musl_1.1.23/src/math/sincosf.c	/^void sincosf(float x, float *sin, float *cos)$/;"	f
 sincosl	musl_1.1.23/src/math/sincosl.c	/^void sincosl(long double x, long double *sin, long double *cos)$/;"	f
 sinf	musl_1.1.23/src/math/sinf.c	/^float sinf(float x)$/;"	f
@@ -31586,7 +31491,6 @@ sockaddr_un	nginx-1.3.9/src/http/ngx_http_core_module.h	/^        struct sockadd
 sockany	musl_1.1.23/src/network/getifaddrs.c	/^union sockany {$/;"	u	file:
 sockatmark	musl_1.1.23/src/network/sockatmark.c	/^int sockatmark(int s)$/;"	f
 socket	musl_1.1.23/src/network/socket.c	/^int socket(int domain, int type, int protocol)$/;"	f
-socket	src/monitor_overrides.c	/^int socket(int domain, int type, int protocol)$/;"	f
 socketcall	musl_1.1.23/src/internal/syscall.h	46;"	d
 socketcall_cp	musl_1.1.23/src/internal/syscall.h	47;"	d
 socketpair	musl_1.1.23/src/network/socketpair.c	/^int socketpair(int domain, int type, int protocol, int fd[2])$/;"	f
@@ -31653,7 +31557,6 @@ split_name	nginx-1.3.9/src/http/modules/ngx_http_fastcgi_module.c	/^    ngx_str_
 split_parts	nginx-1.3.9/src/http/modules/ngx_http_fastcgi_module.c	/^    ngx_array_t                   *split_parts;$/;"	m	struct:__anon430	file:
 split_regex	nginx-1.3.9/src/http/modules/ngx_http_fastcgi_module.c	/^    ngx_regex_t                   *split_regex;$/;"	m	struct:__anon427	file:
 sprintf	musl_1.1.23/src/stdio/sprintf.c	/^int sprintf(char *restrict s, const char *restrict fmt, ...)$/;"	f
-sprintf	src/monitor_overrides.c	/^int sprintf(char *restrict s, const char *restrict fmt, ...)$/;"	f
 spwd	musl_1.1.23/include/shadow.h	/^struct spwd {$/;"	s
 sq	musl_1.1.23/src/math/hypot.c	/^static void sq(double_t *hi, double_t *lo, double x)$/;"	f	file:
 sq	musl_1.1.23/src/math/hypotl.c	/^static void sq(long double *hi, long double *lo, long double x)$/;"	f	file:
@@ -31696,7 +31599,6 @@ sr	musl_1.1.23/arch/sh/bits/user.h	/^	unsigned long sr;$/;"	m	struct:pt_regs
 srand	musl_1.1.23/src/prng/rand.c	/^void srand(unsigned s)$/;"	f
 srand48	musl_1.1.23/src/prng/srand48.c	/^void srand48(long seed)$/;"	f
 srandom	musl_1.1.23/src/prng/random.c	/^void srandom(unsigned seed) {$/;"	f
-srandom	src/monitor_overrides.c	/^void srandom(unsigned seed)$/;"	f
 src	nginx-1.3.9/src/http/modules/ngx_http_charset_filter_module.c	/^    ngx_int_t                   src;$/;"	m	struct:__anon464	file:
 src	nginx-1.3.9/src/http/modules/ngx_http_charset_filter_module.c	/^    ngx_int_t                   src;$/;"	m	struct:__anon465	file:
 src2dst	nginx-1.3.9/src/http/modules/ngx_http_charset_filter_module.c	/^    u_char                     *src2dst;$/;"	m	struct:__anon465	file:
@@ -31763,7 +31665,6 @@ ss_sp	musl_1.1.23/arch/sh/bits/signal.h	/^	void *ss_sp;$/;"	m	struct:sigaltstack
 ss_sp	musl_1.1.23/arch/x32/bits/signal.h	/^	void *ss_sp;$/;"	m	struct:sigaltstack
 ss_sp	musl_1.1.23/arch/x86_64/bits/signal.h	/^	void *ss_sp;$/;"	m	struct:sigaltstack
 sscanf	musl_1.1.23/src/stdio/sscanf.c	/^int sscanf(const char *restrict s, const char *restrict fmt, ...)$/;"	f
-sscanf	src/monitor_overrides.c	/^int sscanf(const char *restrict s, const char *restrict fmt, ...)$/;"	f
 ssi	nginx-1.3.9/src/http/modules/perl/ngx_http_perl_module.h	/^    ngx_http_ssi_ctx_t       *ssi;$/;"	m	struct:__anon475
 ssi_addr	musl_1.1.23/include/sys/signalfd.h	/^	uint64_t  ssi_addr;$/;"	m	struct:signalfd_siginfo
 ssi_addr_lsb	musl_1.1.23/include/sys/signalfd.h	/^	uint16_t  ssi_addr_lsb;$/;"	m	struct:signalfd_siginfo
@@ -32137,7 +32038,6 @@ start_stack	musl_1.1.23/arch/sh/bits/user.h	/^	unsigned long start_stack;$/;"	m	
 start_stack	musl_1.1.23/arch/x32/bits/user.h	/^	unsigned long			start_stack;$/;"	m	struct:user
 start_stack	musl_1.1.23/arch/x86_64/bits/user.h	/^	unsigned long			start_stack;$/;"	m	struct:user
 start_stack	musl_1.1.23/include/sys/prctl.h	/^	uint64_t start_stack;$/;"	m	struct:prctl_mm_map
-start_total_time	src/lmvx.c	/^struct timespec start_total_time = {0};$/;"	v	typeref:struct:timespec
 start_value	nginx-1.3.9/src/http/modules/ngx_http_userid_filter_module.c	/^static uint32_t  start_value;$/;"	v	file:
 started	nginx-1.3.9/src/http/modules/ngx_http_gunzip_filter_module.c	/^    unsigned             started:1;$/;"	m	struct:__anon509	file:
 starting_addr	musl_1.1.23/arch/s390x/bits/user.h	/^	unsigned long starting_addr, ending_addr;$/;"	m	struct:_user_per_struct
@@ -32166,7 +32066,6 @@ stat	musl_1.1.23/arch/sh/bits/stat.h	/^struct stat {$/;"	s
 stat	musl_1.1.23/arch/x32/bits/stat.h	/^struct stat {$/;"	s
 stat	musl_1.1.23/arch/x86_64/bits/stat.h	/^struct stat {$/;"	s
 stat	musl_1.1.23/src/stat/stat.c	/^int stat(const char *restrict path, struct stat *restrict buf)$/;"	f
-stat	src/monitor_overrides.c	/^int stat(const char *restrict path, struct stat *restrict buf)$/;"	f
 stat64	musl_1.1.23/include/sys/stat.h	102;"	d
 stat_reading	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          stat_reading:1;$/;"	m	struct:ngx_http_request_s
 stat_writing	nginx-1.3.9/src/http/ngx_http_request.h	/^    unsigned                          stat_writing:1;$/;"	m	struct:ngx_http_request_s
@@ -32257,7 +32156,6 @@ store_int	musl_1.1.23/src/stdio/vfwscanf.c	/^static void store_int(void *dest, i
 store_lengths	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_array_t                     *store_lengths;$/;"	m	struct:__anon522
 store_original_functions	src/monitor_overrides.c	/^void store_original_functions()$/;"	f
 store_values	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_array_t                     *store_values;$/;"	m	struct:__anon522
-stpcpy	src/monitor_overrides.c	/^char *stpcpy(char *restrict d, const char *restrict s)$/;"	f
 str	nginx-1.3.9/src/core/ngx_string.h	/^    ngx_str_t                 str;$/;"	m	struct:__anon622
 str_byte	musl_1.1.23/src/regex/regexec.c	/^  const char *str_byte;$/;"	m	struct:__anon208	file:
 str_bytes	musl_1.1.23/src/network/if_nameindex.c	/^	unsigned int num, allocated, str_bytes;$/;"	m	struct:ifnameindexctx	file:
@@ -32269,28 +32167,20 @@ strbuf	musl_1.1.23/include/stropts.h	/^struct strbuf {$/;"	s
 strcasecmp	musl_1.1.23/src/string/strcasecmp.c	/^int strcasecmp(const char *_l, const char *_r)$/;"	f
 strcasestr	musl_1.1.23/src/string/strcasestr.c	/^char *strcasestr(const char *h, const char *n)$/;"	f
 strcat	musl_1.1.23/src/string/strcat.c	/^char *strcat(char *restrict dest, const char *restrict src)$/;"	f
-strcat	src/monitor_overrides.c	/^char *strcat(char *restrict dest, const char *restrict src)$/;"	f
 strchr	musl_1.1.23/src/string/strchr.c	/^char *strchr(const char *s, int c)$/;"	f
-strchr	src/monitor_overrides.c	/^char *strchr(const char *s, int c)$/;"	f
-strchrnul	src/monitor_overrides.c	/^char *strchrnul(const char *s, int c)$/;"	f
 strcmp	musl_1.1.23/ldso/dynlink.c	160;"	d	file:
 strcmp	musl_1.1.23/src/string/strcmp.c	/^int strcmp(const char *l, const char *r)$/;"	f
-strcmp	src/monitor_overrides.c	/^int strcmp(const char *l, const char *r)$/;"	f
 strcoll	musl_1.1.23/src/locale/strcoll.c	/^int strcoll(const char *l, const char *r)$/;"	f
 strcpy	musl_1.1.23/src/string/strcpy.c	/^char *strcpy(char *restrict dest, const char *restrict src)$/;"	f
-strcpy	src/monitor_overrides.c	/^char *strcpy(char *restrict dest, const char *restrict src)$/;"	f
 strcspn	musl_1.1.23/src/string/strcspn.c	/^size_t strcspn(const char *s, const char *c)$/;"	f
-strcspn	src/monitor_overrides.c	/^size_t strcspn(const char *s, const char *c)$/;"	f
 strdup	musl_1.1.23/src/string/strdup.c	/^char *strdup(const char *s)$/;"	f
 strdupa	musl_1.1.23/include/string.h	89;"	d
 strerror	musl_1.1.23/src/errno/strerror.c	/^char *strerror(int e)$/;"	f
-strerror	src/monitor_overrides.c	/^char *strerror(int e)$/;"	f
 strerror_r	musl_1.1.23/src/string/strerror_r.c	/^int strerror_r(int err, char *buf, size_t buflen)$/;"	f
 strfdinsert	musl_1.1.23/include/stropts.h	/^struct strfdinsert {$/;"	s
 strfmon	musl_1.1.23/src/locale/strfmon.c	/^ssize_t strfmon(char *restrict s, size_t n, const char *restrict fmt, ...)$/;"	f
 strfmon_l	musl_1.1.23/src/locale/strfmon.c	/^ssize_t strfmon_l(char *restrict s, size_t n, locale_t loc, const char *restrict fmt, ...)$/;"	f
 strftime	musl_1.1.23/src/time/strftime.c	/^size_t strftime(char *restrict s, size_t n, const char *restrict f, const struct tm *restrict tm)$/;"	f
-strftime	src/monitor_overrides.c	/^size_t strftime(char *restrict s, size_t n, const char *restrict f, const struct tm *restrict tm)$/;"	f
 strings	musl_1.1.23/ldso/dynlink.c	/^	char *strings;$/;"	m	struct:dso	file:
 strings	musl_1.1.23/src/string/strsignal.c	/^static const char strings[] =$/;"	v	file:
 strioctl	musl_1.1.23/include/stropts.h	/^struct strioctl {$/;"	s
@@ -32298,17 +32188,13 @@ stripdir	musl_1.1.23/configure	/^stripdir () {$/;"	f
 strlcat	musl_1.1.23/src/string/strlcat.c	/^size_t strlcat(char *d, const char *s, size_t n)$/;"	f
 strlcpy	musl_1.1.23/src/string/strlcpy.c	/^size_t strlcpy(char *d, const char *s, size_t n)$/;"	f
 strlen	musl_1.1.23/src/string/strlen.c	/^size_t strlen(const char *s)$/;"	f
-strlen	src/monitor_overrides.c	/^size_t strlen(const char *s)$/;"	f
 strncasecmp	musl_1.1.23/src/string/strncasecmp.c	/^int strncasecmp(const char *_l, const char *_r, size_t n)$/;"	f
 strncat	musl_1.1.23/src/string/strncat.c	/^char *strncat(char *restrict d, const char *restrict s, size_t n)$/;"	f
 strncmp	musl_1.1.23/src/string/strncmp.c	/^int strncmp(const char *_l, const char *_r, size_t n)$/;"	f
-strncmp	src/monitor_overrides.c	/^int strncmp(const char *_l, const char *_r, size_t n)$/;"	f
 strncpy	musl_1.1.23/src/string/strncpy.c	/^char *strncpy(char *restrict d, const char *restrict s, size_t n)$/;"	f
-strncpy	src/monitor_overrides.c	/^char *strncpy(char *restrict d, const char *restrict s, size_t n)$/;"	f
 strndup	musl_1.1.23/src/string/strndup.c	/^char *strndup(const char *s, size_t n)$/;"	f
 strnlen	musl_1.1.23/src/string/strnlen.c	/^size_t strnlen(const char *s, size_t n)$/;"	f
 strpbrk	musl_1.1.23/src/string/strpbrk.c	/^char *strpbrk(const char *s, const char *b)$/;"	f
-strpbrk	src/monitor_overrides.c	/^char *strpbrk(const char *s, const char *b)$/;"	f
 strpeek	musl_1.1.23/include/stropts.h	/^struct strpeek {$/;"	s
 strptime	musl_1.1.23/src/time/strptime.c	/^char *strptime(const char *restrict s, const char *restrict f, struct tm *restrict tm)$/;"	f
 strrchr	musl_1.1.23/src/string/strrchr.c	/^char *strrchr(const char *s, int c)$/;"	f
@@ -32317,18 +32203,15 @@ strsep	musl_1.1.23/src/string/strsep.c	/^char *strsep(char **str, const char *se
 strsignal	musl_1.1.23/src/string/strsignal.c	/^char *strsignal(int signum)$/;"	f
 strspn	musl_1.1.23/src/string/strspn.c	/^size_t strspn(const char *s, const char *c)$/;"	f
 strstr	musl_1.1.23/src/string/strstr.c	/^char *strstr(const char *h, const char *n)$/;"	f
-strstr	src/monitor_overrides.c	/^char *strstr(const char *h, const char *n)$/;"	f
 strtod	musl_1.1.23/src/stdlib/strtod.c	/^double strtod(const char *restrict s, char **restrict p)$/;"	f
 strtof	musl_1.1.23/src/stdlib/strtod.c	/^float strtof(const char *restrict s, char **restrict p)$/;"	f
 strtoimax	musl_1.1.23/src/stdlib/strtol.c	/^intmax_t strtoimax(const char *restrict s, char **restrict p, int base)$/;"	f
 strtok	musl_1.1.23/src/string/strtok.c	/^char *strtok(char *restrict s, const char *restrict sep)$/;"	f
-strtok	src/monitor_overrides.c	/^char *strtok(char *restrict s, const char *restrict sep)$/;"	f
 strtok_r	musl_1.1.23/src/string/strtok_r.c	/^char *strtok_r(char *restrict s, const char *restrict sep, char **restrict p)$/;"	f
 strtol	musl_1.1.23/src/stdlib/strtol.c	/^long strtol(const char *restrict s, char **restrict p, int base)$/;"	f
 strtold	musl_1.1.23/src/stdlib/strtod.c	/^long double strtold(const char *restrict s, char **restrict p)$/;"	f
 strtoll	musl_1.1.23/src/stdlib/strtol.c	/^long long strtoll(const char *restrict s, char **restrict p, int base)$/;"	f
 strtoul	musl_1.1.23/src/stdlib/strtol.c	/^unsigned long strtoul(const char *restrict s, char **restrict p, int base)$/;"	f
-strtoul	src/monitor_overrides.c	/^unsigned long strtoul(const char *restrict s, char **restrict p, int base)$/;"	f
 strtoull	musl_1.1.23/src/stdlib/strtol.c	/^unsigned long long strtoull(const char *restrict s, char **restrict p, int base)$/;"	f
 strtoumax	musl_1.1.23/src/stdlib/strtol.c	/^uintmax_t strtoumax(const char *restrict s, char **restrict p, int base)$/;"	f
 strtox	musl_1.1.23/src/stdlib/strtod.c	/^static long double strtox(const char *s, char **p, int prec)$/;"	f	file:
@@ -32418,7 +32301,6 @@ syscall_arg_t	musl_1.1.23/arch/x32/syscall_arch.h	/^typedef long long syscall_ar
 syscall_arg_t	musl_1.1.23/src/internal/syscall.h	/^typedef long syscall_arg_t;$/;"	t
 syscall_cp	musl_1.1.23/src/internal/syscall.h	58;"	d
 sysconf	musl_1.1.23/src/conf/sysconf.c	/^long sysconf(int name)$/;"	f
-sysconf	src/monitor_overrides.c	/^long sysconf(int name)$/;"	f
 sysctl_t	nginx-1.3.9/src/os/unix/ngx_darwin_init.c	/^} sysctl_t;$/;"	t	typeref:struct:__anon568	file:
 sysctl_t	nginx-1.3.9/src/os/unix/ngx_freebsd_init.c	/^} sysctl_t;$/;"	t	typeref:struct:__anon572	file:
 sysctls	nginx-1.3.9/src/os/unix/ngx_darwin_init.c	/^sysctl_t sysctls[] = {$/;"	v
@@ -32718,6 +32600,7 @@ thrd_t	musl_1.1.23/include/threads.h	/^typedef unsigned long thrd_t;$/;"	t
 thrd_timedout	musl_1.1.23/include/threads.h	/^	thrd_timedout = 4,$/;"	e	enum:__anon254
 thrd_yield	musl_1.1.23/src/thread/thrd_yield.c	/^void thrd_yield()$/;"	f
 thread	musl_1.1.23/src/internal/pthread_impl.h	/^	pthread_t thread;$/;"	m	struct:__timer
+thread_func	test/thread_test.c	/^void *thread_func(void* nothing)$/;"	f
 thread_local	musl_1.1.23/include/threads.h	12;"	d
 thread_stack_size	nginx-1.3.9/src/core/ngx_cycle.h	/^     size_t                   thread_stack_size;$/;"	m	struct:__anon598
 threaded	musl_1.1.23/src/internal/libc.h	/^	int threaded;$/;"	m	struct:__libc
@@ -32736,7 +32619,6 @@ time	musl_1.1.23/src/time/time.c	/^time_t time(time_t *t)$/;"	f
 time	nginx-1.3.9/src/core/ngx_file.h	/^    time_t                     time;$/;"	m	struct:__anon643
 time	nginx-1.3.9/src/core/ngx_file.h	/^    time_t                     time;$/;"	m	struct:__anon644
 time	nginx-1.3.9/src/http/ngx_http_busy_lock.h	/^    time_t         time;$/;"	m	struct:__anon517
-time	src/monitor_overrides.c	/^time_t time(time_t *t)$/;"	f
 time_t	musl_1.1.23/obj/include/bits/alltypes.h	/^typedef long time_t;$/;"	t
 time_to_sample_entries	nginx-1.3.9/src/http/modules/ngx_http_mp4_module.c	/^    uint32_t              time_to_sample_entries;$/;"	m	struct:__anon487	file:
 timeb	musl_1.1.23/include/sys/timeb.h	/^struct timeb {$/;"	s
@@ -32813,8 +32695,10 @@ tls_mod_off_t	musl_1.1.23/arch/x32/pthread_arch.h	14;"	d
 tls_mod_off_t	musl_1.1.23/src/internal/pthread_impl.h	112;"	d
 tls_module	musl_1.1.23/src/internal/libc.h	/^struct tls_module {$/;"	s
 tls_offset	musl_1.1.23/ldso/dynlink.c	/^static size_t tls_cnt, tls_offset, tls_align = MIN_TLS_ALIGN;$/;"	v	file:
+tls_safestack	src/loader.c	/^__thread uint8_t tls_safestack[STACK_SIZE];$/;"	v
 tls_size	musl_1.1.23/src/internal/libc.h	/^	size_t tls_size, tls_align, tls_cnt;$/;"	m	struct:__libc
 tls_tail	musl_1.1.23/ldso/dynlink.c	/^static struct tls_module *tls_tail;$/;"	v	typeref:struct:tls_module	file:
+tls_unsafestack	src/loader.c	/^__thread void* tls_unsafestack;$/;"	v
 tm	musl_1.1.23/include/time.h	/^struct tm {$/;"	s
 tm_hour	musl_1.1.23/include/time.h	/^	int tm_hour;$/;"	m	struct:tm
 tm_isdst	musl_1.1.23/include/time.h	/^	int tm_isdst;$/;"	m	struct:tm
@@ -32857,7 +32741,6 @@ toint	musl_1.1.23/src/math/roundl.c	/^static const long double toint = 1\/LDBL_E
 toint	musl_1.1.23/src/math/truncl.c	/^static const long double toint = 1\/LDBL_EPSILON;$/;"	v	file:
 tolerance	musl_1.1.23/include/sys/timex.h	/^	long constant, precision, tolerance;$/;"	m	struct:timex
 tolower	musl_1.1.23/src/ctype/tolower.c	/^int tolower(int c)$/;"	f
-tolower	src/monitor_overrides.c	/^int tolower(int c)$/;"	f
 top	musl_1.1.23/src/internal/libm.h	/^		uint16_t top;$/;"	m	struct:ldshape::__anon180
 top	musl_1.1.23/src/internal/libm.h	/^		uint16_t top;$/;"	m	struct:ldshape::__anon182
 top12	musl_1.1.23/src/math/exp.c	/^static inline uint32_t top12(double x)$/;"	f	file:
@@ -32877,7 +32760,6 @@ totalram	musl_1.1.23/src/linux/x32/sysinfo.c	/^	kulong totalram;$/;"	m	struct:ke
 totalswap	musl_1.1.23/include/sys/sysinfo.h	/^	unsigned long totalswap;$/;"	m	struct:sysinfo
 totalswap	musl_1.1.23/src/linux/x32/sysinfo.c	/^	kulong totalswap;$/;"	m	struct:kernel_sysinfo	file:
 toupper	musl_1.1.23/src/ctype/toupper.c	/^int toupper(int c)$/;"	f
-toupper	src/monitor_overrides.c	/^int toupper(int c)$/;"	f
 towctrans	musl_1.1.23/src/ctype/wctrans.c	/^wint_t towctrans(wint_t wc, wctrans_t trans)$/;"	f
 towlower	musl_1.1.23/src/ctype/towctrans.c	/^wint_t towlower(wint_t wc)$/;"	f
 towupper	musl_1.1.23/src/ctype/towctrans.c	/^wint_t towupper(wint_t wc)$/;"	f
@@ -33162,7 +33044,6 @@ u5	musl_1.1.23/src/math/lgamma_r.c	/^u5  =  1.33810918536787660377e-02, \/* 0x3F
 u5	musl_1.1.23/src/math/lgammaf_r.c	/^u5  =  1.3381091878e-02, \/* 0x3c5b3c5e *\/$/;"	v	file:
 u5	musl_1.1.23/src/math/lgammal.c	/^u5 =  1.132256494121790736268471016493103952637E2L,$/;"	v	file:
 u6	musl_1.1.23/src/math/lgammal.c	/^u6 =  4.484398885516614191003094714505960972894E0L,$/;"	v	file:
-u64	inc/lmvx.h	/^typedef unsigned long		u64;$/;"	t
 u64	musl_1.1.23/include/sys/epoll.h	/^	uint64_t u64;$/;"	m	union:epoll_data
 u64	nginx-1.3.9/src/event/modules/ngx_epoll_module.c	/^    uint64_t      u64;$/;"	m	union:epoll_data	file:
 u_ar0	musl_1.1.23/arch/arm/bits/user.h	/^	struct user_regs *u_ar0;$/;"	m	struct:user	typeref:struct:user::user_regs
@@ -33445,7 +33326,6 @@ umount2	musl_1.1.23/src/linux/mount.c	/^int umount2(const char *special, int fla
 un	musl_1.1.23/include/netinet/ip_icmp.h	/^	} un;$/;"	m	struct:icmphdr	typeref:union:icmphdr::__anon236
 unaligned	nginx-1.3.9/src/core/ngx_buf.h	/^    unsigned                     unaligned:1;$/;"	m	struct:ngx_output_chain_ctx_s
 uname	musl_1.1.23/src/misc/uname.c	/^int uname(struct utsname *uts)$/;"	f
-uname	src/monitor_overrides.c	/^int uname(struct utsname *uts)$/;"	f
 unbin	musl_1.1.23/src/malloc/malloc.c	/^static void unbin(struct chunk *c, int i)$/;"	f	file:
 underscores_in_headers	nginx-1.3.9/src/http/ngx_http_core_module.h	/^    ngx_flag_t                  underscores_in_headers;$/;"	m	struct:__anon539
 undo	musl_1.1.23/src/thread/pthread_once.c	/^static void undo(void *control)$/;"	f	file:
@@ -33463,7 +33343,6 @@ uniq	nginx-1.3.9/src/core/ngx_open_file_cache.h	/^    ngx_file_uniq_t          u
 uniq	nginx-1.3.9/src/http/ngx_http_cache.h	/^    ngx_file_uniq_t                  uniq;$/;"	m	struct:__anon334
 uniq	nginx-1.3.9/src/http/ngx_http_cache.h	/^    ngx_file_uniq_t                  uniq;$/;"	m	struct:ngx_http_cache_s
 unlink	musl_1.1.23/src/unistd/unlink.c	/^int unlink(const char *path)$/;"	f
-unlink	src/monitor_overrides.c	/^int unlink(const char *path)$/;"	f
 unlinkat	musl_1.1.23/src/unistd/unlinkat.c	/^int unlinkat(int fd, const char *path, int flag)$/;"	f
 unlock	musl_1.1.23/src/malloc/malloc.c	/^static inline void unlock(volatile int *lk)$/;"	f	file:
 unlock	musl_1.1.23/src/thread/pthread_cond_timedwait.c	/^static inline void unlock(volatile int *l)$/;"	f	file:
@@ -33790,7 +33669,6 @@ vfork	musl_1.1.23/src/process/vfork.c	/^pid_t vfork(void)$/;"	f
 vfork	musl_1.1.23/src/process/x32/vfork.s	/^vfork:$/;"	l
 vfork	musl_1.1.23/src/process/x86_64/vfork.s	/^vfork:$/;"	l
 vfprintf	musl_1.1.23/src/stdio/vfprintf.c	/^int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)$/;"	f
-vfprintf	src/monitor_overrides.c	/^int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)$/;"	f
 vfscanf	musl_1.1.23/src/stdio/vfscanf.c	/^int vfscanf(FILE *restrict f, const char *restrict fmt, va_list ap)$/;"	f
 vfwprintf	musl_1.1.23/src/stdio/vfwprintf.c	/^int vfwprintf(FILE *restrict f, const wchar_t *restrict fmt, va_list ap)$/;"	f
 vfwscanf	musl_1.1.23/src/stdio/vfwscanf.c	/^int vfwscanf(FILE *restrict f, const wchar_t *restrict fmt, va_list ap)$/;"	f
@@ -33846,7 +33724,6 @@ vscr	musl_1.1.23/arch/powerpc64/bits/signal.h	/^	} vscr;$/;"	m	struct:__anon99	t
 vscr_word	musl_1.1.23/arch/powerpc64/bits/signal.h	/^		unsigned _pad[3], vscr_word;$/;"	m	struct:__anon99::__anon100
 vsnprintf	musl_1.1.23/src/stdio/vsnprintf.c	/^int vsnprintf(char *restrict s, size_t n, const char *restrict fmt, va_list ap)$/;"	f
 vsprintf	musl_1.1.23/src/stdio/vsprintf.c	/^int vsprintf(char *restrict s, const char *restrict fmt, va_list ap)$/;"	f
-vsprintf	src/monitor_overrides.c	/^int vsprintf(char *restrict s, const char *restrict fmt, va_list ap)$/;"	f
 vsscanf	musl_1.1.23/src/stdio/vsscanf.c	/^int vsscanf(const char *restrict s, const char *restrict fmt, va_list ap)$/;"	f
 vstrfmon_l	musl_1.1.23/src/locale/strfmon.c	/^static ssize_t vstrfmon_l(char *s, size_t n, locale_t loc, const char *fmt, va_list ap)$/;"	f	file:
 vswprintf	musl_1.1.23/src/stdio/vswprintf.c	/^int vswprintf(wchar_t *restrict s, size_t n, const wchar_t *restrict fmt, va_list ap)$/;"	f
@@ -34010,13 +33887,11 @@ write	musl_1.1.23/src/unistd/write.c	/^ssize_t write(int fd, const void *buf, si
 write	nginx-1.3.9/src/core/ngx_connection.h	/^    ngx_event_t        *write;$/;"	m	struct:ngx_connection_s
 write	nginx-1.3.9/src/core/ngx_open_file_cache.h	/^    ngx_event_t             *write;$/;"	m	struct:__anon587
 write	nginx-1.3.9/src/event/ngx_event.h	/^    unsigned         write:1;$/;"	m	struct:ngx_event_s
-write	src/monitor_overrides.c	/^ssize_t write(int fd, const void *buf, size_t count)$/;"	f
 write_event_handler	nginx-1.3.9/src/http/ngx_http_request.h	/^    ngx_http_event_handler_pt         write_event_handler;$/;"	m	struct:ngx_http_request_s
 write_event_handler	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_http_upstream_handler_pt     write_event_handler;$/;"	m	struct:ngx_http_upstream_s
 write_events	nginx-1.3.9/src/core/ngx_cycle.h	/^    ngx_event_t              *write_events;$/;"	m	struct:ngx_cycle_s
 writer	nginx-1.3.9/src/http/ngx_http_upstream.h	/^    ngx_chain_writer_ctx_t           writer;$/;"	m	struct:ngx_http_upstream_s
 writev	musl_1.1.23/src/unistd/writev.c	/^ssize_t writev(int fd, const struct iovec *iov, int count)$/;"	f
-writev	src/monitor_overrides.c	/^ssize_t writev(int fd, const struct iovec *iov, int count)$/;"	f
 ws	musl_1.1.23/src/stdio/vswprintf.c	/^	wchar_t *ws;$/;"	m	struct:cookie	file:
 ws_col	musl_1.1.23/include/sys/ioctl.h	/^	unsigned short ws_col;$/;"	m	struct:winsize
 ws_row	musl_1.1.23/include/sys/ioctl.h	/^	unsigned short ws_row;$/;"	m	struct:winsize
