@@ -54,9 +54,18 @@ Mkfile.old
 dkms.conf
 
 # misc
+*.rdb
+*.bin
+gdb.txt
+*.json
+clang_tidy.conf
+benchmark/spec2006
+benchmark/spec2017
+src/bin_hooks/patcher/test*
 test.bin
 test3
 tab_addr.conf
 .gdb_history
 peda-session*
 nginx.dec
+tags

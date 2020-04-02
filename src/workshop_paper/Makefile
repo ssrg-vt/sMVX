@@ -33,9 +33,8 @@ endif
 
 BIN := test.bin
 
-all: pre monitor liblmvx.so test.bin
+all: pre monitor libthreadtest.so test.bin thread_test.bin
 
-nginx: pre monitor liblmvx.so
 
 pre: clean
 	@echo $(SRC)
@@ -48,66 +47,91 @@ monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
-install: libmonitor.so liblmvx.so
+install: libmonitor.so
 	install -C libmonitor.so /usr/local/lib/
 	install -C libmonitor.so /usr/lib/x86_64-linux-gnu/
-	install -C liblmvx.so /usr/local/lib/
-	install -C liblmvx.so /usr/lib/x86_64-linux-gnu/
 	install -D $(INC_DIR)/libmonitor.h /usr/local/dec/inc
-	install -D $(INC_DIR)/lmvx.h /usr/local/dec/inc
 
-### liblmvx.so
-liblmvx.so: $(LIB_OBJ_FILES)
+## For multithreaded testing, library, binary build targets and run/debug targets
+libthreadtest.so: $(LIB_OBJ_FILES)
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o liblmvx.so
+	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libthreadtest.so
 
-## Two binaries, from (mostly) same source code
+thread_test.bin: $(TEST_DIR)/thread_test.c libthreadtest.so
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
+
+thread_test_run: check_thread
+	LD_LIBRARY_PATH=. LOG_LEVEL=ERROR BIN=thread_test.bin LD_PRELOAD=libmonitor.so ./thread_test.bin
+
+thread_test_debug: check_thread
+	gdb thread_test.bin -ex "set environment LD_LIBRARY_PATH=." -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=thread_test.bin"
+
+check_thread:
+	./checker.sh thread_test.bin
+
+## Test binary build, run and debug targets
 test.bin: $(TEST_DIR)/test.c
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
-test_run:
+test_run: check_test
 	LOG_LEVEL=TRACE BIN=test.bin LD_PRELOAD=libmonitor.so ./test.bin
 
-## Pointer test case --> pointer.bin
-pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
-	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
+test_debug: check_test
+	gdb test.bin -ex "set environment LOG_LEVEL=ERROR" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+
+check_test:
+	./checker.sh test.bin
 
 # Loop getpid test case
 getpid_loop.bin: $(TEST_DIR)/getpid.c
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
-pointer_test:
-	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=libmonitor.so ./pointer.bin
-
-getpid_loop_test:
+getpid_loop_test: check_getpid
 	LOG_LEVEL=ERROR BIN=getpid_loop.bin LD_PRELOAD=libmonitor.so ./getpid_loop.bin
 
-getpid_debug:
+getpid_debug: check_getpid
 	gdb getpid_loop.bin -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=getpid_loop.bin"
 
-nginx_run:
+check_getpid:
+	./checker.sh getpid_loop.bin
+
+# Nginx run and debug targets
+nginx:
+	$(MAKE) -C nginx-1.3.9
+
+nginx_run: nginx check_nginx
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
-debug:
-	gdb test.bin -ex "set environment LOG_LEVEL=ERROR" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
+check_nginx:
+	./checker.sh nginx-1.3.9/objs/nginx
 
-nginx_debug:
+nginx_debug: nginx check_nginx
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
+# Redis run and debug targets
+redis: 
+	$(MAKE) -C redis
+
+redis_run: redis check_redis
+	LOG_LEVEL=ERROR BIN=redis-server LD_PRELOAD=libmonitor.so ./redis/src/redis-server
+
+redis_debug: redis check_redis
+	gdb ./redis/src/redis-server -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=redis-server"
+
+check_redis:
+	./checker.sh redis/src/redis-server
+
 clean:
-	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin getpid_loop.bin
+	rm -rf $(OBJ_DIR) libmonitor.so libthreadtest.so test.bin getpid_loop.bin thread_test.bin
 
 rebuild:
 	make clean; make all
 
-nginx_rebuild:
-	make clean; make nginx
-
 $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
-	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
+	$(HUSH_CC) $(CC) $(CFLAGS) -I$(LIB_DIR) $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@

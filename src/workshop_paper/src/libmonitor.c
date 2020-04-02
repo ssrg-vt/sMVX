@@ -23,7 +23,6 @@
 #include <pkey.h>
 #include <syscall_blocking.h>
 #include <loader.h>
-#include "lmvx.h"
 
 void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 {

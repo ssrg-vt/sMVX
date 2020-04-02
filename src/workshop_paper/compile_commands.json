@@ -70,32 +70,22 @@
         "file": "/home/sengming/research/deC/src/workshop_paper/src/log.c"
     },
     {
-        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -o obj/lmvx.o src/lmvx.c",
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -I lib -o obj/lib/libthreadtest.o lib/libthreadtest.c",
         "directory": "/home/sengming/research/deC/src/workshop_paper",
-        "file": "/home/sengming/research/deC/src/workshop_paper/src/lmvx.c"
+        "file": "/home/sengming/research/deC/src/workshop_paper/lib/libthreadtest.c"
     },
     {
-        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -o obj/lmvx.o -specs /usr/local/musl/lib/musl-gcc.specs src/lmvx.c",
+        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -I lib -o obj/lib/libthreadtest.o -specs /usr/local/musl/lib/musl-gcc.specs lib/libthreadtest.c",
         "directory": "/home/sengming/research/deC/src/workshop_paper",
-        "file": "/home/sengming/research/deC/src/workshop_paper/src/lmvx.c"
+        "file": "/home/sengming/research/deC/src/workshop_paper/lib/libthreadtest.c"
     },
     {
-        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -o obj/lib/liblmvx.o lib/liblmvx.c",
-        "directory": "/home/sengming/research/deC/src/workshop_paper",
-        "file": "/home/sengming/research/deC/src/workshop_paper/lib/liblmvx.c"
-    },
-    {
-        "command": "cc -c -O0 -fPIC -g -Iinc -Icommon -DINTEL_MPK -o obj/lib/liblmvx.o -specs /usr/local/musl/lib/musl-gcc.specs lib/liblmvx.c",
-        "directory": "/home/sengming/research/deC/src/workshop_paper",
-        "file": "/home/sengming/research/deC/src/workshop_paper/lib/liblmvx.c"
-    },
-    {
-        "command": "cc -c -Wall -fPIC -pie -g liblmvx.so -O0 -o test.bin test/test.c",
+        "command": "cc -c -Wall -fPIC -pie -g -O0 -o test.bin test/test.c",
         "directory": "/home/sengming/research/deC/src/workshop_paper",
         "file": "/home/sengming/research/deC/src/workshop_paper/test/test.c"
     },
     {
-        "command": "cc -c -Wall -fPIC -pie -g liblmvx.so -O0 -o test.bin -specs /usr/local/musl/lib/musl-gcc.specs test/test.c",
+        "command": "cc -c -Wall -fPIC -pie -g -O0 -o test.bin -specs /usr/local/musl/lib/musl-gcc.specs test/test.c",
         "directory": "/home/sengming/research/deC/src/workshop_paper",
         "file": "/home/sengming/research/deC/src/workshop_paper/test/test.c"
     }
