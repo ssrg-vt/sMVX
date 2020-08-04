@@ -10,21 +10,25 @@
 /* POSIX */
 #include <unistd.h>
 #include <signal.h>		// SIGTRAP
-#include <sys/user.h>		// struct user_regs_struct
+#include <sys/user.h>	// struct user_regs_struct
 #include <sys/wait.h>
+#include <time.h>		// struct timespec, clock_gettime()
 
 /* Linux */
 #include <syscall.h>
 #include <sys/ptrace.h>
 
 #include <linux/ptrace.h>
-#include <sys/reg.h>		// ORIG_RAX
+#include <sys/reg.h>	// ORIG_RAX
 
 #include "debug.h"		// FATAL & PRINT
 #include "ptrace.h"
 #include "monitor.h"
 #include "common.h"		// likely, unlikely
 #include "config.h"		// IP_SERVER
+
+/* Time measuring. */
+struct timespec tstart={0,0}, tend={0,0};
 
 /**
  * Main function for multi-ISA MVX
@@ -35,6 +39,7 @@ int main(int argc, char **argv)
 	if (argc <= 1)
 	    FATAL("too few arguments: %d", argc);
 
+	clock_gettime(CLOCK_MONOTONIC, &tstart);
 	pid_t pid = fork();
 	switch (pid) {
 		case -1: /* error */
@@ -77,8 +82,9 @@ int main(int argc, char **argv)
 			break;
 		}
 //		post_syscall_print(syscall_num, syscall_retval);
-
-//		RAW_PRINT("\n");
 	}
+	clock_gettime(CLOCK_MONOTONIC, &tend);
+	printf("%.5f seconds\n", ((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - 
+           ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec));
 	PRINT("Finish main loop!\n");
 }

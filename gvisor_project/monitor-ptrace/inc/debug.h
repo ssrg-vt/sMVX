@@ -13,20 +13,20 @@
 #ifdef _DEBUG
 #define FATAL(...) \
     do { \
-        fprintf(stderr, "[MVX Fatal]: " __VA_ARGS__); \
+        fprintf(stderr, "[Monitor Fatal]: " __VA_ARGS__); \
         fputc('\n', stderr); \
         exit(EXIT_FAILURE); \
     } while (0);
 
 #define ERROR(...) \
 	do { \
-		fprintf(stderr, "[MVX Error]: "__VA_ARGS__); \
+		fprintf(stderr, "[Monitor Error]: "__VA_ARGS__); \
 		fputc('\n', stderr); \
 	} while(0);
 
 #define PRINT(...) \
     do { \
-	fprintf(stdout, "[MVX]: " __VA_ARGS__); \
+	fprintf(stdout, "[Monitor]: " __VA_ARGS__); \
 	fflush(stdout); \
     } while (0);
 

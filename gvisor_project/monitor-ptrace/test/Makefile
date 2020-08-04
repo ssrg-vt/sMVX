@@ -1,4 +1,4 @@
-MUSL-CC = musl-gcc
+MUSL-CC = /usr/local/musl/bin/musl-gcc
 CFLAGS	= -static
 #SRC		= basic.c epoll.c tiny.c epoll-vul.c
 SRC		= basic epoll tiny epoll-vul

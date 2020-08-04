@@ -29,5 +29,5 @@ void pre_syscall_print(long syscall, int64_t args[])
 void post_syscall_print(long syscall, long result)
 {
 //	PRINT("--------- Post Syscall Print ----------\n");
-	PRINT("= %ld (0x%lx) (local syscall exec)\n", result, result);
+	PRINT("= %ld (0x%lx)\n\n", result, result);
 }

@@ -19,3 +19,4 @@ clean:
 	@echo "[Clean] src/ test/"
 	@$(MAKE) -C src clean
 	@$(MAKE) -C test clean
+	@$(RM) monitor
