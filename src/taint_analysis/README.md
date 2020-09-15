@@ -5,6 +5,8 @@ So it is best to run the TAE on a 32 bit ubuntu 14.04 VM.
 ### Preparation
 ```
 $ export PIN_HOME=<path to deC>/deC/src/taint_analysis/pin-2.12
+$ git submodule update 
+Submodule path '../pin-2.12': checked out '8825e53d85a11d0c5b932b62e291d6e785c65761'
 $ cd deC/src/taint_analysis/libdft-i386; make
 ```
 
