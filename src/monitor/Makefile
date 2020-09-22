@@ -44,7 +44,7 @@ pre: clean
 	$(MKDIR) -p $(OBJ_DIR)
 	$(MKDIR) $(OBJ_DIR)/$(LIB_DIR)
 
-monitor: $(OBJ)
+monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
@@ -80,11 +80,17 @@ pointer_test:
 nginx_run:
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
+lighttpd_run:
+	LOG_LEVEL=ERROR BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+
 debug:
 	gdb test.bin -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
 
 nginx_debug:
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
+
+lighttpd_debug:
+	gdb ./lighttpd-1.4.50/src/lighttpd -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=lighttpd" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'"
 
 clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin
@@ -99,6 +105,9 @@ $(OBJ_DIR)/$(LIB_DIR)/%.o: $(LIB_DIR)/%.c
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/trampoline.o: $(SRC_DIR)/trampoline.s
 	$(HUSH_CC) $(CC) $(CFLAGS) $< -o $@
 
 .PHONY: all clean install monitor_trampoline pre test_run debug rebuild

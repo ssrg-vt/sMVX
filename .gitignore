@@ -60,3 +60,7 @@ tab_addr.conf
 .gdb_history
 peda-session*
 nginx.dec
+tags
+cscope.out
+clang_tidy.conf
+compile_commands.json
