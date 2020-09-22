@@ -77,9 +77,8 @@ static int _lmvx_thread_shim(void *p)
 	//update_vma_permission();
 
 	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
-	DEACTIVATE(); /* Deactivate pkey for the other process */
-	ACTIVATE();
-
+	//DEACTIVATE(); /* Deactivate pkey for the other process */
+	associate_all_pkeys();
 	switch (args.num_args) {
 		case 0:
 			goto _0; break;

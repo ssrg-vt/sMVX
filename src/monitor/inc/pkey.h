@@ -5,6 +5,7 @@
 #include <log.h>
 #define PKEY_NO_ACCESS  (0x1)
 #define PKEY_ALL_ACCESS (0x0)
+#define PKEY_NUMBER     (2)
 
 void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey);
 
@@ -12,14 +13,14 @@ void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey);
 
 # define ACTIVATE()							       \
 	do {								       \
-	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS << (2*1))),\
+	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS <<(2*PKEY_NUMBER))),\
 		"c" (0), "d" (0));                                             \
 	}while(0)
 
 # define DEACTIVATE()                                                          \
 	do {                                                                   \
 	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_ALL_ACCESS <<        \
-						      (2*1))), "c" (0), "d"    \
+						      (2*PKEY_NUMBER))), "c" (0), "d"    \
 		 (0));                                                         \
 	} while(0)
 # else
