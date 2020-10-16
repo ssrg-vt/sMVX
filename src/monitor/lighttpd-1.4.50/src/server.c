@@ -961,6 +961,335 @@ static void server_graceful_state (server *srv) {
     }
 }
 
+static int mainloop(server* const srv, time_t idle_limit) {
+	time_t last_active_ts = time(NULL);
+	size_t i;
+	/* main-loop */
+	while (!srv_shutdown) {
+		int n;
+		size_t ndx;
+		time_t min_ts;
+
+		if (handle_sig_hup) {
+			handler_t r;
+
+			/* reset notification */
+			handle_sig_hup = 0;
+
+
+			/* cycle logfiles */
+
+			switch(r = plugins_call_handle_sighup(srv)) {
+			case HANDLER_GO_ON:
+				break;
+			default:
+				log_error_write(srv, __FILE__, __LINE__, "sd", "sighup-handler return with an error", r);
+				break;
+			}
+
+			if (-1 == log_error_cycle(srv)) {
+				log_error_write(srv, __FILE__, __LINE__, "s", "cycling errorlog failed, dying");
+
+				return -1;
+			} else {
+#ifdef HAVE_SIGACTION
+				log_error_write(srv, __FILE__, __LINE__, "sdsd", 
+					"logfiles cycled UID =",
+					last_sighup_info.si_uid,
+					"PID =",
+					last_sighup_info.si_pid);
+#else
+				log_error_write(srv, __FILE__, __LINE__, "s", 
+					"logfiles cycled");
+#endif
+			}
+		}
+
+		if (handle_sig_alarm) {
+			/* a new second */
+
+#ifdef USE_ALARM
+			/* reset notification */
+			handle_sig_alarm = 0;
+#endif
+
+			/* get current time */
+			min_ts = time(NULL);
+
+			if (min_ts != srv->cur_ts) {
+#ifdef DEBUG_CONNECTION_STATES
+				int cs = 0;
+#endif
+				connections *conns = srv->conns;
+				handler_t r;
+
+				switch(r = plugins_call_handle_trigger(srv)) {
+				case HANDLER_GO_ON:
+					break;
+				case HANDLER_ERROR:
+					log_error_write(srv, __FILE__, __LINE__, "s", "one of the triggers failed");
+					break;
+				default:
+					log_error_write(srv, __FILE__, __LINE__, "d", r);
+					break;
+				}
+
+				srv->cur_ts = min_ts;
+
+				/* check idle time limit, if enabled */
+				if (idle_limit && idle_limit < min_ts - last_active_ts && !graceful_shutdown) {
+					log_error_write(srv, __FILE__, __LINE__, "sDs", "[note] idle timeout", (int)idle_limit,
+							"s exceeded, initiating graceful shutdown");
+					graceful_shutdown = 2; /* value 2 indicates idle timeout */
+					if (graceful_restart) {
+						graceful_restart = 0;
+						if (pid_fd < -2) pid_fd = -pid_fd;
+						server_sockets_close(srv);
+					}
+				}
+
+			      #ifdef HAVE_GETLOADAVG
+				/* refresh loadavg data every 30 seconds */
+				if (srv->srvconf.loadts + 30 < min_ts) {
+					if (-1 != getloadavg(srv->srvconf.loadavg, 3)) {
+						srv->srvconf.loadts = min_ts;
+					}
+				}
+			      #endif
+
+				/* cleanup stat-cache */
+				stat_cache_trigger_cleanup(srv);
+				/* reset global/aggregate rate limit counters */
+				for (i = 0; i < srv->config_context->used; ++i) {
+					srv->config_storage[i]->global_bytes_per_second_cnt = 0;
+				}
+				/* if graceful_shutdown, accelerate cleanup of recently completed request/responses */
+				if (graceful_shutdown && !srv_shutdown) server_graceful_shutdown_maint(srv);
+				/**
+				 * check all connections for timeouts
+				 *
+				 */
+				for (ndx = 0; ndx < conns->used; ndx++) {
+					connection * const con = conns->ptr[ndx];
+					const int waitevents = fdevent_event_get_interest(srv->ev, con->fd);
+					int changed = 0;
+					int t_diff;
+
+					if (con->state == CON_STATE_CLOSE) {
+						if (srv->cur_ts - con->close_timeout_ts > HTTP_LINGER_TIMEOUT) {
+							changed = 1;
+						}
+					} else if (waitevents & FDEVENT_IN) {
+						if (con->request_count == 1 || con->state != CON_STATE_READ) { /* e.g. CON_STATE_READ_POST || CON_STATE_WRITE */
+							if (srv->cur_ts - con->read_idle_ts > con->conf.max_read_idle) {
+								/* time - out */
+								if (con->conf.log_request_handling) {
+									log_error_write(srv, __FILE__, __LINE__, "sd",
+										"connection closed - read timeout:", con->fd);
+								}
+
+								connection_set_state(srv, con, CON_STATE_ERROR);
+								changed = 1;
+							}
+						} else {
+							if (srv->cur_ts - con->read_idle_ts > con->keep_alive_idle) {
+								/* time - out */
+								if (con->conf.log_request_handling) {
+									log_error_write(srv, __FILE__, __LINE__, "sd",
+										"connection closed - keep-alive timeout:", con->fd);
+								}
+
+								connection_set_state(srv, con, CON_STATE_ERROR);
+								changed = 1;
+							}
+						}
+					}
+
+					/* max_write_idle timeout currently functions as backend timeout,
+					 * too, after response has been started.
+					 * future: have separate backend timeout, and then change this
+					 * to check for write interest before checking for timeout */
+					/*if (waitevents & FDEVENT_OUT)*/
+					if ((con->state == CON_STATE_WRITE) &&
+					    (con->write_request_ts != 0)) {
+#if 0
+						if (srv->cur_ts - con->write_request_ts > 60) {
+							log_error_write(srv, __FILE__, __LINE__, "sdd",
+									"connection closed - pre-write-request-timeout:", con->fd, srv->cur_ts - con->write_request_ts);
+						}
+#endif
+
+						if (srv->cur_ts - con->write_request_ts > con->conf.max_write_idle) {
+							/* time - out */
+							if (con->conf.log_timeouts) {
+								log_error_write(srv, __FILE__, __LINE__, "sbsbsosds",
+									"NOTE: a request from",
+									con->dst_addr_buf,
+									"for",
+									con->request.uri,
+									"timed out after writing",
+									con->bytes_written,
+									"bytes. We waited",
+									(int)con->conf.max_write_idle,
+									"seconds. If this a problem increase server.max-write-idle");
+							}
+							connection_set_state(srv, con, CON_STATE_ERROR);
+							changed = 1;
+						}
+					}
+
+					/* we don't like div by zero */
+					if (0 == (t_diff = srv->cur_ts - con->connection_start)) t_diff = 1;
+
+					if (con->traffic_limit_reached &&
+					    (con->conf.kbytes_per_second == 0 ||
+					     ((con->bytes_written / t_diff) < con->conf.kbytes_per_second * 1024))) {
+						/* enable connection again */
+						con->traffic_limit_reached = 0;
+
+						changed = 1;
+					}
+
+					con->bytes_written_cur_second = 0;
+
+					if (changed) {
+						connection_state_machine(srv, con);
+					}
+
+#if DEBUG_CONNECTION_STATES
+					if (cs == 0) {
+						fprintf(stderr, "connection-state: ");
+						cs = 1;
+					}
+
+					fprintf(stderr, "c[%d,%d]: %s ",
+						con->fd,
+						con->fcgi.fd,
+						connection_get_state(con->state));
+#endif
+				}
+
+#ifdef DEBUG_CONNECTION_STATES
+				if (cs == 1) fprintf(stderr, "\n");
+#endif
+			}
+		}
+
+		if (handle_sig_child) {
+			pid_t pid;
+			handle_sig_child = 0;
+			do {
+				int status;
+				pid = waitpid(-1, &status, WNOHANG);
+				if (pid > 0) {
+					if (plugins_call_handle_waitpid(srv, pid, status) != HANDLER_GO_ON) {
+						continue;
+					}
+					if (0 == srv->srvconf.max_worker) {
+						/* check piped-loggers and restart, even if shutting down */
+						if (fdevent_waitpid_logger_pipe_pid(pid, srv->cur_ts)) {
+							continue;
+						}
+					}
+				}
+			} while (pid > 0 || (-1 == pid && errno == EINTR));
+		}
+
+		if (graceful_shutdown) {
+			server_graceful_state(srv);
+			srv->sockets_disabled = 1;
+		} else if (srv->sockets_disabled) {
+			/* our server sockets are disabled, why ? */
+
+			if ((srv->cur_fds + srv->want_fds < srv->max_fds * 8 / 10) && /* we have enough unused fds */
+			    (srv->conns->used <= srv->max_conns * 9 / 10)) {
+				server_sockets_set_event(srv, FDEVENT_IN);
+				log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets enabled again");
+
+				srv->sockets_disabled = 0;
+			}
+		} else {
+			if ((srv->cur_fds + srv->want_fds > srv->max_fds * 9 / 10) || /* out of fds */
+			    (srv->conns->used >= srv->max_conns)) { /* out of connections */
+				/* disable server-fds */
+				server_sockets_set_event(srv, 0);
+
+				if (srv->conns->used >= srv->max_conns) {
+					log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets disabled, connection limit reached");
+				} else {
+					log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets disabled, out-of-fds");
+				}
+
+				srv->sockets_disabled = 1;
+			}
+		}
+
+		if (graceful_shutdown && srv->conns->used == 0) {
+			/* we are in graceful shutdown phase and all connections are closed
+			 * we are ready to terminate without harming anyone */
+			srv_shutdown = 1;
+			break;
+		}
+
+		/* we still have some fds to share */
+		if (srv->want_fds) {
+			/* check the fdwaitqueue for waiting fds */
+			int free_fds = srv->max_fds - srv->cur_fds - 16;
+			connection *con;
+
+			for (; free_fds > 0 && NULL != (con = fdwaitqueue_unshift(srv, srv->fdwaitqueue)); free_fds--) {
+				connection_state_machine(srv, con);
+
+				srv->want_fds--;
+			}
+		}
+
+		if ((n = fdevent_poll(srv->ev, 1000)) > 0) {
+			/* n is the number of events */
+			int fd;
+			int revents;
+			int fd_ndx;
+			last_active_ts = srv->cur_ts;
+			fd_ndx = -1;
+			do {
+				fdevent_handler handler;
+				void *context;
+
+				fd_ndx  = fdevent_event_next_fdndx (srv->ev, fd_ndx);
+				if (-1 == fd_ndx) break; /* not all fdevent handlers know how many fds got an event */
+
+				revents = fdevent_event_get_revent (srv->ev, fd_ndx);
+				fd      = fdevent_event_get_fd     (srv->ev, fd_ndx);
+				handler = fdevent_get_handler(srv->ev, fd);
+				context = fdevent_get_context(srv->ev, fd);
+				if (NULL != handler) {
+					(*handler)(srv, context, revents);
+				}
+			} while (--n > 0);
+		} else if (n < 0 && errno != EINTR) {
+			log_error_write(srv, __FILE__, __LINE__, "ss",
+					"fdevent_poll failed:",
+					strerror(errno));
+		}
+
+		if (n >= 0){
+			//lmvx_start("fdevent_sched_run", 2, srv, srv->ev);
+			fdevent_sched_run(srv, srv->ev);
+			//lmvx_end();
+		}
+		for (ndx = 0; ndx < srv->joblist->used; ndx++) {
+			connection *con = srv->joblist->ptr[ndx];
+			// Main control loop lmvx_start
+			//lmvx_start("connection_state_machine", 2, srv, con);
+			connection_state_machine(srv, con);
+			//lmvx_end();
+		}
+
+		srv->joblist->used = 0;
+	}
+	return 0;
+}
+
 static int server_main (server * const srv, int argc, char **argv) {
 	int print_config = 0;
 	int test_config = 0;
@@ -994,7 +1323,6 @@ static int server_main (server * const srv, int argc, char **argv) {
 	http_auth_dumbdata_reset();
 	http_vhostdb_dumbdata_reset();
 
-	lmvx_init();
 	/*graceful_restart = 0;*//*(reset below to avoid further daemonizing)*/
 	/*(intentionally preserved)*/
 	/*memset(graceful_sockets, 0, sizeof(graceful_sockets));*/
@@ -1696,328 +2024,9 @@ static int server_main (server * const srv, int argc, char **argv) {
 		oneshot_fd = -1;
 	}
 
-	/* main-loop */
-	while (!srv_shutdown) {
-		int n;
-		size_t ndx;
-		time_t min_ts;
-
-		if (handle_sig_hup) {
-			handler_t r;
-
-			/* reset notification */
-			handle_sig_hup = 0;
-
-
-			/* cycle logfiles */
-
-			switch(r = plugins_call_handle_sighup(srv)) {
-			case HANDLER_GO_ON:
-				break;
-			default:
-				log_error_write(srv, __FILE__, __LINE__, "sd", "sighup-handler return with an error", r);
-				break;
-			}
-
-			if (-1 == log_error_cycle(srv)) {
-				log_error_write(srv, __FILE__, __LINE__, "s", "cycling errorlog failed, dying");
-
-				return -1;
-			} else {
-#ifdef HAVE_SIGACTION
-				log_error_write(srv, __FILE__, __LINE__, "sdsd", 
-					"logfiles cycled UID =",
-					last_sighup_info.si_uid,
-					"PID =",
-					last_sighup_info.si_pid);
-#else
-				log_error_write(srv, __FILE__, __LINE__, "s", 
-					"logfiles cycled");
-#endif
-			}
-		}
-
-		if (handle_sig_alarm) {
-			/* a new second */
-
-#ifdef USE_ALARM
-			/* reset notification */
-			handle_sig_alarm = 0;
-#endif
-
-			/* get current time */
-			min_ts = time(NULL);
-
-			if (min_ts != srv->cur_ts) {
-#ifdef DEBUG_CONNECTION_STATES
-				int cs = 0;
-#endif
-				connections *conns = srv->conns;
-				handler_t r;
-
-				switch(r = plugins_call_handle_trigger(srv)) {
-				case HANDLER_GO_ON:
-					break;
-				case HANDLER_ERROR:
-					log_error_write(srv, __FILE__, __LINE__, "s", "one of the triggers failed");
-					break;
-				default:
-					log_error_write(srv, __FILE__, __LINE__, "d", r);
-					break;
-				}
-
-				srv->cur_ts = min_ts;
-
-				/* check idle time limit, if enabled */
-				if (idle_limit && idle_limit < min_ts - last_active_ts && !graceful_shutdown) {
-					log_error_write(srv, __FILE__, __LINE__, "sDs", "[note] idle timeout", (int)idle_limit,
-							"s exceeded, initiating graceful shutdown");
-					graceful_shutdown = 2; /* value 2 indicates idle timeout */
-					if (graceful_restart) {
-						graceful_restart = 0;
-						if (pid_fd < -2) pid_fd = -pid_fd;
-						server_sockets_close(srv);
-					}
-				}
-
-			      #ifdef HAVE_GETLOADAVG
-				/* refresh loadavg data every 30 seconds */
-				if (srv->srvconf.loadts + 30 < min_ts) {
-					if (-1 != getloadavg(srv->srvconf.loadavg, 3)) {
-						srv->srvconf.loadts = min_ts;
-					}
-				}
-			      #endif
-
-				/* cleanup stat-cache */
-				stat_cache_trigger_cleanup(srv);
-				/* reset global/aggregate rate limit counters */
-				for (i = 0; i < srv->config_context->used; ++i) {
-					srv->config_storage[i]->global_bytes_per_second_cnt = 0;
-				}
-				/* if graceful_shutdown, accelerate cleanup of recently completed request/responses */
-				if (graceful_shutdown && !srv_shutdown) server_graceful_shutdown_maint(srv);
-				/**
-				 * check all connections for timeouts
-				 *
-				 */
-				for (ndx = 0; ndx < conns->used; ndx++) {
-					connection * const con = conns->ptr[ndx];
-					const int waitevents = fdevent_event_get_interest(srv->ev, con->fd);
-					int changed = 0;
-					int t_diff;
-
-					if (con->state == CON_STATE_CLOSE) {
-						if (srv->cur_ts - con->close_timeout_ts > HTTP_LINGER_TIMEOUT) {
-							changed = 1;
-						}
-					} else if (waitevents & FDEVENT_IN) {
-						if (con->request_count == 1 || con->state != CON_STATE_READ) { /* e.g. CON_STATE_READ_POST || CON_STATE_WRITE */
-							if (srv->cur_ts - con->read_idle_ts > con->conf.max_read_idle) {
-								/* time - out */
-								if (con->conf.log_request_handling) {
-									log_error_write(srv, __FILE__, __LINE__, "sd",
-										"connection closed - read timeout:", con->fd);
-								}
-
-								connection_set_state(srv, con, CON_STATE_ERROR);
-								changed = 1;
-							}
-						} else {
-							if (srv->cur_ts - con->read_idle_ts > con->keep_alive_idle) {
-								/* time - out */
-								if (con->conf.log_request_handling) {
-									log_error_write(srv, __FILE__, __LINE__, "sd",
-										"connection closed - keep-alive timeout:", con->fd);
-								}
-
-								connection_set_state(srv, con, CON_STATE_ERROR);
-								changed = 1;
-							}
-						}
-					}
-
-					/* max_write_idle timeout currently functions as backend timeout,
-					 * too, after response has been started.
-					 * future: have separate backend timeout, and then change this
-					 * to check for write interest before checking for timeout */
-					/*if (waitevents & FDEVENT_OUT)*/
-					if ((con->state == CON_STATE_WRITE) &&
-					    (con->write_request_ts != 0)) {
-#if 0
-						if (srv->cur_ts - con->write_request_ts > 60) {
-							log_error_write(srv, __FILE__, __LINE__, "sdd",
-									"connection closed - pre-write-request-timeout:", con->fd, srv->cur_ts - con->write_request_ts);
-						}
-#endif
-
-						if (srv->cur_ts - con->write_request_ts > con->conf.max_write_idle) {
-							/* time - out */
-							if (con->conf.log_timeouts) {
-								log_error_write(srv, __FILE__, __LINE__, "sbsbsosds",
-									"NOTE: a request from",
-									con->dst_addr_buf,
-									"for",
-									con->request.uri,
-									"timed out after writing",
-									con->bytes_written,
-									"bytes. We waited",
-									(int)con->conf.max_write_idle,
-									"seconds. If this a problem increase server.max-write-idle");
-							}
-							connection_set_state(srv, con, CON_STATE_ERROR);
-							changed = 1;
-						}
-					}
-
-					/* we don't like div by zero */
-					if (0 == (t_diff = srv->cur_ts - con->connection_start)) t_diff = 1;
-
-					if (con->traffic_limit_reached &&
-					    (con->conf.kbytes_per_second == 0 ||
-					     ((con->bytes_written / t_diff) < con->conf.kbytes_per_second * 1024))) {
-						/* enable connection again */
-						con->traffic_limit_reached = 0;
-
-						changed = 1;
-					}
-
-					con->bytes_written_cur_second = 0;
-
-					if (changed) {
-						connection_state_machine(srv, con);
-					}
-
-#if DEBUG_CONNECTION_STATES
-					if (cs == 0) {
-						fprintf(stderr, "connection-state: ");
-						cs = 1;
-					}
-
-					fprintf(stderr, "c[%d,%d]: %s ",
-						con->fd,
-						con->fcgi.fd,
-						connection_get_state(con->state));
-#endif
-				}
-
-#ifdef DEBUG_CONNECTION_STATES
-				if (cs == 1) fprintf(stderr, "\n");
-#endif
-			}
-		}
-
-		if (handle_sig_child) {
-			pid_t pid;
-			handle_sig_child = 0;
-			do {
-				int status;
-				pid = waitpid(-1, &status, WNOHANG);
-				if (pid > 0) {
-					if (plugins_call_handle_waitpid(srv, pid, status) != HANDLER_GO_ON) {
-						continue;
-					}
-					if (0 == srv->srvconf.max_worker) {
-						/* check piped-loggers and restart, even if shutting down */
-						if (fdevent_waitpid_logger_pipe_pid(pid, srv->cur_ts)) {
-							continue;
-						}
-					}
-				}
-			} while (pid > 0 || (-1 == pid && errno == EINTR));
-		}
-
-		if (graceful_shutdown) {
-			server_graceful_state(srv);
-			srv->sockets_disabled = 1;
-		} else if (srv->sockets_disabled) {
-			/* our server sockets are disabled, why ? */
-
-			if ((srv->cur_fds + srv->want_fds < srv->max_fds * 8 / 10) && /* we have enough unused fds */
-			    (srv->conns->used <= srv->max_conns * 9 / 10)) {
-				server_sockets_set_event(srv, FDEVENT_IN);
-				log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets enabled again");
-
-				srv->sockets_disabled = 0;
-			}
-		} else {
-			if ((srv->cur_fds + srv->want_fds > srv->max_fds * 9 / 10) || /* out of fds */
-			    (srv->conns->used >= srv->max_conns)) { /* out of connections */
-				/* disable server-fds */
-				server_sockets_set_event(srv, 0);
-
-				if (srv->conns->used >= srv->max_conns) {
-					log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets disabled, connection limit reached");
-				} else {
-					log_error_write(srv, __FILE__, __LINE__, "s", "[note] sockets disabled, out-of-fds");
-				}
-
-				srv->sockets_disabled = 1;
-			}
-		}
-
-		if (graceful_shutdown && srv->conns->used == 0) {
-			/* we are in graceful shutdown phase and all connections are closed
-			 * we are ready to terminate without harming anyone */
-			srv_shutdown = 1;
-			break;
-		}
-
-		/* we still have some fds to share */
-		if (srv->want_fds) {
-			/* check the fdwaitqueue for waiting fds */
-			int free_fds = srv->max_fds - srv->cur_fds - 16;
-			connection *con;
-
-			for (; free_fds > 0 && NULL != (con = fdwaitqueue_unshift(srv, srv->fdwaitqueue)); free_fds--) {
-				connection_state_machine(srv, con);
-
-				srv->want_fds--;
-			}
-		}
-
-		if ((n = fdevent_poll(srv->ev, 1000)) > 0) {
-			/* n is the number of events */
-			int fd;
-			int revents;
-			int fd_ndx;
-			last_active_ts = srv->cur_ts;
-			fd_ndx = -1;
-			do {
-				fdevent_handler handler;
-				void *context;
-
-				fd_ndx  = fdevent_event_next_fdndx (srv->ev, fd_ndx);
-				if (-1 == fd_ndx) break; /* not all fdevent handlers know how many fds got an event */
-
-				revents = fdevent_event_get_revent (srv->ev, fd_ndx);
-				fd      = fdevent_event_get_fd     (srv->ev, fd_ndx);
-				handler = fdevent_get_handler(srv->ev, fd);
-				context = fdevent_get_context(srv->ev, fd);
-				if (NULL != handler) {
-					(*handler)(srv, context, revents);
-				}
-			} while (--n > 0);
-		} else if (n < 0 && errno != EINTR) {
-			log_error_write(srv, __FILE__, __LINE__, "ss",
-					"fdevent_poll failed:",
-					strerror(errno));
-		}
-
-		if (n >= 0){
-			//lmvx_start("fdevent_sched_run", 2, srv, srv->ev);
-			fdevent_sched_run(srv, srv->ev);
-			//lmvx_end();
-		}
-		for (ndx = 0; ndx < srv->joblist->used; ndx++) {
-			connection *con = srv->joblist->ptr[ndx];
-			lmvx_start("connection_state_machine", 2, srv, con);
-			connection_state_machine(srv, con);
-			lmvx_end();
-		}
-
-		srv->joblist->used = 0;
-	}
+	lmvx_start("mainloop", 2, srv, idle_limit);
+	mainloop(srv, idle_limit);
+	lmvx_end();
 
 	if (graceful_shutdown || graceful_restart) {
 		server_graceful_state(srv);
@@ -2044,6 +2053,7 @@ static int server_main (server * const srv, int argc, char **argv) {
 
 int main (int argc, char **argv) {
     int rc;
+    lmvx_init();
 
   #ifdef HAVE_GETUID
   #ifndef HAVE_ISSETUGID
@@ -2067,7 +2077,9 @@ int main (int argc, char **argv) {
             optind = 1;
         }
 
+	//lmvx_start("server_main", 3, srv, argc, argv);
         rc = server_main(srv, argc, argv);
+	//lmvx_end();
 
         /* clean-up */
         remove_pid_file(srv);

@@ -961,7 +961,7 @@ connection *connection_accept(server *srv, server_socket *srv_socket) {
 	int cnt;
 	sock_addr cnt_addr;
 	size_t cnt_len = sizeof(cnt_addr); /*(size_t intentional; not socklen_t)*/
-
+	connection* accepted_con;
 	/**
 	 * check if we can still open a new connections
 	 *
@@ -995,7 +995,11 @@ connection *connection_accept(server *srv, server_socket *srv_socket) {
 		if (sock_addr_get_family(&cnt_addr) != AF_UNIX) {
 			network_accept_tcp_nagle_disable(cnt);
 		}
-		return connection_accepted(srv, srv_socket, &cnt_addr, cnt);
+		//lmvx_start("connection_accepted", 3, srv, srv_socket, &cnt_addr,
+		//		   cnt);
+		accepted_con = connection_accepted(srv, srv_socket, &cnt_addr, cnt);
+		//lmvx_end();
+		return accepted_con;
 	}
 }
 

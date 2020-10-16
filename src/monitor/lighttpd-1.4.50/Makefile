@@ -163,8 +163,8 @@ CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/distribute.sh.in AUTHORS COPYING INSTALL NEWS README \
-	ar-lib compile config.guess config.sub install-sh ltmain.sh \
-	missing
+	ar-lib compile config.guess config.sub depcomp install-sh \
+	ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -218,12 +218,12 @@ AWK = gawk
 BUILD_EXEEXT = 
 BUILD_OBJEXT = 
 BZ_LIB = 
-CC = /usr/local/musl/bin/musl-gcc
+CC = /usr/local/musl/bin/musl-clang-esjeon
 CCDEPMODE = depmode=gcc3
 CC_FOR_BUILD = gcc
-CFLAGS = -fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic
+CFLAGS = -g -fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic
 CFLAGS_FOR_BUILD = -g -O2
-CPP = /usr/local/musl/bin/musl-gcc -E
+CPP = /usr/local/musl/bin/musl-clang-esjeon -E
 CPPFLAGS =  -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGE_FILES
 CPPFLAGS_FOR_BUILD = 
 CPP_FOR_BUILD = gcc -E
@@ -258,7 +258,7 @@ KRB5_LIB =
 LBER_LIB = 
 LD = /usr/bin/ld -m elf_x86_64
 LDAP_LIB = 
-LDFLAGS = -pie -L/usr/local/lib -llmvx
+LDFLAGS = -pie -L/usr/local/lib -llmvx -z now
 LDFLAGS_FOR_BUILD = 
 LIBEV_CFLAGS = 
 LIBEV_LIBS = 
@@ -323,7 +323,7 @@ abs_srcdir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50
 abs_top_builddir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50
 abs_top_srcdir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50
 ac_ct_AR = ar
-ac_ct_CC = /usr/local/musl/bin/musl-gcc
+ac_ct_CC = /usr/local/musl/bin/musl-clang-esjeon
 ac_ct_CC_FOR_BUILD = gcc
 ac_ct_DUMPBIN = 
 am__include = include

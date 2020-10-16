@@ -15,8 +15,6 @@
 
 
 
-
-
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
     false; \
@@ -859,10 +857,11 @@ AM_V_CC = $(am__v_CC_$(V))
 am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
 am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
-CCLD = $(CC)
+#CCLD = $(CC)
 LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+#CCLD = $(CC)
 AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
@@ -992,12 +991,12 @@ AWK = gawk
 BUILD_EXEEXT = 
 BUILD_OBJEXT = 
 BZ_LIB = 
-CC = /usr/local/musl/bin/musl-gcc
+CC = /usr/local/musl/bin/musl-clang-esjeon
 CCDEPMODE = depmode=gcc3
 CC_FOR_BUILD = gcc
-CFLAGS = -fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic
+CFLAGS = -g -fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic
 CFLAGS_FOR_BUILD = -g -O2
-CPP = /usr/local/musl/bin/musl-gcc -E
+CPP = /usr/local/musl/bin/musl-clang-esjeon -E
 CPPFLAGS =  -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGE_FILES
 CPPFLAGS_FOR_BUILD = 
 CPP_FOR_BUILD = gcc -E
@@ -1032,7 +1031,7 @@ KRB5_LIB =
 LBER_LIB = 
 LD = /usr/bin/ld -m elf_x86_64
 LDAP_LIB = 
-LDFLAGS = -pie -L/usr/local/lib -llmvx
+LDFLAGS = -pie -L/usr/local/lib -llmvx -z now
 LDFLAGS_FOR_BUILD = 
 LIBEV_CFLAGS = 
 LIBEV_LIBS = 
@@ -1097,7 +1096,7 @@ abs_srcdir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50/src
 abs_top_builddir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50
 abs_top_srcdir = /home/sengming/research/deC/src/monitor/lighttpd-1.4.50
 ac_ct_AR = ar
-ac_ct_CC = /usr/local/musl/bin/musl-gcc
+ac_ct_CC = /usr/local/musl/bin/musl-clang-esjeon
 ac_ct_CC_FOR_BUILD = gcc
 ac_ct_DUMPBIN = 
 am__include = include

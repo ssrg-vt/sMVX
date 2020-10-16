@@ -328,22 +328,22 @@ BZ_NO_STDIO	src/mod_deflate.c	136;"	d	file:
 Bo_FALSE	src/lemon.c	/^typedef enum {Bo_FALSE=0, Bo_TRUE} Boolean;$/;"	e	enum:__anon193	file:
 Bo_TRUE	src/lemon.c	/^typedef enum {Bo_FALSE=0, Bo_TRUE} Boolean;$/;"	e	enum:__anon193	file:
 Boolean	src/lemon.c	/^typedef enum {Bo_FALSE=0, Bo_TRUE} Boolean;$/;"	t	typeref:enum:__anon193	file:
-CC	Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/config/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/config/conf.d/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/config/vhosts.d/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/outdated/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/scripts/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	doc/systemd/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	src/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/123/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/www/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/www/expire/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/www/go/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-CC	tests/docroot/www/indexfile/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
+CC	Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/config/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/config/conf.d/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/config/vhosts.d/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/outdated/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/scripts/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	doc/systemd/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	src/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/123/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/www/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/www/expire/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/www/go/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+CC	tests/docroot/www/indexfile/Makefile	/^CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
 CCDEPMODE	Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCDEPMODE	doc/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCDEPMODE	doc/config/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
@@ -360,7 +360,6 @@ CCDEPMODE	tests/docroot/www/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCDEPMODE	tests/docroot/www/expire/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCDEPMODE	tests/docroot/www/go/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
 CCDEPMODE	tests/docroot/www/indexfile/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
-CCLD	src/Makefile	/^CCLD = $(CC)$/;"	m
 CCLD	tests/Makefile	/^CCLD = $(CC)$/;"	m
 CC_FOR_BUILD	Makefile	/^CC_FOR_BUILD = gcc$/;"	m
 CC_FOR_BUILD	doc/Makefile	/^CC_FOR_BUILD = gcc$/;"	m
@@ -378,22 +377,22 @@ CC_FOR_BUILD	tests/docroot/www/Makefile	/^CC_FOR_BUILD = gcc$/;"	m
 CC_FOR_BUILD	tests/docroot/www/expire/Makefile	/^CC_FOR_BUILD = gcc$/;"	m
 CC_FOR_BUILD	tests/docroot/www/go/Makefile	/^CC_FOR_BUILD = gcc$/;"	m
 CC_FOR_BUILD	tests/docroot/www/indexfile/Makefile	/^CC_FOR_BUILD = gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/config/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/config/conf.d/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/config/vhosts.d/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/outdated/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/scripts/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	doc/systemd/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	src/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/123/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/www/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/www/expire/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/www/go/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
-CFLAGS	tests/docroot/www/indexfile/Makefile	/^CFLAGS = -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/config/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/config/conf.d/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/config/vhosts.d/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/outdated/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/scripts/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	doc/systemd/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	src/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/123/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/www/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/www/expire/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/www/go/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
+CFLAGS	tests/docroot/www/indexfile/Makefile	/^CFLAGS = -g -fPIC -O0 -I\/usr\/local\/dec\/inc -Wall -W -Wshadow -pedantic$/;"	m
 CFLAGS_FOR_BUILD	Makefile	/^CFLAGS_FOR_BUILD = -g -O2$/;"	m
 CFLAGS_FOR_BUILD	doc/Makefile	/^CFLAGS_FOR_BUILD = -g -O2$/;"	m
 CFLAGS_FOR_BUILD	doc/config/Makefile	/^CFLAGS_FOR_BUILD = -g -O2$/;"	m
@@ -557,22 +556,22 @@ CON_STATE_REQUEST_START	src/base.h	/^	CON_STATE_REQUEST_START,$/;"	e	enum:__anon
 CON_STATE_RESPONSE_END	src/base.h	/^	CON_STATE_RESPONSE_END,$/;"	e	enum:__anon61
 CON_STATE_RESPONSE_START	src/base.h	/^	CON_STATE_RESPONSE_START,$/;"	e	enum:__anon61
 CON_STATE_WRITE	src/base.h	/^	CON_STATE_WRITE,$/;"	e	enum:__anon61
-CPP	Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/config/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/config/conf.d/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/config/vhosts.d/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/outdated/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/scripts/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	doc/systemd/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	src/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/123/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/www/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/www/expire/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/www/go/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
-CPP	tests/docroot/www/indexfile/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-gcc -E$/;"	m
+CPP	Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/config/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/config/conf.d/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/config/vhosts.d/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/outdated/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/scripts/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	doc/systemd/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	src/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/123/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/www/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/www/expire/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/www/go/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
+CPP	tests/docroot/www/indexfile/Makefile	/^CPP = \/usr\/local\/musl\/bin\/musl-clang-esjeon -E$/;"	m
 CPPFLAGS	Makefile	/^CPPFLAGS =  -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGE_FILES$/;"	m
 CPPFLAGS	doc/Makefile	/^CPPFLAGS =  -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGE_FILES$/;"	m
 CPPFLAGS	doc/config/Makefile	/^CPPFLAGS =  -D_REENTRANT -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGE_FILES$/;"	m
@@ -1782,22 +1781,22 @@ LDAP_LIB	tests/docroot/www/Makefile	/^LDAP_LIB = $/;"	m
 LDAP_LIB	tests/docroot/www/expire/Makefile	/^LDAP_LIB = $/;"	m
 LDAP_LIB	tests/docroot/www/go/Makefile	/^LDAP_LIB = $/;"	m
 LDAP_LIB	tests/docroot/www/indexfile/Makefile	/^LDAP_LIB = $/;"	m
-LDFLAGS	Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/config/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/config/conf.d/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/config/vhosts.d/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/outdated/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/scripts/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	doc/systemd/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	src/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/123/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/www/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/www/expire/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/www/go/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
-LDFLAGS	tests/docroot/www/indexfile/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/config/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/config/conf.d/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/config/vhosts.d/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/outdated/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/scripts/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	doc/systemd/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	src/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/123/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/www/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/www/expire/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/www/go/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
+LDFLAGS	tests/docroot/www/indexfile/Makefile	/^LDFLAGS = -pie -L\/usr\/local\/lib -llmvx -z now$/;"	m
 LDFLAGS_FOR_BUILD	Makefile	/^LDFLAGS_FOR_BUILD = $/;"	m
 LDFLAGS_FOR_BUILD	doc/Makefile	/^LDFLAGS_FOR_BUILD = $/;"	m
 LDFLAGS_FOR_BUILD	doc/config/Makefile	/^LDFLAGS_FOR_BUILD = $/;"	m
@@ -3790,22 +3789,22 @@ ac_ct_AR	tests/docroot/www/Makefile	/^ac_ct_AR = ar$/;"	m
 ac_ct_AR	tests/docroot/www/expire/Makefile	/^ac_ct_AR = ar$/;"	m
 ac_ct_AR	tests/docroot/www/go/Makefile	/^ac_ct_AR = ar$/;"	m
 ac_ct_AR	tests/docroot/www/indexfile/Makefile	/^ac_ct_AR = ar$/;"	m
-ac_ct_CC	Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/config/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/config/conf.d/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/config/vhosts.d/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/outdated/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/scripts/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	doc/systemd/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	src/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/123/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/www/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/www/expire/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/www/go/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
-ac_ct_CC	tests/docroot/www/indexfile/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-gcc$/;"	m
+ac_ct_CC	Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/config/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/config/conf.d/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/config/vhosts.d/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/outdated/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/scripts/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	doc/systemd/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	src/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/123/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/www/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/www/expire/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/www/go/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
+ac_ct_CC	tests/docroot/www/indexfile/Makefile	/^ac_ct_CC = \/usr\/local\/musl\/bin\/musl-clang-esjeon$/;"	m
 ac_ct_CC_FOR_BUILD	Makefile	/^ac_ct_CC_FOR_BUILD = gcc$/;"	m
 ac_ct_CC_FOR_BUILD	doc/Makefile	/^ac_ct_CC_FOR_BUILD = gcc$/;"	m
 ac_ct_CC_FOR_BUILD	doc/config/Makefile	/^ac_ct_CC_FOR_BUILD = gcc$/;"	m
@@ -6494,7 +6493,7 @@ is_ssl	src/base.h	/^	unsigned short is_ssl;$/;"	m	struct:server_socket
 is_symlink	src/stat_cache.h	/^	char is_symlink;$/;"	m	struct:__anon34
 is_temp	src/chunk.h	/^		int is_temp; \/* file is temporary and will be deleted if on cleanup *\/$/;"	m	struct:chunk::__anon129
 is_writable	src/base.h	/^	int is_writable;$/;"	m	struct:connection
-issetugid	src/server.c	2045;"	d	file:
+issetugid	src/server.c	2060;"	d	file:
 itostr	src/buffer.c	/^static char* itostr(char * const buf_end, intmax_t val) {$/;"	f	file:
 jfue	tests/request.t	/^jfue: jfdfdg$/;"	l
 jfusfdngmd	tests/request.t	/^jfusfdngmd: gfjgfdusdfg$/;"	l
@@ -6777,6 +6776,7 @@ main	src/t/test_request.c	/^int main (void)$/;"	f
 main	tests/fcgi-auth.c	/^int main (void) {$/;"	f
 main	tests/fcgi-responder.c	/^int main (void) {$/;"	f
 main	tests/scgi-responder.c	/^main (void)$/;"	f
+mainloop	src/server.c	/^static int mainloop(server* const srv, time_t idle_limit) {$/;"	f	file:
 major	src/configparser.c	/^  int major;         \/* The major token value.  This is the code$/;"	m	struct:yyStackEntry	file:
 major	src/lempar.c	/^  int major;         \/* The major token value.  This is the code$/;"	m	struct:yyStackEntry	file:
 major	src/mod_ssi_exprparser.c	/^  int major;         \/* The major token value.  This is the code$/;"	m	struct:yyStackEntry	file:

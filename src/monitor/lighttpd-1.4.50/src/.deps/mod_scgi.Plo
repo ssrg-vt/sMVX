@@ -1,20 +1,22 @@
 mod_scgi.lo: mod_scgi.c first.h ../config.h \
- /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
- /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
- /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
- /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
- /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
- /usr/local/musl/include/errno.h /usr/local/musl/include/bits/errno.h \
- /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
- /usr/local/musl/include/string.h /usr/local/musl/include/strings.h \
- gw_backend.h sys-socket.h /usr/local/musl/include/sys/socket.h \
- /usr/local/musl/include/bits/socket.h \
- /usr/local/musl/include/netinet/in.h /usr/local/musl/include/inttypes.h \
- /usr/local/musl/include/netinet/tcp.h /usr/local/musl/include/sys/un.h \
- array.h buffer.h base_decls.h chunk.h plugin.h configfile.h vector.h \
- response.h /usr/local/musl/include/time.h base.h settings.h \
- /usr/local/musl/include/sys/time.h http_kv.h sock_addr.h etag.h log.h \
- status_counter.h sys-endian.h
+  /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
+  /usr/local/musl/include/bits/alltypes.h \
+  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
+  /usr/local/musl/include/bits/stdint.h \
+  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+  /usr/local/musl/include/errno.h /usr/local/musl/include/bits/errno.h \
+  /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
+  /usr/local/musl/include/string.h /usr/local/musl/include/strings.h \
+  gw_backend.h sys-socket.h /usr/local/musl/include/sys/socket.h \
+  /usr/local/musl/include/bits/socket.h \
+  /usr/local/musl/include/netinet/in.h \
+  /usr/local/musl/include/inttypes.h \
+  /usr/local/musl/include/netinet/tcp.h /usr/local/musl/include/sys/un.h \
+  array.h buffer.h base_decls.h chunk.h plugin.h configfile.h vector.h \
+  response.h /usr/local/musl/include/time.h base.h settings.h \
+  /usr/local/musl/include/sys/time.h http_kv.h sock_addr.h etag.h log.h \
+  status_counter.h sys-endian.h
 
 first.h:
 

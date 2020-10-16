@@ -1,12 +1,13 @@
 t/test_buffer.o: t/test_buffer.c first.h ../config.h \
- /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
- /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
- /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
- /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
- /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
- /usr/local/musl/include/assert.h /usr/local/musl/include/stdio.h \
- /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
- buffer.h first.h
+  /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
+  /usr/local/musl/include/bits/alltypes.h \
+  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
+  /usr/local/musl/include/bits/stdint.h \
+  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+  /usr/local/musl/include/assert.h /usr/local/musl/include/stdio.h \
+  /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
+  buffer.h
 
 first.h:
 
@@ -41,5 +42,3 @@ first.h:
 /usr/local/musl/include/alloca.h:
 
 buffer.h:
-
-first.h:

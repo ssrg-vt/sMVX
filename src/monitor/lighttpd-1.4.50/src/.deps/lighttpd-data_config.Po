@@ -1,18 +1,20 @@
 lighttpd-data_config.o: data_config.c first.h ../config.h \
- /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
- /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
- /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
- /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
- /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
- base.h settings.h /usr/local/musl/include/sys/time.h base_decls.h \
- buffer.h array.h chunk.h http_kv.h sock_addr.h sys-socket.h \
- /usr/local/musl/include/sys/socket.h \
- /usr/local/musl/include/bits/socket.h \
- /usr/local/musl/include/netinet/in.h /usr/local/musl/include/inttypes.h \
- /usr/local/musl/include/netinet/tcp.h /usr/local/musl/include/sys/un.h \
- etag.h configfile.h vector.h /usr/local/musl/include/string.h \
- /usr/local/musl/include/strings.h /usr/local/musl/include/stdio.h \
- /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h
+  /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
+  /usr/local/musl/include/bits/alltypes.h \
+  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
+  /usr/local/musl/include/bits/stdint.h \
+  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+  base.h settings.h /usr/local/musl/include/sys/time.h base_decls.h \
+  buffer.h array.h chunk.h http_kv.h sock_addr.h sys-socket.h \
+  /usr/local/musl/include/sys/socket.h \
+  /usr/local/musl/include/bits/socket.h \
+  /usr/local/musl/include/netinet/in.h \
+  /usr/local/musl/include/inttypes.h \
+  /usr/local/musl/include/netinet/tcp.h /usr/local/musl/include/sys/un.h \
+  etag.h configfile.h vector.h /usr/local/musl/include/string.h \
+  /usr/local/musl/include/strings.h /usr/local/musl/include/stdio.h \
+  /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h
 
 first.h:
 

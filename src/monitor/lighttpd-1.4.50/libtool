@@ -164,7 +164,7 @@ lock_old_archive_extraction=no
 LTCC="/usr/local/musl/bin/musl-gcc"
 
 # LTCC compiler flags.
-LTCFLAGS="-fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic"
+LTCFLAGS="-g -fPIC -O0 -I/usr/local/dec/inc -Wall -W -Wshadow -pedantic"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p' | sed '/ __gnu_lto/d'"
@@ -281,7 +281,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/usr/lib/gcc/x86_64-linux-gnu/6 /usr/lib/x86_64-linux-gnu /usr/lib /lib/x86_64-linux-gnu /lib "
+sys_lib_search_path_spec="/usr/local/lib/clang/10.0.0 /usr/lib/gcc/x86_64-linux-gnu/6.3.0 /usr/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu /lib64 /usr/lib /usr/local/lib /lib "
 
 # Detected run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/x86_64-linux-gnu/libfakeroot /usr/local/lib /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu "
@@ -320,7 +320,7 @@ CC="/usr/local/musl/bin/musl-gcc"
 with_gcc=yes
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin"
+no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
 
 # Additional compiler flags for building library objects.
 pic_flag=" -fPIC -DPIC"
@@ -335,7 +335,7 @@ link_static_flag=""
 compiler_c_o="yes"
 
 # Whether or not to add -lc for building shared libraries.
-build_libtool_need_lc=no
+build_libtool_need_lc=yes
 
 # Whether or not to disallow shared libs when runtime libs are static.
 allow_libtool_libs_with_static_runtimes=no

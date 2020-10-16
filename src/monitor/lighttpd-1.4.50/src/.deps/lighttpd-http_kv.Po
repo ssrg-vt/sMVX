@@ -1,11 +1,12 @@
 lighttpd-http_kv.o: http_kv.c first.h ../config.h \
- /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
- /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
- /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
- /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
- /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
- http_kv.h /usr/local/musl/include/string.h \
- /usr/local/musl/include/strings.h
+  /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
+  /usr/local/musl/include/bits/alltypes.h \
+  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
+  /usr/local/musl/include/bits/stdint.h \
+  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+  http_kv.h /usr/local/musl/include/string.h \
+  /usr/local/musl/include/strings.h
 
 first.h:
 
