@@ -11,11 +11,13 @@ void associate_pkey_library(proc_info_t* lib_info, unsigned long pkey);
 
 # ifdef INTEL_MPK
 
+//# define ACTIVATE()							       \
+//	do {								       \
+//	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS <<(2*PKEY_NUMBER))),\
+//		"c" (0), "d" (0));                                             \
+//	}while(0)
 # define ACTIVATE()							       \
-	do {								       \
-	__asm__(".byte 0x0f,0x01,0xef\n\t" : : "a" ((PKEY_NO_ACCESS <<(2*PKEY_NUMBER))),\
-		"c" (0), "d" (0));                                             \
-	}while(0)
+	do {}while(0)
 
 # define DEACTIVATE()                                                          \
 	do {                                                                   \

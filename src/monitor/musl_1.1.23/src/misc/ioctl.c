@@ -11,3 +11,8 @@ int ioctl(int fd, int req, ...)
 	va_end(ap);
 	return syscall(SYS_ioctl, fd, req, arg);
 }
+
+int vioctl(int fd, int req, const void* arg)
+{
+	return syscall(SYS_ioctl, fd, req, arg);
+}

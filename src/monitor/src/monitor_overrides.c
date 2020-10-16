@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 /* Libc headers */
 #include <dlfcn.h>
 #include <stdarg.h>
@@ -7,6 +8,8 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 /* Local headers */
 #include <debug.h>
@@ -53,6 +56,7 @@ int (*real_accept4)(int fd, struct sockaddr *restrict addr, socklen_t *restrict 
 	       int flg);
 int (*real_epoll_ctl)(int fd, int op, int fd2, struct epoll_event *ev);
 int (*real_fstat)(int fd, struct stat *st);
+int (*real_stat)(const char *__restrict, struct stat *__restrict);
 ssize_t (*real_recv)(int fd, void *buf, size_t len, int flags);
 int (*real_shutdown)(int fd, int how);
 int (*real_setsockopt)(int fd, int level, int optname, const void *optval,
@@ -60,6 +64,10 @@ int (*real_setsockopt)(int fd, int level, int optname, const void *optval,
 int (*real_gettimeofday)(struct timeval *restrict tv, void *restrict tz);
 struct tm *(*real_localtime_r)(const time_t *restrict t, struct tm *restrict
 				 tm);
+int (*real_getopt)(int argc, char * const argv[], const char *optstring);
+int (*real_getsockopt)(int fd, int level, int optname, void *restrict optval,
+		       socklen_t *restrict optlen);
+ssize_t (*real_read)(int fd, void *buf, size_t count);
 
 /* Helper function to store the original functions we are overriding*/
 void store_original_functions()
@@ -134,6 +142,14 @@ void store_original_functions()
 		log_error("gettimeofday symbol not found ");
 	if (!(real_localtime_r= dlsym(RTLD_NEXT, "localtime_r")))
 		log_error("__localtime_r symbol not found ");
+	if (!(real_getopt = dlsym(RTLD_NEXT, "getopt")))
+		log_error("getopt symbol not found ");
+	if (!(real_getsockopt = dlsym(RTLD_NEXT, "getsockopt")))
+		log_error("getsockopt symbol not found");
+	if (!(real_stat = dlsym(RTLD_NEXT, "stat")))
+		log_error("stat symbol not found");
+	if (!(real_read = dlsym(RTLD_NEXT, "read")))
+		log_error("read symbol not found");
 }
 
 /* Helper function that does comparison of function name, assumes we already
@@ -881,7 +897,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
 		else{
-			log_error("Master called %s, ev: %p", __func__, ev);
+			log_debug("Master called %s, ev: %p", __func__, ev);
 			while(calldata_ptr->ready_for_check )
 				pthread_cond_wait(&(syncdata_ptr->follower_done),
 						  &(syncdata_ptr->monitor_mutex));
@@ -1098,6 +1114,314 @@ int setsockopt(int fd, int level, int optname, const void *optval, socklen_t opt
 	ACTIVATE();
 	return retval;
 }
+
+int getsockopt(int fd, int level, int optname, void *restrict optval, socklen_t
+	       *restrict optlen) {
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s, args: fd %u, level %u", __func__, fd, level);
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+
+			/* Perform function name check to ensure sequence */
+			check_function_names(__func__);
+			/* Perform optlen emulation */
+			real_memcpy(optlen, &calldata_ptr->em_data.optlen,
+				    sizeof(socklen_t));
+			real_memset(&calldata_ptr->em_data.optlen, 0,
+				    sizeof(socklen_t));
+			/* Perform optval emulation */
+			real_memcpy(optval, calldata_ptr->em_data.buf, *optlen);
+			real_memset(calldata_ptr->em_data.buf, 0, *optlen);
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			log_debug("Child is done with %s, retval: %u", __func__, retval);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s, args: fd %u, level %u", __func__, fd, level);
+			while(calldata_ptr->ready_for_check )
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			store_function_name(__func__);
+			retval = real_getsockopt(fd, level, optname, optval,
+						 optlen);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Perform optlen emulation */
+			real_memcpy(&calldata_ptr->em_data.optlen, optlen,
+				    sizeof(socklen_t));
+			/* Perform optval emulation */
+			real_memcpy(calldata_ptr->em_data.buf, optval, *optlen);
+			calldata_ptr->ready_for_check = true;
+			log_debug("Master is done with %s, signalling child, retval: %u", __func__, retval);
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
+		retval = real_getsockopt(fd, level, optname, optval,
+						 optlen);
+	}
+	ACTIVATE();
+	return retval;
+}
+
+int ioctl(int fd, int req, ...)
+{
+	DEACTIVATE();
+	void *arg;
+	int* toread;
+	va_list ap;
+	int retval;
+	if(calldata_ptr->mvx_active){
+		va_start(ap, req);
+		arg = va_arg(ap, void *);
+		va_end(ap);
+		toread = (int*) arg;
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s, args: fd %u, req %u",
+				  __func__, fd, req);
+			while(!calldata_ptr->ready_for_check)
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+
+			/* Perform function name check to ensure sequence */
+			check_function_names(__func__);
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			/* Assume this ioctl is of the form ioctl(5, 21531,
+			 * 0x7ffd31eea1cc) for now as only lighttpd uses it*/
+			/* Perform toread emulation */
+			real_memcpy(toread, calldata_ptr->em_data.buf,
+				    sizeof(int));
+			real_memset(calldata_ptr->em_data.buf, 0,
+				    sizeof(int));
+			log_debug("Child is done with %s, retval: %u", __func__, retval);
+			calldata_ptr->ready_for_check = false;
+			//__asm("int3");
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s, args: fd %u, req %u",
+				  __func__, fd, req);
+			while(calldata_ptr->ready_for_check )
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			store_function_name(__func__);
+			retval = vioctl(fd, req, arg);
+
+			/* Assume this ioctl is of the form ioctl(5, 21531,
+			 * 0x7ffd31eea1cc) for now as only lighttpd uses it*/
+			/* Perform toread emulation */
+			real_memcpy(&calldata_ptr->em_data.buf, toread,
+				    sizeof(int));
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s, signalling child, retval: %u", __func__, retval);
+			//__asm("int3");
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
+		va_start(ap, req);
+		arg = va_arg(ap, void *);
+		va_end(ap);
+		retval = vioctl(fd, req, arg);
+	}
+	ACTIVATE();
+	return retval;
+}
+
+int stat(const char *restrict path, struct stat *restrict buf)
+{
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s", __func__);
+			while(!calldata_ptr->ready_for_check){
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			}
+
+			/* Perform function name check to ensure sequence */
+			check_function_names(__func__);
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			/* Perform stat emulation */
+			real_memcpy(buf, calldata_ptr->em_data.buf, sizeof(struct
+									  stat));
+			real_memset(calldata_ptr->em_data.buf, 0, sizeof(struct
+									 stat));
+			log_debug("Child is done with %s , mode: %u",__func__,
+				  buf->st_mode);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s", __func__);
+			while(calldata_ptr->ready_for_check ){
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			}
+			store_function_name(__func__);
+			retval = real_stat(path, buf);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy buffer data to shared memory */
+			real_memcpy(calldata_ptr->em_data.buf, buf, sizeof(struct
+									  stat));
+
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s , mode: %u",__func__,
+				  buf->st_mode);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
+		retval = real_stat(path, buf);
+	}
+	ACTIVATE();
+	return retval;
+
+}
+
+ssize_t read(int fd, void *buf, size_t count)
+{
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s", __func__);
+			while(!calldata_ptr->ready_for_check){
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+			}
+
+			/* Perform function name check to ensure sequence */
+			check_function_names(__func__);
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			/* Perform read emulation */
+			real_memcpy(buf, calldata_ptr->em_data.buf, count);
+			real_memset(calldata_ptr->em_data.buf, 0, count);
+			/* Errno emulation */
+			errno =  calldata_ptr->em_data.err;
+			log_debug("Child is done with %s , fd: %d, count: %lu",__func__,
+				  fd, count);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s", __func__);
+			while(calldata_ptr->ready_for_check ){
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			}
+			store_function_name(__func__);
+			retval = real_read(fd, buf, count);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy buffer data to shared memory */
+			real_memcpy(calldata_ptr->em_data.buf, buf, count);
+			/* Copy system errno */
+			calldata_ptr->em_data.err = errno;
+
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s , fd: %d, count: %lu",__func__,
+				  fd, count);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
+		retval = real_read(fd, buf, count);
+	}
+	ACTIVATE();
+	return retval;
+
+}
+
+#if 0
+int getopt(int argc, char * const argv[], const char *optstring)
+{
+	DEACTIVATE();
+	int retval;
+	if(calldata_ptr->mvx_active){
+		pthread_mutex_lock(&(syncdata_ptr->monitor_mutex));
+		/* Have child check */
+		if (is_child()){
+			log_debug("Child called %s", __func__);
+			while(!calldata_ptr->ready_for_check){
+				pthread_cond_wait(&(syncdata_ptr->master_done), &(syncdata_ptr->monitor_mutex));
+
+			/* Perform function name check to ensure sequence */
+			check_function_names(__func__);
+			}
+			/* Perform retval emulation */
+			retval = calldata_ptr->em_data.retval;
+			/* Perform optstring emulation */
+			real_memcpy((void*)optstring, calldata_ptr->em_data.buf,
+				    strlen((const
+					    char*)calldata_ptr->em_data.buf)+1);
+			real_memset(calldata_ptr->em_data.buf, 0,
+				    strlen((const
+					    char*)calldata_ptr->em_data.buf)+1);
+			/* optind, opterr, optopt, optarg emulation */
+			optind =  calldata_ptr->em_data.optind;
+			opterr =  calldata_ptr->em_data.opterr;
+			optopt =  calldata_ptr->em_data.optopt;
+			log_debug("Child is done with %s , optstring:"
+				  "%s",__func__, optstring);
+			calldata_ptr->ready_for_check = false;
+			pthread_cond_signal(&(syncdata_ptr->follower_done));
+		}
+		else{
+			log_debug("Master called %s", __func__);
+			while(calldata_ptr->ready_for_check ){
+				pthread_cond_wait(&(syncdata_ptr->follower_done),
+						  &(syncdata_ptr->monitor_mutex));
+			}
+			store_function_name(__func__);
+			retval = real_getopt(argc, argv, optstring);
+			/* Copy retval to shared memory */
+			calldata_ptr->em_data.retval = (uint64_t)retval;
+			/* Copy buffer data to shared memory */
+			real_memcpy(calldata_ptr->em_data.buf, optstring, 
+				    strlen((const
+					    char*)optstring)+1);
+
+			calldata_ptr->ready_for_check = true;
+			pthread_cond_signal(&(syncdata_ptr->master_done));
+			log_debug("Master is done with %s , optstring:"
+				  "%s",__func__, optstring);
+		}
+		pthread_mutex_unlock(&(syncdata_ptr->monitor_mutex));
+	}
+	else{
+		log_debug("Master called %s, mvx isn't active, PID:%u", __func__, getpid());
+		retval = real_getopt(argc, argv, optstring);
+	}
+	ACTIVATE();
+	return retval;
+}
+#endif
 
 #if 0
 int gettimeofday(struct timeval *restrict tv, void *restrict tz)

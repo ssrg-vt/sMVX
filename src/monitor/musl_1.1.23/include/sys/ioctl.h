@@ -117,6 +117,7 @@ struct winsize {
 #define SIOCPROTOPRIVATE   0x89E0
 
 int ioctl (int, int, ...);
+int vioctl(int fd, int req, const void* arg);
 
 #ifdef __cplusplus
 }

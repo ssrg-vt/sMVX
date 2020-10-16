@@ -30,6 +30,10 @@ struct timespec start_total_time = {0};
 struct timespec end_total_time = {0};
 uint64_t diff_total_time = 0;
 
+struct timespec heap_scan_start_time = {0};
+struct timespec heap_scan_end_time = {0};
+uint64_t heap_diff_scan_time = 0;
+
 #endif
 
 /* Global memory to store thread function call arguments. */
@@ -70,8 +74,17 @@ static int _lmvx_thread_shim(void *p)
 	DEACTIVATE(); /* Deactivate pkey for the other process */
 	store_child_pid(getpid());
 
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &heap_scan_start_time);
+#endif
 	/* update heap code pointers */
 	update_heap_pointers_self();
+
+#if _TIME_LMVX
+	clock_gettime(CLOCK_MONOTONIC, &heap_scan_end_time);
+	heap_diff_scan_time += as_ns(&heap_scan_end_time) - as_ns(&heap_scan_start_time);
+	log_info("[TIMING] Heap Scanning and ptr update takes: %luns", heap_diff_scan_time);
+#endif
 
 	// TODO: comment for now
 	//update_vma_permission();

@@ -13,18 +13,33 @@
 */
 #define ROUNDUP(x,y)     (((x)+y-1)&~(y-1))
 
-/* Instruction patching */
+/* Instruction patching for individual slots to store slot data and save $rbx
+ * and $rax */
+typedef struct{
+	uint8_t push_rbx;
+	uint8_t push_rax;
+	uint8_t nop0;
+	uint8_t nop1;
+	uint8_t nop2;
+	uint8_t nop3;
+	/* While this entire slot is supposed to be 16 bytes, we only need to
+	 * write the first 6, we can reuse what is already there for the
+	 * remaining 10 bytes*/
+}__attribute__((__packed__)) jump_patch_t;
+
+/* Instruction patching for first plt slot, all individual slots redirect here
+ * and converge. This patch is in charge of redirecting to the MPK trampoline*/
 typedef struct{
 	uint8_t mov;
 	uint8_t eax;
 	uint64_t address;
 	uint8_t jmp0;
 	uint8_t jmp1;
-	uint8_t noop0;
-	uint8_t noop1;
-	uint8_t noop2;
-	uint8_t noop3;
-}__attribute__((__packed__)) jump_patch_t;
+	uint8_t nop0;
+	uint8_t nop1;
+	uint8_t nop2;
+	uint8_t nop3;
+}__attribute__((__packed__)) jump_patch_general_t;
 
 /* Runtime "/proc/<pid>/maps" info */
 typedef struct {
@@ -81,5 +96,6 @@ static int read_binary_info(binary_info_t *binfo);
 static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo);
 static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta);
 static int update_heap_code_pointers(uint64_t base, int64_t delta);
+static inline void* pageof(const void* p);
 
 #endif
