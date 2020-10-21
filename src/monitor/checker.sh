@@ -1,9 +1,10 @@
 #!/bin/bash
 ### We should print .text .data .bss [addr, size]
-#echo "Use:     (sudo) ./checker.sh binary "
+#echo "Use:     (sudo) ./checker.sh binary shared_lib1.so shared_lib2.so ..."
 
 bin=$1
 rm -rf /tmp/dec.info
+
 
 echo "Create /tmp/dec.info file ..."
 tmpfile=$(tempfile -n /tmp/dec.info) || exit
@@ -53,3 +54,32 @@ nm $bin | grep " t " >> $tmpfile
 echo
 echo "Verify: cat "$tmpfile
 cat $tmpfile
+
+## Create other files for each .so
+for ((i = 2; i <= $#; i++ )); do
+     printf '%s\n' "Shared lib name: $i: ${!i}"
+      
+     tmpfilename=$(echo ${!i} | sed -r "s/.+\/(.+)\..+/\1/").info
+     tmpfilepath=/tmp/$tmpfilename
+     rm -rf $tmpfilepath
+
+     tempfile -n $tmpfilepath || exit
+     echo "File" $tmpfilepath "created"
+     ## dump the sections first
+     result=$(readelf -SW ${!i} | grep " .text" | python elf-section.py)
+     echo ".text:" $result
+     echo $result > $tmpfilepath
+     result=$(readelf -SW ${!i} | grep " .data" | python elf-section.py)
+     echo ".data:" $result
+     echo $result >> $tmpfilepath
+     result=$(readelf -SW ${!i} | grep " .bss" | python elf-section.py)
+     echo ".bss:" $result
+     echo $result >> $tmpfilepath
+     result=$(readelf -SW ${!i} | grep " .plt" | python elf-section.py)
+     echo ".plt:" $result
+     echo $result >> $tmpfilepath
+     result=$(readelf -SW ${!i} | grep " .got.plt" | python elf-section.py)
+     echo ".gotplt:" $result
+     echo $result >> $tmpfilepath
+done
+
