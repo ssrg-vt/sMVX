@@ -81,7 +81,8 @@ nginx_run:
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 lighttpd_run:
-	LOG_LEVEL=ERROR BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+	#LOG_LEVEL=TRACE PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+	LOG_LEVEL=TRACE BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
 
 debug:
 	gdb test.bin -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
@@ -90,7 +91,7 @@ nginx_debug:
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
 lighttpd_debug:
-	gdb ./lighttpd-1.4.50/src/lighttpd -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=lighttpd" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'"
+	gdb ./lighttpd-1.4.50/src/lighttpd -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=lighttpd" -ex "set environment PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'"
 
 clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin

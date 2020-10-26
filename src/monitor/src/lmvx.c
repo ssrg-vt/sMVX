@@ -155,7 +155,8 @@ int lmvx_init(void)
 {
 	DEACTIVATE();
 	int i = 0;
-
+	/* Patch all shared library plts so libc functions go through trampoline */
+	patch_library_plt();
 	/* initialize the thread stack */
 	stack = malloc(STACK_SIZE);
 	if (stack == NULL) {

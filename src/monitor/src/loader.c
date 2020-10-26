@@ -2,7 +2,7 @@
  * A simple ELF loader that loads a duplicated .text into memory.
  *
  * Usage:
- *   $ BIN=<binary-variant> CONF=conf/<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> param1 param2 ...
+ *   $ BIN=<binary-variant> $PATCH_LIBS=<non libc/lmvx shared lib names, comma separated> CONF=conf/<func.conf> LD_PRELOAD=./loader.so ./<binary-vanilla> param1 param2 ...
  * Note: the two binaries could be different; the conf file is a list of function names,
  * each in a separate line.
  * 
@@ -23,7 +23,8 @@
 #include <env.h>
 #include <loader.h>
 
-#define USAGE 		 "Use: $ BIN=<binary name> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
+#define USAGE 		 "Use: $ BIN=<binary name> $PATCH_LIBS=<non libc/lmvx \
+			shared lib names, comma separated> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
 #define STACK_SIZE		 (4096)
 #define MAX_GOTPLT_SLOTS (1024)
 #define GOTPLT_PREAMBLE_SIZE	 (24) /* Size of area before actual gotplt slots
@@ -86,7 +87,7 @@ int init_loader(int argc, char** argv, char** env)
 
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
 	 * binding*/
-	patch_plt();
+	patch_binary_plt(&binfo, &pinfo);
 
 	return 0;
 }
@@ -534,16 +535,16 @@ void read_gotplt()
 //	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
 //}
 
-void patch_plt()
+static void patch_binary_plt(const binary_info_t *bin_info, const proc_info_t* process_info)
 {
 	uint64_t plt_start, plt_end;
 	uint64_t text_base, i;
 	uint8_t j;
 	jump_patch_t *p;
 	jump_patch_general_t *pg;
-	text_base = pinfo.code_start;
-	plt_start = text_base + binfo.plt_start;
-	plt_end = plt_start + binfo.plt_size;
+	text_base = process_info->code_start;
+	plt_start = text_base + bin_info->plt_start;
+	plt_end = plt_start + bin_info->plt_size;
 	/* general_patch_data and patch_data are packed structs:
 	 *  Instructions in general_patch_data:
 	 *  movabs 0xXXXXXXXXXXXX, $rax
@@ -573,7 +574,7 @@ void patch_plt()
 	jump_patch_t patch_data = {0x53, 0x50, 0x90, 0x90, 0x90, 0x90};
 
 	/* Disable protections for writing */
-	mprotect((void*)plt_start, binfo.plt_size, PROT_READ | PROT_WRITE);
+	mprotect((void*)plt_start, bin_info->plt_size, PROT_READ | PROT_WRITE);
 
 	/* Write the common slot first, this is usually used for lazy binding
 	 * but musl doesn't support it. This means we can take advantage of this
@@ -597,5 +598,49 @@ void patch_plt()
 	}
 
 	/* Set .plt to only executable state for .text segment */
-	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), binfo.plt_size, PROT_EXEC);
+	mprotect((void*)(plt_start-PLT_PREAMBLE_SIZE), bin_info->plt_size, PROT_EXEC);
+}
+
+
+/**
+ * @brief Iterate through libraries and patch all .plt entries assumes we are
+ * using mpk_trampoline.
+ */
+void patch_library_plt()
+{
+	FILE *fbin = 0;
+	binary_info_t lib_binfo;
+	proc_info_t lib_pinfo;
+	char* strtok_saveptr, *libtoken;
+	char* library_names = getenv("PATCH_LIBS");
+	char libinfo_path[100];
+
+	strtok_saveptr = library_names;
+	/* Go through individual library names, comma delimited in LIBS */
+	for (libtoken = strtok_r(strtok_saveptr, ",", &strtok_saveptr);
+	     libtoken != NULL;
+	     libtoken = strtok_r(strtok_saveptr, ",",
+						    &strtok_saveptr)) {
+		read_proc(libtoken, &lib_pinfo);
+
+		sprintf(libinfo_path, "/tmp/%s.info", libtoken);
+		log_info("Lib tempfile path: %s", libinfo_path);
+		fbin = fopen(libinfo_path, "r");
+
+		assert(fbin && "Invalid temp lib file path. Did you run checker.sh?");
+
+		fscanf(fbin, "%lx %lx %lx %lx %lx %lx %lx %lx %lx %lx",
+			&(lib_binfo.code_start), &(lib_binfo.code_size),
+			&(lib_binfo.data_start), &(lib_binfo.data_size),
+			&(lib_binfo.bss_start), &(lib_binfo.bss_size),
+			&(lib_binfo.plt_start), &(lib_binfo.plt_size),
+			&(lib_binfo.gotplt_start), &(lib_binfo.gotplt_size));
+
+		log_info(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]",
+			lib_binfo.code_start, lib_binfo.code_size,
+			lib_binfo.data_start, lib_binfo.data_size,
+			lib_binfo.bss_start, lib_binfo.bss_size);
+
+		patch_binary_plt(&lib_binfo, &lib_pinfo);
+		}
 }
