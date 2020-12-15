@@ -1,0 +1,10 @@
+sprintf(buffer,"**System used for compilation:\n");
+output_string(buffer);
+sprintf(buffer,"**Linux mir2 5.2.10-xiaoguang #7 SMP Tue Aug 11 15:36:10 EDT 2020 x86_64 GNU/Lin\n");
+output_string(buffer);
+sprintf(buffer,"**C compiler: /usr/local/musl/bin/musl-gcc\n");
+output_string(buffer);
+sprintf(buffer,"**libc: \n");
+output_string(buffer);
+sprintf(buffer,"**Date of compilation: Mon Nov 23 12:07:46 EST 2020\n");
+output_string(buffer);

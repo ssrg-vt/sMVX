@@ -2024,6 +2024,7 @@ static int server_main (server * const srv, int argc, char **argv) {
 		oneshot_fd = -1;
 	}
 
+	lmvx_init();
 	lmvx_start("mainloop", 2, srv, idle_limit);
 	mainloop(srv, idle_limit);
 	lmvx_end();
@@ -2053,7 +2054,6 @@ static int server_main (server * const srv, int argc, char **argv) {
 
 int main (int argc, char **argv) {
     int rc;
-    lmvx_init();
 
   #ifdef HAVE_GETUID
   #ifndef HAVE_ISSETUGID

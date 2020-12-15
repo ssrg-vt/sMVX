@@ -40,8 +40,8 @@ uint64_t heap_diff_scan_time = 0;
 shim_args_t args;
 
 /* Stack for variant thread. */
-char *stack = NULL;
-char *stackTop = NULL;
+extern char *stack;
+extern char *stackTop;
 
 //extern func_desc_t g_func[];
 extern void *new_text_base;
@@ -158,13 +158,13 @@ int lmvx_init(void)
 	/* Patch all shared library plts so libc functions go through trampoline */
 	patch_library_plt();
 	/* initialize the thread stack */
-	stack = malloc(STACK_SIZE);
-	if (stack == NULL) {
-		log_error("malloc failed.");
-		exit(EXIT_FAILURE);
-	}
-	stackTop = stack + STACK_SIZE;
-
+	//stack = malloc(STACK_SIZE);
+	//if (stack == NULL) {
+	//	log_error("malloc failed.");
+	//	exit(EXIT_FAILURE);
+	//}
+	//stackTop = stack + STACK_SIZE;
+	//log_debug("Stacktop is: %p", stackTop);
 	associate_all_pkeys();
 	return 0;
 }

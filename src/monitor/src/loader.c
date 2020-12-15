@@ -76,14 +76,15 @@ int init_loader(int argc, char** argv, char** env)
 	/* read binary info from a profile file - "/tmp/dec.info" */
 	read_binary_info(&binfo);
 
+	/* Get the gotplt pointers */
+	read_gotplt();
+
+
 	/* duplicate the code and data (.data, .bss) VMAs */
 	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
 	log_info("old_text_base %p, new_text_base %p. delta %lx",
 			old_text_base, new_text_base, new_text_base - old_text_base);
-
-	/* Get the gotplt pointers */
-	read_gotplt();
 
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
 	 * binding*/
@@ -213,7 +214,6 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 	uint64_t total_sz = ROUNDUP(binfo->bss_start + binfo->bss_size, 4096);
 	// .rodata offset, .data offset
 	uint64_t rodata_off, data_off;
-
 	// calculate size and offset
 	code_sz = pinfo->code_end - pinfo->code_start;
 	rodata_sz = pinfo->rodata_end - pinfo->rodata_start;

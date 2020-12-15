@@ -1,6 +1,6 @@
 
 CC =	/usr/local/musl/bin/musl-gcc
-CFLAGS =  -pipe  -O -W -Wall -Wpointer-arith -Wno-unused -Werror -g -O0 -g
+CFLAGS =  -pipe  -O -W -Wall -Wpointer-arith -Wno-unused -Werror -g -O0
 CPP =	/usr/local/musl/bin/musl-gcc -E
 LINK =	$(CC)
 

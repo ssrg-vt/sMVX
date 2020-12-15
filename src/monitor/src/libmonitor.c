@@ -35,6 +35,9 @@ unsigned long mvx_child_pid = 0;
 /* PID of the parent variant */
 unsigned long mvx_parent_pid = 0;
 
+char *stack;
+char *stackTop;
+
 /* Shared memory */
 extern struct call_data* calldata_ptr;
 extern struct sync_data* syncdata_ptr;
@@ -50,6 +53,15 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	mvx_parent_pid = getpid();
 
 	setup_ipc();
+
+	/* initialize the thread stack */
+	stack = malloc(STACK_SIZE);
+	if (stack == NULL) {
+		log_error("malloc failed.");
+		exit(EXIT_FAILURE);
+	}
+	stackTop = stack + STACK_SIZE;
+
 	log_info("Trampoline library instantiated");
 }
 

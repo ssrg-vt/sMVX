@@ -80,9 +80,13 @@ pointer_test:
 nginx_run:
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
-lighttpd_run:
-	#LOG_LEVEL=TRACE PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
-	LOG_LEVEL=TRACE BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+lighttpd_run: lighttpd_checker
+	LOG_LEVEL=TRACE PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+	#LOG_LEVEL=TRACE BIN=lighttpd LD_PRELOAD=libmonitor.so ./lighttpd-1.4.50/src/lighttpd -f ./lighttpd-1.4.50/lighttpdconfig.conf -D
+
+nbench_run: nbench_checker
+	cd nbench; LOG_LEVEL=TRACE BIN=nbench LD_PRELOAD=../libmonitor.so ./nbench
+	#LOG_LEVEL=TRACE BIN=nbench LD_PRELOAD=libmonitor.so ./nbench/nbench
 
 debug:
 	gdb test.bin -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=test.bin"
@@ -90,8 +94,26 @@ debug:
 nginx_debug:
 	gdb nginx-1.3.9/objs/nginx -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=nginx"
 
+redis_debug:
+	gdb redis/src/redis-server -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=redis-server"
+
+lighttpd_checker:
+	./checker.sh ./lighttpd-1.4.50/src/lighttpd /usr/local/lib/mod_staticfile.so /usr/local/lib/mod_dirlisting.so /usr/local/lib/mod_indexfile.so
+
 lighttpd_debug:
 	gdb ./lighttpd-1.4.50/src/lighttpd -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=lighttpd" -ex "set environment PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'"
+
+nbench_checker:
+	./checker.sh ./nbench/nbench
+
+nbench_debug: nbench_checker
+	cd nbench; gdb nbench -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=nbench" -ex "set exec-wrapper env 'LD_PRELOAD=../libmonitor.so'"
+
+spec_gcc_checker:
+	./checker.sh ./spec2006/benchspec/CPU2006/403.gcc/run/run_base_ref_amd64-m64-gcc42-nn.0000/gcc
+
+gcc_debug: spec_gcc_checker
+	cd ./spec2006/benchspec/CPU2006/403.gcc/run/run_base_ref_amd64-m64-gcc42-nn.0000/ ; gdb gcc -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=gcc" -ex "set exec-wrapper env 'LD_PRELOAD=/usr/local/lib/libmonitor.so'"
 
 clean:
 	rm -rf $(OBJ_DIR) libmonitor.so liblmvx.so test.bin

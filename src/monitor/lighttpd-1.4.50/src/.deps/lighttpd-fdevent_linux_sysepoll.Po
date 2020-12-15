@@ -1,18 +1,17 @@
 lighttpd-fdevent_linux_sysepoll.o: fdevent_linux_sysepoll.c first.h \
-  ../config.h /usr/local/musl/include/sys/types.h \
-  /usr/local/musl/include/features.h \
-  /usr/local/musl/include/bits/alltypes.h \
-  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
-  /usr/local/musl/include/bits/stdint.h \
-  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
-  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
-  fdevent_impl.h base_decls.h fdevent.h buffer.h log.h \
-  /usr/local/musl/include/unistd.h /usr/local/musl/include/bits/posix.h \
-  /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
-  /usr/local/musl/include/string.h /usr/local/musl/include/strings.h \
-  /usr/local/musl/include/errno.h /usr/local/musl/include/bits/errno.h \
-  /usr/local/musl/include/sys/epoll.h /usr/local/musl/include/fcntl.h \
-  /usr/local/musl/include/bits/fcntl.h
+ ../config.h /usr/local/musl/include/sys/types.h \
+ /usr/local/musl/include/features.h \
+ /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
+ /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
+ /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+ /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+ fdevent_impl.h base_decls.h fdevent.h buffer.h log.h \
+ /usr/local/musl/include/unistd.h /usr/local/musl/include/bits/posix.h \
+ /usr/local/musl/include/stdlib.h /usr/local/musl/include/alloca.h \
+ /usr/local/musl/include/string.h /usr/local/musl/include/strings.h \
+ /usr/local/musl/include/errno.h /usr/local/musl/include/bits/errno.h \
+ /usr/local/musl/include/sys/epoll.h /usr/local/musl/include/fcntl.h \
+ /usr/local/musl/include/bits/fcntl.h
 
 first.h:
 

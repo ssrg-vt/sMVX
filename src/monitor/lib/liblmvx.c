@@ -19,4 +19,3 @@ void lmvx_end(void)
 {
 	fprintf(stderr, "%s: vannila mode\n", __func__);
 }
-

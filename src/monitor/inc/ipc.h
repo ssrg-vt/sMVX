@@ -17,6 +17,7 @@ struct emulation_data
 	uint64_t retval;
 	unsigned optlen; //optlen is part of getsockopt
 	uint8_t buf[4096];
+	uint8_t epoll_ptr_buf[4096];
 };
 
 struct call_data

@@ -1,16 +1,15 @@
 lighttpd-stream.o: stream.c first.h ../config.h \
-  /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
-  /usr/local/musl/include/bits/alltypes.h \
-  /usr/local/musl/include/endian.h /usr/local/musl/include/stdint.h \
-  /usr/local/musl/include/bits/stdint.h \
-  /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
-  /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
-  stream.h buffer.h /usr/local/musl/include/sys/stat.h \
-  /usr/local/musl/include/bits/stat.h /usr/local/musl/include/unistd.h \
-  /usr/local/musl/include/bits/posix.h /usr/local/musl/include/fcntl.h \
-  /usr/local/musl/include/bits/fcntl.h /usr/local/musl/include/stdlib.h \
-  /usr/local/musl/include/alloca.h sys-mmap.h \
-  /usr/local/musl/include/sys/mman.h /usr/local/musl/include/bits/mman.h
+ /usr/local/musl/include/sys/types.h /usr/local/musl/include/features.h \
+ /usr/local/musl/include/bits/alltypes.h /usr/local/musl/include/endian.h \
+ /usr/local/musl/include/stdint.h /usr/local/musl/include/bits/stdint.h \
+ /usr/local/musl/include/sys/select.h /usr/local/musl/include/stddef.h \
+ /usr/local/musl/include/limits.h /usr/local/musl/include/bits/limits.h \
+ stream.h buffer.h /usr/local/musl/include/sys/stat.h \
+ /usr/local/musl/include/bits/stat.h /usr/local/musl/include/unistd.h \
+ /usr/local/musl/include/bits/posix.h /usr/local/musl/include/fcntl.h \
+ /usr/local/musl/include/bits/fcntl.h /usr/local/musl/include/stdlib.h \
+ /usr/local/musl/include/alloca.h sys-mmap.h \
+ /usr/local/musl/include/sys/mman.h /usr/local/musl/include/bits/mman.h
 
 first.h:
 

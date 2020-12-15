@@ -23,6 +23,9 @@
 struct call_data* calldata_ptr;
 struct sync_data* syncdata_ptr;
 
+/* Useful proc info for epoll */
+extern proc_info_t pinfo;
+
 /* Real functions not being overridden */
 int (*real_printf)(const char* restrict fmt, ...);
 int (*real_fork)(void);
@@ -788,6 +791,17 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 										  epoll_event));
 				real_memset(calldata_ptr->em_data.buf, 0, retval*sizeof(struct
 										 epoll_event));
+				/* Check if ev->data.ptr is within the rw data of the
+				 * proc, if it is this means ev->data.ptr is used
+				 * instead of ev->data.fd, if so, copy it*/
+				//if ((ev->data.u64 > 10)) {
+				//	real_memcpy(ev->data.ptr, calldata_ptr->em_data.epoll_ptr_buf,
+				//		     184);
+				//	log_info("Child copied epoll ev->data.ptr");
+				//	real_memset(calldata_ptr->em_data.epoll_ptr_buf,
+				//		    0, 184);
+				//	//__asm__("int3");
+				//}
 			}
 			log_debug("Child is done with %s, ev: %p, data: %p, return: %lu",
 				  __func__, ev, ev->data.u64, retval);
@@ -806,6 +820,16 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 			/* Copy buffer data to shared memory */
 			real_memcpy(calldata_ptr->em_data.buf, ev, retval*sizeof(struct
 									  epoll_event));
+
+			/* Check if ev->data.ptr is within the rw data of the
+			 * proc, if it is this means ev->data.ptr is used
+			 * instead of ev->data.fd, if so, copy it*/
+			//if ((ev->data.u64 < pinfo.data_end) && (ev->data.u64 >
+			//    pinfo.data_start)) {
+			//if ((ev->data.u64 > 10)) {
+			//	real_memcpy(calldata_ptr->em_data.epoll_ptr_buf,
+			//		    ev->data.ptr, 184);
+			//}
 			calldata_ptr->ready_for_check = true;
 			pthread_cond_signal(&(syncdata_ptr->master_done));
 			log_debug("Master is done with %s, ev: %p, data: %p, return: %lu",
@@ -893,6 +917,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 			/* Perform retval emulation */
 			retval = calldata_ptr->em_data.retval;
 			log_debug("Child is done with %s ", __func__);
+			//__asm__("int3");
 			calldata_ptr->ready_for_check = false;
 			pthread_cond_signal(&(syncdata_ptr->follower_done));
 		}
@@ -1423,7 +1448,6 @@ int getopt(int argc, char * const argv[], const char *optstring)
 }
 #endif
 
-#if 0
 int gettimeofday(struct timeval *restrict tv, void *restrict tz)
 {
 	DEACTIVATE();
@@ -1527,4 +1551,3 @@ struct tm *localtime_r(const time_t *restrict t, struct tm *restrict tm)
 	ACTIVATE();
 	return retval;
 }
-#endif
