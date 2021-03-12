@@ -48,13 +48,13 @@ monitor: $(OBJ) $(OBJ_DIR)/trampoline.o
 	@echo $(OBJ)
 	$(HUSH_CC_LD) $(CC) -shared $^ $(LDFLAGS) -o libmonitor.so #-ldl
 
-install: libmonitor.so liblmvx.so
-	install -C libmonitor.so /usr/local/lib/
-	install -C libmonitor.so /usr/lib/x86_64-linux-gnu/
-	install -C liblmvx.so /usr/local/lib/
-	install -C liblmvx.so /usr/lib/x86_64-linux-gnu/
-	install -D $(INC_DIR)/libmonitor.h /usr/local/dec/inc
-	install -D $(INC_DIR)/lmvx.h /usr/local/dec/inc
+#install: libmonitor.so liblmvx.so
+#	install -C libmonitor.so /usr/local/lib/
+#	install -C libmonitor.so /usr/lib/x86_64-linux-gnu/
+#	install -C liblmvx.so /usr/local/lib/
+#	install -C liblmvx.so /usr/lib/x86_64-linux-gnu/
+#	install -D $(INC_DIR)/libmonitor.h /usr/local/dec/inc
+#	install -D $(INC_DIR)/lmvx.h /usr/local/dec/inc
 
 ### liblmvx.so
 liblmvx.so: $(LIB_OBJ_FILES)
@@ -67,7 +67,7 @@ test.bin: $(TEST_DIR)/test.c liblmvx.so
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 test_run:
-	LOG_LEVEL=TRACE BIN=test.bin LD_PRELOAD=libmonitor.so ./test.bin
+	LOG_LEVEL=TRACE BIN=test.bin LD_PRELOAD=./libmonitor.so ./test.bin
 
 ## Pointer test case --> pointer.bin
 pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
@@ -75,7 +75,7 @@ pointer.bin: $(TEST_DIR)/pointer.c liblmvx.so
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
 pointer_test:
-	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=libmonitor.so ./pointer.bin
+	LOG_LEVEL=TRACE BIN=pointer LD_PRELOAD=./libmonitor.so ./pointer.bin
 
 nginx_run:
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx

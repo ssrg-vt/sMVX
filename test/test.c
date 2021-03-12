@@ -23,19 +23,20 @@ void simple_func(int pid)
 	memcpy(to, localstring, 10);
 
 	printf("%s: Local pid: %ld\n", __func__, gettid());
-	sprintf(cmd, "cat /proc/%d/maps", pid);
-	printf("%s\n", cmd);
+	printf("%s --> %s\n", localstring, (char *)to);
+//	sprintf(cmd, "cat /proc/%d/maps", pid);
+//	printf("%s\n", cmd);
 }
 
 int recursive_func(int p_pid, char *name, int cnt)
 {
 	char *new_name = "parant";
 
-	printf("(%d) Enter %s. Str: %s! Parent pid %d. Local pid %d. Cnt %d.\n",
+	printf("(pid: %d) Enter %s. Str: %s! Parent pid %d. Local pid %d. Cnt %d.\n",
 			getpid(), __func__, name, p_pid, getpid(), cnt);
 	name = new_name;
 	usleep(1000);
-	printf("(%d) Update str. New str: %s\n", getpid(), name);
+	printf("(pid: %d) Update str. New str: %s\n", getpid(), name);
 	usleep(1000);
 
 	if (cnt > 1) recursive_func(p_pid, name, cnt-1);

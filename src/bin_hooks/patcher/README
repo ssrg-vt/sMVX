@@ -1,5 +1,0 @@
-This directory holds the source for the mutator program, compiled against dyninst library, which is required:
-https://github.com/dyninst/dyninst
-
-This mutator program will act upon a set target in the target directory to add function hooks to specified functions.
-TODO: Provide interface to easily add function symbol names to be hooked and input for target to be hooked.Test with our mvx clone capability.

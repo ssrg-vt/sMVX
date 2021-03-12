@@ -2,9 +2,13 @@
 ### We should print .text .data .bss [addr, size]
 #echo "Use:     (sudo) ./checker.sh binary shared_lib1.so shared_lib2.so ..."
 
+BASEDIR=$(dirname "$0")
+ELF="python $BASEDIR/elf-section.py"
 bin=$1
 rm -rf /tmp/dec.info
 
+echo $BASEDIR
+echo ${ELF}
 
 echo "Create /tmp/dec.info file ..."
 tmpfile=$(tempfile -n /tmp/dec.info) || exit
@@ -28,20 +32,20 @@ echo "File" $tmpfile "created"
 #echo "Success"
 
 ## dump the sections first
-result=$(readelf -SW $bin | grep " .text" | python elf-section.py)
+result=$(readelf -SW $bin | grep " .text" | ${ELF})
 echo ".text:" $result
 echo $result > $tmpfile
 ## use " .data " to avoid finding out ".rodata" and ".data.rel.ro"
-result=$(readelf -SW $bin | grep " .data " | python elf-section.py)
+result=$(readelf -SW $bin | grep " .data " | ${ELF})
 echo ".data:" $result
 echo $result >> $tmpfile
-result=$(readelf -SW $bin | grep " .bss"  | python elf-section.py)
+result=$(readelf -SW $bin | grep " .bss"  | ${ELF})
 echo " .bss:" $result
 echo $result >> $tmpfile
-result=$(readelf -SW $bin | grep " .plt "  | python elf-section.py)
+result=$(readelf -SW $bin | grep " .plt "  | ${ELF})
 echo " .plt:" $result
 echo $result >> $tmpfile
-result=$(readelf -SW $bin | grep " .got.plt"  | python elf-section.py)
+result=$(readelf -SW $bin | grep " .got.plt"  | ${ELF})
 echo " .got.plt:" $result
 echo $result >> $tmpfile
 
@@ -66,19 +70,19 @@ for ((i = 2; i <= $#; i++ )); do
      tempfile -n $tmpfilepath || exit
      echo "File" $tmpfilepath "created"
      ## dump the sections first
-     result=$(readelf -SW ${!i} | grep " .text" | python elf-section.py)
+     result=$(readelf -SW ${!i} | grep " .text" | ${ELF})
      echo ".text:" $result
      echo $result > $tmpfilepath
-     result=$(readelf -SW ${!i} | grep " .data" | python elf-section.py)
+     result=$(readelf -SW ${!i} | grep " .data" | ${ELF})
      echo ".data:" $result
      echo $result >> $tmpfilepath
-     result=$(readelf -SW ${!i} | grep " .bss" | python elf-section.py)
+     result=$(readelf -SW ${!i} | grep " .bss" | ${ELF})
      echo ".bss:" $result
      echo $result >> $tmpfilepath
-     result=$(readelf -SW ${!i} | grep " .plt" | python elf-section.py)
+     result=$(readelf -SW ${!i} | grep " .plt" | ${ELF})
      echo ".plt:" $result
      echo $result >> $tmpfilepath
-     result=$(readelf -SW ${!i} | grep " .got.plt" | python elf-section.py)
+     result=$(readelf -SW ${!i} | grep " .got.plt" | ${ELF})
      echo ".gotplt:" $result
      echo $result >> $tmpfilepath
 done
