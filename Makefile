@@ -1,11 +1,5 @@
 CC          := /usr/local/musl/bin/musl-gcc
 #CC          := gcc
-#SRC_DIR     := ./src
-#LIB_DIR     := ./lib
-#INC_DIR     := ./inc
-#TEST_DIR    := ./test
-#OBJ_DIR     := ./obj
-#COMMON_DIR  := ./common
 SRC_DIR     := src
 LIB_DIR     := lib
 INC_DIR     := inc

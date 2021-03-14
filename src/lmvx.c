@@ -89,7 +89,7 @@ static int _lmvx_thread_shim(void *p)
 	// TODO: comment for now
 	//update_vma_permission();
 
-	log_trace("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
+	log_info("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 	//DEACTIVATE(); /* Deactivate pkey for the other process */
 	associate_all_pkeys();
 	switch (args.num_args) {
@@ -227,7 +227,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	log_info("[TIMING] Scanning and ptr update takes: %luns", diff_scan_time);
 #endif
 
-	log_trace("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+	log_info("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	DEACTIVATE();
 
 	flag_lmvx = 0;
@@ -259,7 +259,7 @@ void lmvx_end(void)
 	}
 
 	clear_mvx_active();
-	log_trace("%s: finish lmvx region. status %d", __func__, status);
+	log_info("%s: finish lmvx region. status %d", __func__, status);
 	DEACTIVATE();
 
 	ACTIVATE();

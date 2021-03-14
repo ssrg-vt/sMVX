@@ -1,28 +1,57 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef __LOG_h__
+#define __LOG_h__
 
+#include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
-typedef enum { 
-    LOG_TRACE, 
-    LOG_DEBUG, 
-    LOG_INFO, 
-    LOG_WARN, 
-    LOG_ERROR, 
-    LOG_FATAL 
-} log_level_t;
+#ifndef LOGLEVEL
+#define LOGLEVEL 4
+#endif
 
-void log_log(log_level_t level, const char *file, int line, const char *fmt, ...);
-int str_to_log_level(const char *str, log_level_t *level) ;
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define log_trace(...) log_log(LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define log_debug(...) log_log(LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define log_info(...)  log_log(LOG_INFO,  __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...)  log_log(LOG_WARN,  __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_log(LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_log(LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#if LOGLEVEL < 3
+#define NDEBUG 1
+#endif
 
-#define log_errno(fmt, ...) log_error("%s: " fmt, strerror(errno), ##__VA_ARGS__)
+#ifdef NDEBUG
+/* compile with all debug messages removed */
+#define log_debug(M, ...)
+#else
+#ifdef LOG_NOCOLORS
+  #define log_debug(M, ...) fprintf(stderr, "DEBUG " M " at %s (%s:%d) \n", ##__VA_ARGS__, __func__, __FILE__, __LINE__)
+#else
+  #define log_debug(M, ...) fprintf(stderr, "\33[34mDEBUG\33[39m " M "  \33[90m at %s (%s:%d) \33[39m\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__)
+#endif /* NOCOLORS */
+#endif /* NDEBUG */
+
+/* safe readable version of errno */
+#define clean_errno() (errno == 0 ? "None" : strerror(errno))
+
+#ifdef LOG_NOCOLORS
+  #define log_error(M, ...) fprintf(stderr,  "ERR   " M " at %s (%s:%d) errno:%s\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__, clean_errno())
+  #define log_warn(M, ...) fprintf(stderr, "WARN  " M " at %s (%s:%d) errno:%s\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__, clean_errno())
+  #define log_info(M, ...) fprintf(stderr, "INFO  " M " at %s (%s:%d)\n", ##__VA_ARGS__, __func__, __FILENAME__, __LINE__)
+#else
+  #define log_error(M, ...) fprintf(stderr,  "\33[31mERR\33[39m   " M "  \33[90m at %s (%s:%d) \33[94merrno: %s\33[39m\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__, clean_errno())
+  #define log_warn(M, ...) fprintf(stderr, "\33[91mWARN\33[39m  " M "  \33[90m at %s (%s:%d) \33[94merrno: %s\33[39m\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__, clean_errno())
+  #define log_info(M, ...) fprintf(stderr, "\33[32mINFO\33[39m  " M "  \33[90m at %s (%s:%d) \33[39m\n", ##__VA_ARGS__, __func__, __FILENAME__, __LINE__)
+#endif /* NOCOLORS */
+
+#if LOGLEVEL < 4
+#undef log_info
+#define log_info(M, ...)
+#endif
+
+#if LOGLEVEL < 2
+#undef log_warn
+#define log_warn(M, ...)
+#endif
+
+#if LOGLEVEL < 1
+#undef log_error
+#define log_error(M, ...)
+#endif
 
 #endif

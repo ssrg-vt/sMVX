@@ -20,7 +20,6 @@
 #include <sys/mman.h>
 
 #include <log.h>
-#include <env.h>
 #include <loader.h>
 
 #define USAGE 		 "Use: $ BIN=<binary name> $PATCH_LIBS=<non libc/lmvx \
@@ -60,9 +59,7 @@ int init_loader(int argc, char** argv, char** env)
 	/* get env file names */
 	const char *bin_name = getenv("BIN");
 
-	/* init the LOG_LEVEL env to enable logging (log_xxx printf) */
-	init_env();
-	log_debug("[LOADER]: LD_PRELOAD argc 0x%x. LOG_LEVEL %s", argc, getenv("LOG_LEVEL"));
+	log_info("[LOADER]: LD_PRELOAD argc 0x%x.", argc);
 
 	/* check whether BIN has been set. */
 	if (bin_name == NULL) {
