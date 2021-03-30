@@ -5,6 +5,8 @@
 #include <errno.h>
 #include <string.h>
 
+#define NODEBUG    // NO debug info when ENABLE this macro
+
 #ifndef LOGLEVEL
 #define LOGLEVEL 4
 #endif
@@ -12,10 +14,10 @@
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #if LOGLEVEL < 3
-#define NDEBUG 1
+#define NODEBUG 1
 #endif
 
-#ifdef NDEBUG
+#ifdef NODEBUG
 /* compile with all debug messages removed */
 #define log_debug(M, ...)
 #else
@@ -24,7 +26,7 @@
 #else
   #define log_debug(M, ...) fprintf(stderr, "\33[34mDEBUG\33[39m " M "  \33[90m at %s (%s:%d) \33[39m\n", ##__VA_ARGS__, __func__, __FILE__, __LINE__)
 #endif /* NOCOLORS */
-#endif /* NDEBUG */
+#endif /* NODEBUG */
 
 /* safe readable version of errno */
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))

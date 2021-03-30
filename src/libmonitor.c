@@ -62,7 +62,7 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	}
 	stackTop = stack + STACK_SIZE;
 
-	log_info("Trampoline library instantiated");
+	log_debug("Trampoline library instantiated");
 }
 
 void associate_all_pkeys()

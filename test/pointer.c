@@ -7,7 +7,7 @@
 
 int *p_global;
 int g_a = 10;
-void (*g_p_fn)(int *);
+void (*g_p_fn)(int *);	/* func pointer in .bss */
 
 void fun(int *p_para)
 {

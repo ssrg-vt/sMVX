@@ -59,7 +59,7 @@ int init_loader(int argc, char** argv, char** env)
 	/* get env file names */
 	const char *bin_name = getenv("BIN");
 
-	log_info("[LOADER]: LD_PRELOAD argc 0x%x.", argc);
+	log_debug("[LOADER]: LD_PRELOAD argc 0x%x.", argc);
 
 	/* check whether BIN has been set. */
 	if (bin_name == NULL) {
@@ -80,7 +80,7 @@ int init_loader(int argc, char** argv, char** env)
 	/* duplicate the code and data (.data, .bss) VMAs */
 	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
-	log_info("old_text_base %p, new_text_base %p. delta %lx",
+	log_debug("old_text_base %p, new_text_base %p. delta %lx",
 			old_text_base, new_text_base, new_text_base - old_text_base);
 
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
@@ -173,7 +173,7 @@ static int read_binary_info(binary_info_t *binfo)
 		&(binfo->plt_start), &(binfo->plt_size),
 		&(binfo->gotplt_start), &(binfo->gotplt_size));
 
-	log_info(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]", 
+	log_debug(".text [0x%lx, 0x%lx], .data [0x%lx, 0x%lx], .bss [0x%lx, 0x%lx]", 
 		binfo->code_start, binfo->code_size, 
 		binfo->data_start, binfo->data_size,
 		binfo->bss_start, binfo->bss_size);
@@ -280,7 +280,7 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 	bss_start = new_base + binfo->bss_start;
 	bss_end = bss_start + binfo->bss_size;
 
-	log_info("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]"
+	log_debug("runtime code: [0x%lx,0x%lx]\n\t\t\t\tdata: [0x%lx,0x%lx]"
 			"\n\t\t\t\t bss: [0x%lx,0x%lx]",
 			code_start, code_end, data_start, data_end, bss_start, bss_end);
 
@@ -392,10 +392,12 @@ void update_pointers_self()
 	uint64_t offset = new_text_base - old_text_base;
 	int code_pointer_cnt, data_pointer_cnt;
 	code_pointer_cnt = update_code_pointers(&pinfo, &binfo, new_text_base - old_text_base);
-	log_info("%s: # of code pointers %d", __func__, code_pointer_cnt);
+	if (code_pointer_cnt)
+		log_info("%s: # of code pointers %d", __func__, code_pointer_cnt);
 	data_pointer_cnt = update_data_pointers(&pinfo, &binfo, new_text_base - old_text_base);
-	log_info("%s: # of old data pointers on *data+bss* %d", __func__,
-		 data_pointer_cnt);
+	if (data_pointer_cnt)
+		log_info("%s: # of old data pointers on *data+bss* %d", __func__,
+			data_pointer_cnt);
 }
 
 /**
@@ -404,7 +406,8 @@ void update_pointers_self()
 void update_heap_pointers_self()
 {
 	int pointer_cnt = update_heap_code_pointers(pinfo.code_start, new_text_base - old_text_base);
-	log_info("%s: # of code pointers on *heap* %d", __func__, pointer_cnt);
+	if (pointer_cnt)
+		log_info("%s: # of code pointers on *heap* %d", __func__, pointer_cnt);
 }
 
 /**

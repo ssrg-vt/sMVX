@@ -72,3 +72,11 @@ tags
 cscope.out
 clang_tidy.conf
 compile_commands.json
+
+.old_src
+
+# test bin
+global_pointer
+stack_pointer
+heap_pointer
+tiny

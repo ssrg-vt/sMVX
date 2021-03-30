@@ -89,7 +89,7 @@ static int _lmvx_thread_shim(void *p)
 	// TODO: comment for now
 	//update_vma_permission();
 
-	log_info("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
+	log_debug("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 	//DEACTIVATE(); /* Deactivate pkey for the other process */
 	associate_all_pkeys();
 	switch (args.num_args) {
@@ -143,7 +143,7 @@ static u64 find_symbol_offset(const char *symbol)
 		return 0;
 	}
 	else {
-		log_info("Function name %s, offset 0x%lx", symbol, entry->offset);
+		log_debug("Function name %s, offset 0x%lx", symbol, entry->offset);
 		return entry->offset;
 	}
 }
@@ -202,7 +202,8 @@ void lmvx_start(const char *func_name, int argc, ...)
 	}
 	va_end(params);
 
-	log_debug("fun name %s. offset %x. jmp to 0x%lx", func_name, offset, *p);
+	log_debug("%s: fun name %s. offset %x. jmp to 0x%lx", __func__,
+		func_name, offset, *p);
 	DEACTIVATE();
 
 #if _TIME_LMVX
@@ -227,7 +228,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	log_info("[TIMING] Scanning and ptr update takes: %luns", diff_scan_time);
 #endif
 
-	log_info("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
+	log_debug("%s: pid %d. child jmp to 0x%lx", __func__, getpid(), *p);
 	DEACTIVATE();
 
 	flag_lmvx = 0;
@@ -236,7 +237,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 	ret = clone(_lmvx_thread_shim, stackTop, SIGCHLD, (void *)p);
 	DEACTIVATE();
 	flag_lmvx = 1;
-	log_info("clone ret (child pid) %d", ret);
+	log_debug("clone ret (child pid) %d", ret);
 
 #if _TIME_LMVX
 	clock_gettime(CLOCK_MONOTONIC, &end_total_time);
