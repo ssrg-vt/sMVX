@@ -1,6 +1,7 @@
 CC          := /usr/local/musl/bin/musl-gcc
 CFLAGS		:= -Wall -fPIC -pie -O0
-PRELOAD		:= LD_PRELOAD=../libmonitor.so
+PRELOAD		:= LD_PRELOAD=$(shell pwd)/../libmonitor.so
+LMVX.SO		:= $(shell pwd)/../liblmvx.so
 CHECKER		:= ../tools/checker.sh
 
 ifneq ($(VERBOSE),YES)
@@ -10,10 +11,15 @@ HUSH_LD		= @echo ' [LD]\t\t'$@;
 HUSH_AR		= @echo ' [AR]\t\t'$@;
 endif
 
-all: stack_pointer global_pointer tiny
+BIN			:= stack_pointer heap_pointer global_pointer tiny
+
+all: $(BIN)
+
+clean:
+	rm -rf $(BIN)
 
 ## Pointers on the stack
-stack_pointer: stack_pointer.c ../liblmvx.so
+stack_pointer: stack_pointer.c $(LMVX.SO)
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) $(CFLAGS) $^ -o $@
 
@@ -21,8 +27,17 @@ run_stack_pointer: stack_pointer
 	$(CHECKER) $<
 	BIN=$< $(PRELOAD) ./$<
 
+## Pointers on the heap
+heap_pointer: heap_pointer.c $(LMVX.SO)
+	@echo "Generate "$@":"
+	$(HUSH_CC_LD) $(CC) $(CFLAGS) $^ -o $@
+
+run_heap_pointer: heap_pointer
+	$(CHECKER) $<
+	BIN=$< $(PRELOAD) ./$<
+
 ## Global pointers 
-global_pointer: global_pointer.c ../liblmvx.so
+global_pointer: global_pointer.c $(LMVX.SO)
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) $(CFLAGS) $^ -o $@
 
@@ -31,7 +46,7 @@ run_global_pointer: global_pointer
 	BIN=$< $(PRELOAD) ./$<
 
 ## The tiny web server
-tiny: tiny.c ../liblmvx.so
+tiny: tiny.c $(LMVX.SO)
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) $(CFLAGS) $^ -o $@
 
@@ -40,7 +55,7 @@ run_tiny: tiny
 	BIN=$< $(PRELOAD) ./$<
 
 ## Two binaries, from (mostly) same source code
-test.bin: test.c ../liblmvx.so
+test.bin: test.c $(LMVX.SO)
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 
@@ -49,7 +64,7 @@ run_test.bin: test.bin
 	BIN=$< $(PRELOAD) ./$<
 
 ## Pointer test case --> pointer.bin
-pointer.bin: pointer.c ../liblmvx.so
+pointer.bin: pointer.c $(LMVX.SO)
 	@echo "Generate "$@":"
 	$(HUSH_CC_LD) $(CC) -Wall -fPIC -pie -g $^ -O0 -o $@
 

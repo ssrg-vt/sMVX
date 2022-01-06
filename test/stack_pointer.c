@@ -1,3 +1,14 @@
+/**
+ * @file stack_pointer.c
+ * @author Xiaoguang Wang
+ * @brief A unit test case for testing pointers on stack. No need to update
+ 		pointers on stack.
+ * @version 0.1
+ * @date 2021-03-30
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include <stdio.h>
 #include <unistd.h>
 #include <inttypes.h>
@@ -23,7 +34,7 @@ int main(int argc, char *argv[])
 	fun();
 
 	printf("[%d] %s\n", getpid(), __func__);
-	//printf("%s: pid %d.\n", __func__, getpid());
+
 	/** lmvx library **/
 	lmvx_start("fun", 0);
 	fun();
