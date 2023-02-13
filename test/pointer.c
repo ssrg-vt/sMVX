@@ -20,6 +20,7 @@ void fun(int *p_para)
 
 int main(int argc, char *argv[])
 {
+	int cnt = 100;
 	void (*p_fn)(int *) = &fun;
 
 	g_p_fn = &fun;
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
 
 	p_fn(&g_a);
 
-	while(1) usleep(5000);
+	while(cnt--) usleep(5000);
 
 	return 0;
 }

@@ -99,4 +99,6 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 static int update_heap_code_pointers(uint64_t base, int64_t delta);
 static inline void* pageof(const void* p);
 
+void init_sighandler();
+
 #endif

@@ -28,6 +28,7 @@ void fun()
 
 int main(int argc, char *argv[])
 {
+	int cnt = 2;
 	/** lmvx library **/
 	lmvx_init();
 
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
 	fun();
 	lmvx_end();
 
-	while(1) usleep(5000);
+	while(cnt--) sleep(1);
 
 	return 0;
 }

@@ -1,6 +1,25 @@
-# deC
+# sMVX: Multi-Variant Execution on Selected Code Paths
 The duplicated execution context project. Duplicate the execution for selected code area (A lightweight [MVX](https://en.wikipedia.org/wiki/N-version_programming) approach). It aims to *Selective Program Duplication and Differential Execution*.
 
+## Build sMVX
+```
+$ make                     
+rm -rf obj libmonitor.so liblmvx.so
+mkdir -p obj/lib
+ [CC]		obj/libmonitor.o
+ [CC]		obj/monitor_overrides.o
+ [CC]		obj/pkey.o
+ [CC]		obj/syscall_blocking.o
+ [CC]		obj/loader.o
+ [CC]		obj/lmvx.o
+ [CC]		obj/trampoline.o
+Generate libmonitor.so:
+ [CC+LD]	libmonitor.so
+
+ [CC]		obj/lib/liblmvx.o
+Generate liblmvx.so:
+ [CC+LD]	liblmvx.so
+```
 ## Run simple test cases
 ```
 $ make

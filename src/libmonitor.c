@@ -65,12 +65,16 @@ void __attribute__ ((constructor)) init_tramp(int argc, char** argv, char** env)
 	log_debug("Trampoline library instantiated");
 }
 
+/**
+ * @brief Associate pkeys for libmonitor.so and libc.so
+ * 
+ */
 void associate_all_pkeys()
 {
 	unsigned long pkey;
 	proc_info_t monitor_info, libc_info;
 	DEACTIVATE();
-	/* Allocate pkey */
+	/* Allocate pkey (0: allow access) */
 	pkey = syscall(SYS_pkey_alloc, 0, 0);
 
 	log_debug("Pkey allocated is: %lu", pkey);

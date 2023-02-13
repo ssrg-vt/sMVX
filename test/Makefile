@@ -1,5 +1,7 @@
-CC          := /usr/local/musl/bin/musl-gcc
+#CC          := /usr/local/musl/bin/musl-gcc
+CC          := /home/xiaoguang/works/deC/musl-gcc
 CFLAGS		:= -Wall -fPIC -pie -O0
+LDFLAGS		:= -Wl,--rpath=/home/xiaoguang/works/deC/musl_1.1.23/lib
 PRELOAD		:= LD_PRELOAD=$(shell pwd)/../libmonitor.so
 LMVX.SO		:= $(shell pwd)/../liblmvx.so
 CHECKER		:= ../tools/checker.sh
@@ -30,7 +32,7 @@ run_stack_pointer: stack_pointer
 ## Pointers on the heap
 heap_pointer: heap_pointer.c $(LMVX.SO)
 	@echo "Generate "$@":"
-	$(HUSH_CC_LD) $(CC) $(CFLAGS) $^ -o $@
+	$(HUSH_CC_LD) $(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 run_heap_pointer: heap_pointer
 	$(CHECKER) $<
@@ -71,6 +73,11 @@ pointer.bin: pointer.c $(LMVX.SO)
 run_pointer.bin: pointer.bin
 	$(CHECKER) $<
 	BIN=$< $(PRELOAD) ./$<
+
+## Lighttpd
+run_lighttpd: lighttpd-1.4.59/src/lighttpd
+	$(CHECKER) $<
+	BIN=$< $(PRELOAD) ./lighttpd-1.4.59/src/lighttpd -f ./test/lighttpd.conf -m ./test/lighttpd-1.4.59/src/.libs -D
 
 ## TODO:
 ## Larger applications
