@@ -77,11 +77,12 @@ run_pointer.bin: pointer.bin
 ## Lighttpd
 run_lighttpd: lighttpd-1.4.59/src/lighttpd
 	$(CHECKER) $<
-	BIN=$< $(PRELOAD) ./lighttpd-1.4.59/src/lighttpd -f ./test/lighttpd.conf -m ./test/lighttpd-1.4.59/src/.libs -D
+	BIN=$< $(PRELOAD) ./lighttpd-1.4.59/src/lighttpd -f ./lighttpd.conf -m ./lighttpd-1.4.59/src/.libs -D
 
 ## TODO:
 ## Larger applications
-nginx_run:
+nginx_run: nginx-1.3.9/objs/nginx
+	$(CHECKER) $<
 	LOG_LEVEL=ERROR BIN=nginx LD_PRELOAD=libmonitor.so ./nginx-1.3.9/objs/nginx
 
 lighttpd_run: lighttpd_checker
