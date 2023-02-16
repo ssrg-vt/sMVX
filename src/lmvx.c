@@ -69,6 +69,12 @@ uint64_t as_ns(struct timespec* ts) {
 
 #endif
 
+/**
+ * @brief Prepare the calling context to the child process.
+ * 
+ * @param p Not used; parameters are passed through the args global variable.
+ * @return int 
+ */
 static int _lmvx_thread_shim(void *p)
 {
 	DEACTIVATE(); /* Deactivate pkey for the other process */
@@ -87,7 +93,7 @@ static int _lmvx_thread_shim(void *p)
 #endif
 
 	// TODO: comment for now
-	//update_vma_permission();
+	update_vma_permission();
 
 	log_debug("%s: trampoline to child. pid %d. jmp 0x%lx", __func__, getpid(), args.jump_addr);
 	//DEACTIVATE(); /* Deactivate pkey for the other process */
@@ -233,7 +239,7 @@ void lmvx_start(const char *func_name, int argc, ...)
 
 	flag_lmvx = 0;
 	set_mvx_active();
-	// different address space, share files
+	/* different address space, new stack location, not share files */
 	ret = clone(_lmvx_thread_shim, stackTop, SIGCHLD, (void *)p);
 	DEACTIVATE();
 	flag_lmvx = 1;

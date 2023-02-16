@@ -11,6 +11,7 @@
  *
  * Author: Xiaoguang Wang
  * */
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,8 +20,11 @@
 #include <elf.h>
 #include <sys/mman.h>
 
-#include <log.h>
-#include <loader.h>
+#include <signal.h>
+#include <ucontext.h>
+
+#include "log.h"
+#include "loader.h"
 
 #define USAGE 		 "Use: $ BIN=<binary name> $PATCH_LIBS=<non libc/lmvx \
 			shared lib names, comma separated> LD_PRELOAD=./libmonitor.so ./<binary> p1 p2 ..."
@@ -76,7 +80,6 @@ int init_loader(int argc, char** argv, char** env)
 	/* Get the gotplt pointers */
 	read_gotplt();
 
-
 	/* duplicate the code and data (.data, .bss) VMAs */
 	new_text_base = dup_proc(&pinfo, &binfo);
 	old_text_base = (void *)(pinfo.code_start);
@@ -86,6 +89,8 @@ int init_loader(int argc, char** argv, char** env)
 	/* Patch the plt with absolute jumps since musl doesn't support lazy
 	 * binding*/
 	patch_binary_plt(&binfo, &pinfo);
+
+	init_sighandler();
 
 	return 0;
 }
@@ -233,7 +238,7 @@ static void *dup_proc(proc_info_t *pinfo, binary_info_t *binfo)
 		log_error("mmap failed %d: %s", errno, strerror(errno));
 		return mem;
 	}
-	log_debug("[LOADER]: new mem %p, total sz 0x%lx", mem, total_sz);
+	log_info("[LOADER]: new mem %p, total sz 0x%lx", mem, total_sz);
 
 	// code memory content
 	memcpy(mem, (void *)(pinfo->code_start), code_sz);
@@ -284,7 +289,7 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 			"\n\t\t\t\t bss: [0x%lx,0x%lx]",
 			code_start, code_end, data_start, data_end, bss_start, bss_end);
 
-	/* search code pointers in .data, .bss and heap */
+	/* search code pointers in .data, .bss */
 	for (i = data_start; i <= data_end-8; i+=8) {
 		p = (uint64_t *)i;
 		offset = (int)(*p - base);
@@ -315,7 +320,7 @@ static int update_code_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 /**
  * Search and update pointers in new .data and .bss pointing to old .data or
  * .bss  from the process space.
- * This is to account for the case where a .data/.bss struct in memory has a
+ * This is to account for the case where a struct in .data/.bss memory has a
  * pointer to old .data/.bss which has a code pointer in it (nginx has such occurrences).
  **/
 static int update_data_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_t delta)
@@ -340,14 +345,16 @@ static int update_data_pointers(proc_info_t *pinfo, binary_info_t *binfo, int64_
 	new_data_start = new_base + binfo->data_start;
 	scan_end = new_base + binfo->bss_start + binfo->bss_size;
 
-	/* search code pointers in .data and .bss */
+	log_trace("delta: 0x%lx, new: 0x%lx-0x%lx, old: 0x%lx-0x%lx", delta,
+		new_data_start, scan_end, data_start, match_end);
+	/* search data pointers in .data and .bss */
 	for (i = new_data_start; i <= scan_end-8; i+=8) {
 		p = (uint64_t *)i;
 		if (*p >= data_start && *p <= match_end - 8) {
+			log_trace("[LOADER]: update data ptr %p. original target 0x%lx",
+					p, *p);
 			*p += delta;
-			log_debug("[LOADER]: update data pointer %p. original loc %p, new"
-				  " loc %p (.data + .bss)",
-					(void*)i, *(uint64_t *)i, *p);
+			log_trace("[LOADER]: \t\t\tnew target 0x%lx (.data + .bss)", *p);
 			cnt++;
 		}
 	}
@@ -366,7 +373,7 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
 	rev_hash_table_t *entry = NULL;
 
 	read_proc_line("[heap]", &heap_start, &heap_end);
-	log_debug("[LOADER]: %s: heap [0x%lx,0x%lx]. size 0x%lx", __func__,
+	log_trace("[LOADER]: %s: heap [0x%lx,0x%lx]. size 0x%lx", __func__,
 			heap_start, heap_end, heap_end - heap_start);
 
 	for (i = heap_start; i <= heap_end-8; i+=8) {
@@ -375,7 +382,7 @@ static int update_heap_code_pointers(uint64_t base, int64_t delta)
 		HASH_FIND_INT(g_ht_offset, &offset, entry);
 		if (entry != NULL) {
 			*p += delta;
-			log_debug("[LOADER]: update %p @offset 0x%lx. new loc %p (.heap) [%s]",
+			log_trace("[LOADER]: update %p @offset 0x%lx. new loc %p (.heap) [%s]",
 					p, offset, *p, entry->name);
 			cnt++;
 		}
@@ -410,16 +417,66 @@ void update_heap_pointers_self()
 		log_info("%s: # of code pointers on *heap* %d", __func__, pointer_cnt);
 }
 
+
+/**
+ * @brief The signal handler for SIGSEGV (pkey no access) and SIGTRAP (int3)
+ * 
+ * @param sig 
+ * @param si 
+ * @param arg 
+ */
+void signal_handler(int sig, siginfo_t *si, void* arg)
+{
+	ucontext_t *context = (ucontext_t *)arg;
+    void *fault_page = 0;
+    int status;
+	static int sig_cnt = 0;
+
+	/* Print arg as ucontext_t. */
+	log_info("signal #%d. rip: 0x%llx, fault addr: %p (%d)", sig,
+		context->uc_mcontext.gregs[REG_RIP], si->si_addr, ++sig_cnt);
+    fault_page = (void *)((uint64_t)(si->si_addr) & ~0xfffUL);
+//	log_info("pkey rw: %d, pkey no rw: %d", pkey_rw, pkey_no_rw);
+
+	/* I dont know why, but the pkey_mprotect must be in another function. */
+//    status = pkey_mprotect(fault_page, getpagesize(),
+//                           PROT_READ | PROT_WRITE, pkey_rw);
+//	status = enable_data_access_page(fault_page, pkey_rw);
+//	if (status)
+//        errExit("pkey_set");
+	log_info("status: %d, fault_page: %p", status, fault_page);
+//	printf("\n");
+
+	/* We don't want the program to exit, so comment this out. */
+    if (sig_cnt > 10) exit(1);
+}
+
+void init_sighandler()
+{
+	struct sigaction sa;
+    sa.sa_sigaction = &signal_handler;
+	sa.sa_flags = SA_SIGINFO; /* Use sa_sigaction instead of sa_handler. */
+	sigaction(SIGSEGV, &sa, NULL);
+    log_info("Initiated the signal handler");
+}
+
+static void unmap_vma(uint64_t start, uint64_t end)
+{
+	uint64_t len = end - start;
+	munmap((void *)start, len);
+}
+
 /**
  * TODO: we want to convert the VMA permission in lmvx_start()
+ * unmap code, data of the variant 1.
  * */
 void update_vma_permission()
 {
-	uint64_t start, end, len;
-	start = pinfo.code_start;
-	end = pinfo.code_end;
-	len = end - start;
-	mprotect((void *)start, len, PROT_READ);
+	log_debug("%s: unmap [0x%lx,0x%lx] [0x%lx,0x%lx]", __func__,
+		pinfo.code_start, pinfo.code_end, pinfo.data_start, pinfo.data_end);
+//	unmap_vma(pinfo.code_start, pinfo.code_end);
+	unmap_vma(pinfo.data_start, pinfo.data_end);
+//	unmap_vma(pinfo., pinfo.code_end);
 }
 
 /**
@@ -642,5 +699,5 @@ void patch_library_plt()
 			lib_binfo.bss_start, lib_binfo.bss_size);
 
 		patch_binary_plt(&lib_binfo, &lib_pinfo);
-		}
+	}
 }

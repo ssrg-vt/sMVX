@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define NODEBUG    // NO debug info when ENABLE this macro
+//#define NODEBUG    // NO debug info when ENABLE this macro
 
 #ifndef LOGLEVEL
 #define LOGLEVEL 4

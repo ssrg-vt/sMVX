@@ -5,7 +5,7 @@
 BASEDIR=$(dirname "$0")
 ELF="python $BASEDIR/elf-section.py"
 bin=$1
-rm -rf /tmp/dec.info
+sudo rm -rf /tmp/dec.info
 
 echo $BASEDIR
 echo ${ELF}
@@ -56,8 +56,8 @@ nm $bin | grep " t " >> $tmpfile
 #echo $result >> $tmpfile
 
 echo
-echo "Verify: cat "$tmpfile
-cat $tmpfile
+#echo "Verify: cat "$tmpfile
+#cat $tmpfile
 
 ## Create other files for each .so
 for ((i = 2; i <= $#; i++ )); do
