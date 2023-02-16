@@ -1,5 +1,5 @@
-#CC          := /usr/local/musl/bin/musl-gcc
-CC          := /home/xiaoguang/works/deC/musl-gcc
+CC          := /usr/local/musl/bin/musl-gcc
+#CC          := /home/xiaoguang/works/deC/musl-gcc
 CFLAGS		:= -Wall -fPIC -pie -O0
 LDFLAGS		:= -Wl,--rpath=/home/xiaoguang/works/deC/musl_1.1.23/lib
 PRELOAD		:= LD_PRELOAD=$(shell pwd)/../libmonitor.so
