@@ -18,11 +18,13 @@ void simple_func(int pid)
 {
 	char* localstring = "Test localstring\n";
 	void* to;
+	uint64_t rip;
+	asm volatile("1: lea 1b(%%rip), %0;": "=a"(rip));
 
 	to = malloc(4096);
 	memcpy(to, localstring, 10);
 
-	printf("%s: Local pid: %ld\n", __func__, gettid());
+	printf("[%ld %s: rip 0x%lx] ", gettid(), __func__, rip);
 	printf("%s --> %s\n", localstring, (char *)to);
 //	sprintf(cmd, "cat /proc/%d/maps", pid);
 //	printf("%s\n", cmd);

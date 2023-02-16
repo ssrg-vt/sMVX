@@ -95,7 +95,7 @@ redis_debug:
 	gdb redis/src/redis-server -ex "set environment LOG_LEVEL=TRACE" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'" -ex "set environment BIN=redis-server"
 
 lighttpd_checker:
-	./checker.sh ./lighttpd-1.4.50/src/lighttpd /usr/local/lib/mod_staticfile.so /usr/local/lib/mod_dirlisting.so /usr/local/lib/mod_indexfile.so
+	../tools/checker.sh ./lighttpd-1.4.50/src/lighttpd /usr/local/lib/mod_staticfile.so /usr/local/lib/mod_dirlisting.so /usr/local/lib/mod_indexfile.so
 
 lighttpd_debug:
 	gdb ./lighttpd-1.4.50/src/lighttpd -ex "set environment LOG_LEVEL=TRACE" -ex "set environment BIN=lighttpd" -ex "set environment PATCH_LIBS=mod_indexfile,mod_dirlisting,mod_staticfile" -ex "set exec-wrapper env 'LD_PRELOAD=libmonitor.so'"

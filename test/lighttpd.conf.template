@@ -1,0 +1,21 @@
+##
+## Basic lighttpd configuration.
+##
+#server.document-root        = "/var/www/html"
+server.document-root        = "/home/smvx/smvx/test/www-root/html"
+server.port                 = 8888
+server.username             = "usrname"
+server.groupname            = "grpname"
+index-file.names            = ( "index.php", "index.html", "index.lighttpd.html" )
+
+##
+## mimetype mapping.
+##
+mimetype.assign             = (
+  ".html"         =>      "text/html",
+  ".htm"          =>      "text/html",
+  ".pdf"          =>      "application/pdf",
+  ".jpg"          =>      "image/jpeg",
+  ".jpeg"         =>      "image/jpeg",
+  ".png"          =>      "image/png",
+)

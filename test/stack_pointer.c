@@ -22,8 +22,8 @@ void fun()
 	uint64_t *p_local = &rip;
 	asm volatile("1: lea 1b(%%rip), %0;": "=a"(rip));
 
-	printf("[%d] %s: p_local %p, *p_local 0x%lx\n",
-			getpid(), __func__, p_local, *p_local);
+	printf("[%d] %s: [rip 0x%lx] p_local %p, *p_local 0x%lx\n",
+			getpid(), __func__, rip, p_local, *p_local);
 }
 
 int main(int argc, char *argv[])
